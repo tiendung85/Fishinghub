@@ -8,41 +8,68 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Date;
 
 @WebServlet(name = "RegisterController", urlPatterns = {"/register"})
 public class RegisterController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy dữ liệu từ form
+        // Lấy tham số từ form
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
-        String fishingSkillLevel = request.getParameter("fishingSkillLevel");
+        String roleIdStr = request.getParameter("roleId");
+        String gender = request.getParameter("gender");
+        String dobStr = request.getParameter("dob");
+        String location = request.getParameter("location");
         String terms = request.getParameter("terms");
 
-        // Kiểm tra điều kiện đơn giản
+        // Validate dữ liệu cơ bản
         if(fullName == null || fullName.isEmpty() ||
            email == null || email.isEmpty() ||
            password == null || password.isEmpty() ||
            !password.equals(confirmPassword) ||
-           fishingSkillLevel == null || fishingSkillLevel.isEmpty() ||
+           roleIdStr == null || roleIdStr.isEmpty() ||
+           gender == null || gender.isEmpty() ||
+           dobStr == null || dobStr.isEmpty() ||
+           location == null || location.isEmpty() ||
            terms == null) {
             request.setAttribute("error", "Please fill all fields correctly and accept terms.");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("Register/Register.jsp").forward(request, response);
             return;
         }
 
-        // Tạo đối tượng Users
-        Users newUser = new Users(fullName, email, password, fishingSkillLevel, true);
+        // Chuyển đổi dữ liệu
+        int roleId = 0;
+        try {
+            roleId = Integer.parseInt(roleIdStr);
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "Invalid role selected.");
+            request.getRequestDispatcher("Register/Register.jsp").forward(request, response);
+            return;
+        }
 
-        // Ở đây bạn có thể thêm logic lưu vào DB (hiện demo in ra console)
+        Date dob = null;
+        try {
+            dob = Date.valueOf(dobStr); // yyyy-MM-dd
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("error", "Invalid date of birth.");
+            request.getRequestDispatcher("Register/Register.jsp").forward(request, response);
+            return;
+        }
+
+        // Tạo đối tượng Users mới (googleId, createdAt để null)
+        Users newUser = new Users(fullName, email, password, roleId, gender, dob, location);
+
+        // TODO: Thêm code lưu newUser vào database
+
         System.out.println("New user registered: " + newUser.getFullName() + " - " + newUser.getEmail());
 
-        // Chuyển hướng sang trang đăng nhập hoặc trang thành công
+        // Redirect sang trang đăng nhập
         response.sendRedirect("login.jsp");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("register.jsp");
+        response.sendRedirect("Register/Register.jsp");
     }
 }
