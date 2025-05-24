@@ -11,15 +11,11 @@ public abstract class DBContext<T> {
 
     public DBContext() {
         try {
-            // Đường dẫn kết nối SQL Server, bạn nhớ thay tên server, database, user, pass cho đúng
+
             String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;encrypt=true;trustServerCertificate=true;";
-            String username = "lam";        // username SQL Server
-            String password = "lamdz123";  // mật khẩu SQL Server
-
-            // Nạp driver JDBC cho SQL Server
+            String username = "lam";        
+            String password = "lamdz123";  
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-            // Khởi tạo kết nối
             connection = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException ex) {
             System.out.println("SQL Server JDBC Driver not found.");
@@ -29,8 +25,6 @@ public abstract class DBContext<T> {
             ex.printStackTrace();
         }
     }
-
-    // Các phương thức abstract để lớp con implement
     public abstract ArrayList<T> list();
 
     public abstract T get(int id);

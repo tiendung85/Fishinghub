@@ -56,10 +56,8 @@ public class RegisterController extends HttpServlet {
             return;
         }
 
-        // RoleId mặc định cho user mới, giả sử roleId 3 là user
         int roleId = 3;
 
-        // Tạo object người dùng mới
         Users newUser = new Users(fullName, email, password, roleId, gender, dob, location);
 
         // Lưu vào database qua UserDBContext
