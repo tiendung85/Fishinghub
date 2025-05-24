@@ -14,15 +14,15 @@ import java.sql.ResultSet;
  *
  * @author LENOVO
  */
-public class EventDAO {
+public class EventDAO extends DBConnect{
 
-    public static ArrayList<Events> getEvents() {
+    public   ArrayList<Events> getEvents() {
         ArrayList<Events> events = new ArrayList<>();
-        DBConnect db = DBConnect.getInstance();
+        
 
         try {
             String sql = "SELECT * FROM Event";
-            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            PreparedStatement statement = c.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -52,13 +52,13 @@ public class EventDAO {
         return events.isEmpty() ? null : events;
     }
 
-    public static Events addEvent(Events event) {
-        DBConnect db = DBConnect.getInstance();
+    public Events addEvent(Events event) {
+        
        
         try {
             String sql = "INSERT INTO Event (Title, Description, Location, HostId, StartTime, EndTime, Status, PosterUrl, MaxParticipants) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            PreparedStatement statement = c.prepareStatement(sql);
 
             statement.setString(1, event.getTitle());
             statement.setString(2, event.getDescription());

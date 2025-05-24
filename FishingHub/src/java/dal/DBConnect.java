@@ -1,47 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
-/**
- *
- * @author pc
- */
 public class DBConnect {
+    public Connection c;
 
-    private static DBConnect instance = new DBConnect();
-    Connection connection;
-
-    public static DBConnect getInstance() {
-        return instance;
+    public DBConnect() {
+        openConnection();
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
-    private DBConnect() {
+    private void openConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                String user = "sa";
-                String password = "123";
-                String url = "jdbc:sqlserver://localhost:1433;databaseName=FishingHub";
+            if (c == null || c.isClosed()) {
+                String url = "jdbc:sqlserver://localhost:1433;databaseName=FishingHub;encrypt=true;trustServerCertificate=true;characterEncoding=UTF-8;sendStringParametersAsUnicode=true";
+                String username = "sa";
+                String pass = "123";
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                connection = DriverManager.getConnection(url, user, password);
-
-                // In ra thông báo kết nối thành công
-                System.out.println("Database connected successfully!");
+                c = DriverManager.getConnection(url, username, pass);
+                System.out.println("Database connection established successfully.");
             }
         } catch (Exception e) {
-            connection = null;
-
-            // In ra thông tin lỗi nếu kết nối thất bại
-            System.out.println("Database connection failed: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            if (c != null && !c.isClosed()) {
+                c.close();
+                System.out.println("Connection closed successfully.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error closing connection: " + e.getMessage());
         }
     }
 }

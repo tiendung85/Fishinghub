@@ -27,6 +27,7 @@ public class EventController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "assets/img/eventPoster";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
+    
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -145,7 +146,8 @@ public class EventController extends HttpServlet {
         
 
         // Save event to database
-        Events result = EventDAO.addEvent(event);
+        EventDAO dao=new EventDAO();
+        Events result = dao.addEvent(event);
         if (result != null) {
             request.setAttribute("success", "Event created successfully!");
         } else {
