@@ -49,6 +49,15 @@
             </label>
 
             <button type="submit" class="register-btn">Register</button>
+            
+            <div class="or-separator">
+    <span>or</span>
+</div>
+
+<a href="google-login-url" class="google-btn">
+    <img src="assets/img/gg.png" alt="Google logo" class="google-logo" />
+    Continue with Google
+</a>
         </form>
         <p class="login-link">Already have an account? <a href="login.jsp">Login</a></p>
     </div>
