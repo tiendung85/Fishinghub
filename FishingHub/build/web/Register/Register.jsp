@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Fishing Hub - Register</title>
     <style>
-        /* Reset cơ bản */
+        /* CSS giữ nguyên từ bạn gửi */
         * {
             box-sizing: border-box;
         }
@@ -14,12 +15,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: url('assets/img/hero-bg.jpg') no-repeat center center/cover;
+            background: url('${pageContext.request.contextPath}/assets/img/hero-bg.jpg') no-repeat center center/cover;
         }
         .container {
             background: white;
-            width: 600px;
-            max-width: 90%;
+            width: 700px;
+            max-width: 95%;
             display: flex;
             border-radius: 10px;
             overflow: hidden;
@@ -27,7 +28,7 @@
         }
         .form-section {
             padding: 30px;
-            width: 50%;
+            width: 60%;
         }
         .form-section h2 {
             margin-bottom: 20px;
@@ -37,7 +38,7 @@
             margin-top: 15px;
             font-weight: bold;
         }
-        input[type=text], input[type=email], input[type=password], select {
+        input[type=text], input[type=email], input[type=password], select, input[type=date] {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -81,10 +82,9 @@
             text-decoration: underline;
         }
         .image-section {
-            width: 50%;
-            background: url('assets/img/fisherman.jpg') no-repeat center center/cover;
+            width: 40%;
+            background: url('${pageContext.request.contextPath}/assets/img/fisherman.jpg') no-repeat center center/cover;
         }
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -95,7 +95,7 @@
                 height: 250px;
             }
             .image-section {
-                display: none; /* ẩn hình ảnh trên màn nhỏ */
+                display: none;
             }
         }
     </style>
@@ -103,9 +103,15 @@
 <body>
 <div class="container">
     <div class="form-section">
-        <button style="margin-bottom: 20px; border: 1px solid #6b73ff; background: white; color: #6b73ff; border-radius: 8px; padding: 10px 15px; cursor: pointer;">Fishing Hub</button>
+        <button type="button" style="margin-bottom: 20px; border: 1px solid #6b73ff; background: white; color: #6b73ff; border-radius: 8px; padding: 10px 15px; cursor: default;">Fishing Hub</button>
         <h2>Create Your Account</h2>
-        <form action="register" method="post">
+
+        <!-- Hiển thị lỗi nếu có -->
+        <c:if test="${not empty error}">
+            <div style="color: red; margin-bottom: 15px;">${error}</div>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/Register" method="post">
             <label for="fullName">Full Name</label>
             <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
 
@@ -118,21 +124,27 @@
             <label for="confirmPassword">Confirm Password</label>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
 
-            <label for="fishingSkillLevel">Fishing Skill Level</label>
-            <select id="fishingSkillLevel" name="fishingSkillLevel" required>
-                <option value="" disabled selected>Select your level</option>
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Expert">Expert</option>
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
             </select>
 
+            <label for="dob">Date Of Birth</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="Enter your location" required>
+
             <label class="checkbox-label">
-                <input type="checkbox" name="terms" required> I agree to the terms and conditions
+                <input type="checkbox" name="terms" required> By proceeding, you agree to the Terms of Service and Privacy Notice.
             </label>
 
             <button type="submit">Register</button>
         </form>
-        <p class="login-link">Already have an account? <a href="login.jsp">Login</a></p>
+        <p class="login-link">Already have an account? <a href="${pageContext.request.contextPath}/login.jsp">Login</a></p>
     </div>
     <div class="image-section"></div>
 </div>
