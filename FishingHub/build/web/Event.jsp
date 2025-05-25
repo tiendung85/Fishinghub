@@ -95,6 +95,15 @@
                         </a>
                     </div>
                 </div>
+                
+                <div class="bg-white rounded shadow-sm mb-8">
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-200">
+                        <button class="tab-button active px-6 py-4 text-primary font-medium">All Events</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Saved</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">My Events</button>
+                    </div>
+                </div>
                 <!-- Filters -->
                 <div class="bg-white rounded shadow-sm p-4 mb-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
@@ -537,40 +546,38 @@
         <footer class="bg-gray-800 text-white pt-12 pb-6">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                    <!-- About section -->
                     <div>
-                        <a href="#" data-readdy="true"
-                           class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
+                        <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
                         <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
                         <div class="flex space-x-4">
-                            <a href="#"
-                               class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-facebook-fill"></i>
                             </a>
-                            <a href="#"
-                               class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-youtube-fill"></i>
                             </a>
-                            <a href="#"
-                               class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-instagram-fill"></i>
                             </a>
-                            <a href="#"
-                               class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-tiktok-fill"></i>
                             </a>
                         </div>
                     </div>
+                    <!-- Quick Links -->
                     <div>
                         <h3 class="text-lg font-bold mb-4">Quick Links</h3>
                         <ul class="space-y-2">
                             <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
                             <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">News Feed</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li>
+                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Feed</a></li>
+                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li> 
                             <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Achievements</a></li>
+                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Rankings</a></li>
                         </ul>
                     </div>
+                    <!-- Support -->
                     <div>
                         <h3 class="text-lg font-bold mb-4">Support</h3>
                         <ul class="space-y-2">
@@ -578,8 +585,28 @@
                             <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
                             <li><a href="#" class="text-gray-400 hover:text-white">Terms of Use</a></li>
                             <li><a href="#" class="text-gray-400 hover:text-white">Return Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
                         </ul>
+                    </div>
+                    <!-- Payment Methods -->
+                    <div>
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium mb-2">Payment Methods</h4>
+                            <div class="flex space-x-3">
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-visa-fill text-blue-800 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-mastercard-fill text-red-500 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-paypal-fill text-blue-600 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-bank-card-fill text-gray-700 text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="border-t border-gray-700 pt-6">
@@ -587,36 +614,6 @@
                 </div>
             </div>
         </footer>
-        
-        <!-- Notification Panel -->
-        <div id="notificationPanel"
-             class="fixed top-20 right-8 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
-            <div class="flex justify-between items-center px-4 py-3 border-b">
-                <span class="font-semibold text-gray-800">Notifications</span>
-                <button id="closeNotificationPanel" class="text-gray-400 hover:text-primary text-xl">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
-            <div class="p-4 space-y-3 max-h-80 overflow-y-auto">
-                <div class="flex items-start gap-2">
-                    <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full text-primary">
-                        <i class="ri-calendar-event-line"></i>
-                    </div>
-                    <div>
-                        <div class="font-medium text-sm text-gray-900">You have successfully registered for the "West Lake Fishing Tournament 2025" event.</div>
-                        <div class="text-xs text-gray-500 mt-1">2 minutes ago</div>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full text-primary">
-                        <i class="ri-information-line"></i>
-                    </div>
-                    <div>
-                        <div class="font-medium text-sm text-gray-900">The "Advanced Fishing Techniques Workshop" event will take place on 05/15/2025.</div>
-                        <div class="text-xs text-gray-500 mt-1">1 hour ago</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </body>
 </html>

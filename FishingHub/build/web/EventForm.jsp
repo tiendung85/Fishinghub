@@ -143,6 +143,79 @@
                 </div>
             </form>
         </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white pt-12 pb-6">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                    <!-- About section -->
+                    <div>
+                        <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
+                        <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                                <i class="ri-facebook-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                                <i class="ri-youtube-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                                <i class="ri-instagram-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
+                                <i class="ri-tiktok-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Quick Links -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                        <ul class="space-y-2">
+                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
+                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
+                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Feed</a></li>
+                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li> 
+                            <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
+                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Rankings</a></li>
+                        </ul>
+                    </div>
+                    <!-- Support -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Support</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Terms of Use</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Return Policy</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <!-- Payment Methods -->
+                    <div>
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium mb-2">Payment Methods</h4>
+                            <div class="flex space-x-3">
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-visa-fill text-blue-800 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-mastercard-fill text-red-500 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-paypal-fill text-blue-600 text-lg"></i>
+                                </div>
+                                <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                                    <i class="ri-bank-card-fill text-gray-700 text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-6">
+                    <p class="text-center text-gray-500 text-sm">© 2025 Vietnam Fishing Community. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     </body>
 
 </html>

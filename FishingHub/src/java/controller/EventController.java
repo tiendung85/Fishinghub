@@ -27,21 +27,20 @@ public class EventController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "assets/img/eventPoster";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
-    
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Forward to the event form page
         String action = request.getParameter("action");
-        if(action==null){
+        if (action == null) {
             RequestDispatcher dispatcher = request.getRequestDispatcher("EventForm.jsp");
-        dispatcher.forward(request, response);
-        }else if(action.equals("create_event")){
+            dispatcher.forward(request, response);
+        } else if (action.equals("create_event")) {
             RequestDispatcher dispatcher = request.getRequestDispatcher("EventForm.jsp");
-        dispatcher.forward(request, response);
+            dispatcher.forward(request, response);
         }
-        
+
     }
 
     @Override
@@ -85,6 +84,12 @@ public class EventController extends HttpServlet {
             startTime = new Timestamp(parsedStart.getTime());
             endTime = new Timestamp(parsedEnd.getTime());
 
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            if (startTime.before(now)) {
+                request.setAttribute("error", "Start time must not be in the past.");
+                request.getRequestDispatcher("EventForm.jsp").forward(request, response);
+                return;
+            }
             // Validate end time is after start time
             if (endTime.before(startTime)) {
                 request.setAttribute("error", "End time must be after start time.");
@@ -128,7 +133,7 @@ public class EventController extends HttpServlet {
                 // Save file
                 String filePath = uploadPath + File.separator + fileName;
                 filePart.write(filePath);
-                posterUrl =  fileName;
+                posterUrl = fileName;
             }
         }
 
@@ -143,10 +148,9 @@ public class EventController extends HttpServlet {
         event.setStatus("pending");
         event.setPosterUrl(posterUrl);
         event.setMaxParticipants(maxParticipants);
-        
 
         // Save event to database
-        EventDAO dao=new EventDAO();
+        EventDAO dao = new EventDAO();
         Events result = dao.addEvent(event);
         if (result != null) {
             request.setAttribute("success", "Event created successfully!");
