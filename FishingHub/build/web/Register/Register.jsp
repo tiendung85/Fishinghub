@@ -17,7 +17,7 @@
   </svg>
 </a>
         <h2>Create Your Account</h2>
-        <form action="register" method="post">
+        <form action="Register" method="post">
             <label for="fullName">Full Name</label>
             <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
 

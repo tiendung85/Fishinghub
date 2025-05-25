@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UserDBContext extends DBContext<Users> {
+public class UserDBContext extends DBConnect<Users> {
 
     @Override
     public ArrayList<Users> list() {
         ArrayList<Users> users = new ArrayList<>();
         try {
             String sql = "SELECT * FROM Users";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 Users user = new Users();
                 user.setUserId(rs.getInt("UserId"));
@@ -29,6 +30,8 @@ public class UserDBContext extends DBContext<Users> {
                 user.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 users.add(user);
             }
+            rs.close();
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -39,9 +42,10 @@ public class UserDBContext extends DBContext<Users> {
     public Users get(int id) {
         try {
             String sql = "SELECT * FROM Users WHERE UserId = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, id);
-            ResultSet rs = stm.executeQuery();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
                 Users user = new Users();
                 user.setUserId(rs.getInt("UserId"));
@@ -56,6 +60,8 @@ public class UserDBContext extends DBContext<Users> {
                 user.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 return user;
             }
+            rs.close();
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,18 +71,19 @@ public class UserDBContext extends DBContext<Users> {
     @Override
     public void insert(Users user) {
         try {
-            String sql = "INSERT INTO Users (FullName, Email, Password, GoogleId, RoleId, Gender, DateOfBirth, Location) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, user.getFullName());
-            stm.setString(2, user.getEmail());
-            stm.setString(3, user.getPassword());
-            stm.setString(4, user.getGoogleId());
-            stm.setInt(5, user.getRoleId());
-            stm.setString(6, user.getGender());
-            stm.setDate(7, user.getDateOfBirth());
-            stm.setString(8, user.getLocation());
-            stm.executeUpdate();
+            String sql = "INSERT INTO Users (FullName, Email, Password, GoogleId, RoleId, Gender, DateOfBirth, Location) " +
+                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, user.getFullName());
+                stmt.setString(2, user.getEmail());
+                stmt.setString(3, user.getPassword());
+                stmt.setString(4, user.getGoogleId());
+                stmt.setInt(5, user.getRoleId());
+                stmt.setString(6, user.getGender());
+                stmt.setDate(7, user.getDateOfBirth());
+                stmt.setString(8, user.getLocation());
+                stmt.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -86,17 +93,18 @@ public class UserDBContext extends DBContext<Users> {
     public void update(Users user) {
         try {
             String sql = "UPDATE Users SET FullName = ?, Email = ?, Password = ?, GoogleId = ?, RoleId = ?, Gender = ?, DateOfBirth = ?, Location = ? WHERE UserId = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, user.getFullName());
-            stm.setString(2, user.getEmail());
-            stm.setString(3, user.getPassword());
-            stm.setString(4, user.getGoogleId());
-            stm.setInt(5, user.getRoleId());
-            stm.setString(6, user.getGender());
-            stm.setDate(7, user.getDateOfBirth());
-            stm.setString(8, user.getLocation());
-            stm.setInt(9, user.getUserId());
-            stm.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, user.getFullName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getGoogleId());
+            stmt.setInt(5, user.getRoleId());
+            stmt.setString(6, user.getGender());
+            stmt.setDate(7, user.getDateOfBirth());
+            stmt.setString(8, user.getLocation());
+            stmt.setInt(9, user.getUserId());
+            stmt.executeUpdate();
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,9 +114,10 @@ public class UserDBContext extends DBContext<Users> {
     public void delete(Users user) {
         try {
             String sql = "DELETE FROM Users WHERE UserId = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, user.getUserId());
-            stm.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, user.getUserId());
+            stmt.executeUpdate();
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
