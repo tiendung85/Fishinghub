@@ -217,3 +217,36 @@ input:checked + .slider:before {
     opacity: 1;
     visibility: visible;
 }
+#imagePreview {
+    margin-bottom: 1rem;
+    position: relative;
+    display: none;
+}
+
+#imagePreview img {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    object-fit: contain;
+    margin: 0 auto;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+#imagePreview button {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    background-color: rgba(31, 41, 55, 0.5);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
+#imagePreview button:hover {
+    background-color: rgba(31, 41, 55, 0.7);
+}

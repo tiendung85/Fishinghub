@@ -23,7 +23,7 @@ CREATE TABLE Role (
     RoleName VARCHAR(50) NOT NULL
 );
 
-select * from Role 
+
 
 -- Users
 CREATE TABLE Users (
@@ -121,12 +121,22 @@ CREATE TABLE EventParticipant (
 CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
+	Topic NVARCHAR(50),
     Title VARCHAR(255),
     Content TEXT,
-    Image VARCHAR(255),
+   
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
+
+CREATE TABLE Image (
+    ImageId INT PRIMARY KEY IDENTITY,
+    PostId INT,
+    ImagePath VARCHAR(255),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId)
+);
+
+
 
 -- PostComments
 CREATE TABLE PostComment (
@@ -225,3 +235,31 @@ CREATE TABLE Notification (
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
+
+
+
+INSERT INTO Role (RoleName)
+VALUES 
+('User');
+
+INSERT INTO Users (FullName, Email, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Văn A', 'nguyenvana@example.com', 'hashedpassword123', NULL, 1, N'Nam', '1995-04-12', N'Hồ Chí Minh'),
+(N'Lê Thị B', 'lethib@example.com', 'hashedpassword456', NULL, 1, N'Nữ', '1998-08-22', N'Hà Nội');
+
+
+INSERT INTO Users (FullName, Email, Password, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Admin', 'admin@example.com', 'admin123', (SELECT RoleId FROM Role WHERE RoleName = N'admin'), N'Nam', '1990-01-01', N'Hanoi'),
+(N'Event Admin', 'adminevents@example.com', 'event123', (SELECT RoleId FROM Role WHERE RoleName = N'admin events'), N'Nam', '1990-01-01', N'Hanoi');
+SELECT * FROM Users 
+WHERE CreatedAt >= DATEADD(day, -7, GETDATE())  -- user tạo trong 7 ngày gần nhất
+ORDER BY CreatedAt DESC;
+
+select * from Users
+
+select * from Post
+
+select * from Image
+
+select * from Event

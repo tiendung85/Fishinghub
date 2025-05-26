@@ -1,4 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="model.Post"%>
+<%@page import="dal.PostDAO"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -84,7 +91,7 @@
                                 <i class="ri-search-line"></i>
                             </div>
                         </div>
-                        <button class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
+                        <button class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2" onclick="openCreatePostDialog()">
                             <i class="ri-add-line"></i>
                             <span>Create New Post</span>
                         </button>
@@ -101,116 +108,80 @@
                     </div>
                 </div>
 
-                <!-- Posts List -->
-                <div class="space-y-4 mb-8">
-                    <!-- Post 1 -->
-                    <div class="bg-white rounded shadow-sm overflow-hidden border border-gray-100">
-                        <div class="p-4">
-                            <!-- Author info -->
-                            <div class="flex items-center mb-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
-                                    <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520vietnamese%2520man%2520in%2520his%252040s&width=100&height=100&seq=user1&orientation=squarish" 
-                                         alt="Author" 
-                                         class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-900">Tran Quoc Bao</h4>
-                                    <div class="flex items-center text-xs text-gray-500">
-                                        <span>05/17/2025</span>
-                                        <span class="mx-2">•</span>
-                                        <span>Experience Sharing</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Post title -->
-                            <h3 class="text-lg font-bold mb-3">5 Effective Snakehead Fishing Techniques During Flood Season</h3>
-
-                            <!-- Post image -->
-                            <div class="mb-3 h-[250px] overflow-hidden rounded">
-                                <img src="https://readdy.ai/api/search-image?query=snakehead%2520fishing%2520in%2520flooded%2520fields&width=600&height=360&seq=post1&orientation=landscape" 
-                                     alt="Snakehead fishing" 
-                                     class="w-full h-full object-cover">
-                            </div>
-
-                            <!-- Post excerpt -->
-                            <div class="prose max-w-none mb-3">
-                                <p class="text-sm text-gray-600 line-clamp-2">The flood season is the ideal time for snakehead fishing. This post shares the 5 most effective snakehead fishing techniques based on 15 years of experience, helping you achieve bountiful catches.</p>
-                            </div>
-
-                            <!-- Interaction buttons -->
-                            <div class="flex justify-between items-center text-sm">
-                                <div class="flex items-center gap-4">
-                                    <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                        <i class="ri-heart-line"></i>
-                                        <span>124</span>
-                                    </button>
-                                    <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                        <i class="ri-chat-1-line"></i>
-                                        <span>32</span>
-                                    </button>
-                                </div>
-                                <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                    <i class="ri-bookmark-line"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Post 2 (Duplicate removed for brevity, translation would be identical) -->
-                    <div class="bg-white rounded shadow-sm overflow-hidden border border-gray-100">
-                        <div class="p-4">
-                            <!-- Author info -->
-                            <div class="flex items-center mb-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
-                                    <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520vietnamese%2520man%2520in%2520his%252040s&width=100&height=100&seq=user1&orientation=squarish" 
-                                         alt="Author" 
-                                         class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-900">Tran Quoc Bao</h4>
-                                    <div class="flex items-center text-xs text-gray-500">
-                                        <span>05/17/2025</span>
-                                        <span class="mx-2">•</span>
-                                        <span>Experience Sharing</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Post title -->
-                            <h3 class="text-lg font-bold mb-3">5 Effective Snakehead Fishing Techniques During Flood Season</h3>
-
-                            <!-- Post image -->
-                            <div class="mb-3 h-[250px] overflow-hidden rounded">
-                                <img src="https://readdy.ai/api/search-image?query=snakehead%2520fishing%2520in%2520flooded%2520fields&width=600&height=360&seq=post1&orientation=landscape" 
-                                     alt="Snakehead fishing" 
-                                     class="w-full h-full object-cover">
-                            </div>
-
-                            <!-- Post excerpt -->
-                            <div class="prose max-w-none mb-3">
-                                <p class="text-sm text-gray-600 line-clamp-2">The flood season is the ideal time for snakehead fishing. This post shares the 5 most effective snakehead fishing techniques based on 15 years of experience, helping you achieve bountiful catches.</p>
-                            </div>
-
-                            <!-- Interaction buttons -->
-                            <div class="flex justify-between items-center text-sm">
-                                <div class="flex items-center gap-4">
-                                    <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                        <i class="ri-heart-line"></i>
-                                        <span>124</span>
-                                    </button>
-                                    <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                        <i class="ri-chat-1-line"></i>
-                                        <span>32</span>
-                                    </button>
-                                </div>
-                                <button class="flex items-center gap-1 text-gray-500 hover:text-primary">
-                                    <i class="ri-bookmark-line"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+ <!-- Posts List -->
+                <div class="space-y-6">
+    <% 
+        PostDAO postDAO = new PostDAO();
+        List<Post> posts = postDAO.getAllPosts();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
+        
+        for(Post post : posts) {
+    %>
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <!-- Post Header -->
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+                <div>
+                    <p class="font-medium">User <%= post.getUserId() %></p>
+                    <p class="text-sm text-gray-500"><%= sdf.format(post.getCreatedAt()) %></p>
                 </div>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600">
+                <i class="ri-more-fill text-xl"></i>
+            </button>
+        </div>
 
+        <!-- Post Topic -->
+        <div class="mb-3">
+            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                <%= post.getTopic() %>
+            </span>
+        </div>
+
+        <!-- Post Content -->
+                 <p class="text-gray-800 mb-4"><%= post.getTitle() %></p>
+
+        <p class="text-gray-800 mb-4"><%= post.getContent() %></p>
+
+        <!-- Post Image -->
+
+<% if(post.getImages() != null && !post.getImages().isEmpty()) { %>
+<div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+    <% for(String image : post.getImages()) { %>
+        <div class="overflow-hidden">
+            <img src="assets/img/post/<%= image %>" 
+                 alt="Post image" 
+                 class="w-full h-[300px] object-cover rounded-lg">
+        </div>
+    <% } %>
+</div>
+<% } %>
+
+
+
+        <!-- Post Actions -->
+        <div class="flex items-center justify-between pt-4 border-t">
+            <div class="flex items-center gap-4">
+                <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
+                    <i class="ri-heart-line text-xl"></i>
+                    <span>Like</span>
+                </button>
+                <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
+                    <i class="ri-chat-1-line text-xl"></i>
+                    <span>Comment</span>
+                </button>
+               
+            </div>
+            <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
+                <i class="ri-bookmark-line text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+                
                 <!-- Load More & Pagination -->
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8">
                     <button class="bg-white text-primary border border-primary px-6 py-2 rounded-button whitespace-nowrap mb-4 md:mb-0 w-full md:w-auto">Load More Posts</button>
@@ -270,6 +241,82 @@
                 </div>
             </div>
         </main>
+
+        <!-- Create Post Dialog -->
+<div id="createPostDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg w-full max-w-2xl mx-4">
+        <!-- Dialog Header -->
+        <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Create New Post</h3>
+            <button onclick="closeCreatePostDialog()" class="text-gray-500 hover:text-gray-700">
+                <i class="ri-close-line text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Dialog Content -->
+        <form action="PostServlet" method="POST" enctype="multipart/form-data" class="p-4">
+             <!-- User Info -->
+     <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+        <div>
+            <p class="font-medium">Your Name</p>
+            <input type="text" 
+                   name="topic"
+                   placeholder="Add a topic..." 
+                   class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
+                   maxlength="50">
+        </div>
+    </div>
+            <!-- Post Content -->
+            <div class="mb-4">
+                <textarea name="title" 
+                          placeholder="What's your title?" 
+                          class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm mb-3"
+                          rows="1"></textarea>
+                <textarea name="content" 
+                          placeholder="What's new?" 
+                          class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
+                          rows="4"></textarea>
+            </div>
+
+           
+           <!-- Hidden file input and preview -->
+<div class="mb-4">
+    <input type="file" 
+           id="imageInput" 
+           name="images" 
+           accept="image/*" 
+           multiple
+           class="hidden"
+           onchange="previewImages(event)">
+
+    <div id="imagePreviewContainer" class="grid grid-cols-2 gap-4 mb-4 hidden">
+        <!-- Image previews will be added here -->
+    </div>
+</div>
+
+
+            <!-- Post Actions -->
+            <div class="flex items-center gap-3 border-t border-b py-3">
+                <button type="button" 
+                        onclick="document.getElementById('imageInput').click()" 
+                        class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
+                    <i class="ri-image-line text-xl text-gray-600"></i>
+                    <span class="text-sm text-gray-600">Photo</span>
+                </button>
+              
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end mt-4">
+                <button type="submit" 
+                        class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-primary/90">
+                    Post
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white pt-12 pb-6">
@@ -339,5 +386,109 @@
                 </div>
             </div>
         </footer>
+
+        <script>
+          
+            const createPostBtn = document.querySelector('button:has(.ri-add-line)');
+            const createPostDialog = document.getElementById('createPostDialog');
+
+          
+            createPostBtn.addEventListener('click', () => {
+                createPostDialog.classList.remove('hidden');
+                createPostDialog.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            });
+
+            function closeCreatePostDialog() {
+                createPostDialog.classList.remove('flex');
+                createPostDialog.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+        
+            createPostDialog.addEventListener('click', (e) => {
+                if (e.target === createPostDialog) {
+                    closeCreatePostDialog();
+                }
+            });
+
+    
+        </script>
+        <script>
+            function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            const img = preview.querySelector('img');
+            img.src = e.target.result;
+            preview.classList.remove('hidden');
+            preview.classList.add('flex');
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeImage() {
+    const preview = document.getElementById('imagePreview');
+    const input = document.getElementById('imageInput');
+    preview.classList.add('hidden');
+    preview.classList.remove('flex');
+    preview.querySelector('img').src = '';
+    input.value = '';
+}
+
+
+document.getElementById('imageInput').addEventListener('change', previewImage);
+
+</script>
+        <script>
+    function previewImages(event) {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = ''; // Clear existing previews
+        container.classList.remove('hidden');
+
+        const files = event.target.files;
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'relative';
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'w-full h-48 object-cover rounded-lg';
+                
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
+                removeButton.innerHTML = '<i class="ri-close-line"></i>';
+                removeButton.onclick = function() {
+                    previewDiv.remove();
+                    if (container.children.length === 0) {
+                        container.classList.add('hidden');
+                    }
+                };
+                
+                previewDiv.appendChild(img);
+                previewDiv.appendChild(removeButton);
+                container.appendChild(previewDiv);
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeAllImages() {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        document.getElementById('imageInput').value = '';
+    }
+</script>
     </body>
 </html>
