@@ -30,6 +30,7 @@ CREATE TABLE Users (
     UserId INT PRIMARY KEY IDENTITY,
     FullName NVARCHAR(100),
     Email NVARCHAR(100) UNIQUE,
+    Phone NVARCHAR(11), 
     Password NVARCHAR(255),
     GoogleId NVARCHAR(255), 
     RoleId INT,
@@ -95,15 +96,16 @@ CREATE TABLE OrderDetail (
 CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title VARCHAR(255) NOT NULL,
+	LakeName NVARCHAR(255), 
     Description TEXT,
-    Location VARCHAR(255),
+    Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
     ApprovedAt DATETIME,
-    PosterUrl VARCHAR(255), 
+    PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
@@ -252,9 +254,7 @@ INSERT INTO Users (FullName, Email, Password, RoleId, Gender, DateOfBirth, Locat
 VALUES 
 (N'Admin', 'admin@example.com', 'admin123', (SELECT RoleId FROM Role WHERE RoleName = N'admin'), N'Nam', '1990-01-01', N'Hanoi'),
 (N'Event Admin', 'adminevents@example.com', 'event123', (SELECT RoleId FROM Role WHERE RoleName = N'admin events'), N'Nam', '1990-01-01', N'Hanoi');
-SELECT * FROM Users 
-WHERE CreatedAt >= DATEADD(day, -7, GETDATE())  -- user tạo trong 7 ngày gần nhất
-ORDER BY CreatedAt DESC;
+
 
 select * from Users
 
