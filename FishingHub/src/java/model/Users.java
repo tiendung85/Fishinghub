@@ -15,12 +15,20 @@ public class Users {
     private String location;
     private Timestamp createdAt;
 
+<<<<<<< HEAD
     public Users() {
     }
 
     // Constructor (có thể thêm/bớt nếu cần)
     public Users(int userId, String fullName, String email, String password, String googleId,
             int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
+=======
+    public Users() {}
+
+    // Constructor (có thể thêm/bớt nếu cần)
+    public Users(int userId, String fullName, String email, String password, String googleId,
+                 int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -35,7 +43,11 @@ public class Users {
 
     // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
     public Users(String fullName, String email, String password, int roleId,
+<<<<<<< HEAD
             String gender, Date dateOfBirth, String location) {
+=======
+                 String gender, Date dateOfBirth, String location) {
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -52,7 +64,10 @@ public class Users {
     public int getUserId() {
         return userId;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -60,7 +75,10 @@ public class Users {
     public String getFullName() {
         return fullName;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
@@ -68,7 +86,10 @@ public class Users {
     public String getEmail() {
         return email;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setEmail(String email) {
         this.email = email;
     }
@@ -76,7 +97,10 @@ public class Users {
     public String getPassword() {
         return password;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setPassword(String password) {
         this.password = password;
     }
@@ -84,7 +108,10 @@ public class Users {
     public String getGoogleId() {
         return googleId;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setGoogleId(String googleId) {
         this.googleId = googleId;
     }
@@ -92,7 +119,10 @@ public class Users {
     public int getRoleId() {
         return roleId;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
@@ -100,7 +130,10 @@ public class Users {
     public String getGender() {
         return gender;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setGender(String gender) {
         this.gender = gender;
     }
@@ -108,7 +141,10 @@ public class Users {
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
@@ -116,7 +152,10 @@ public class Users {
     public String getLocation() {
         return location;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
     public void setLocation(String location) {
         this.location = location;
     }
@@ -124,6 +163,7 @@ public class Users {
     public Timestamp getCreatedAt() {
         return createdAt;
     }
+<<<<<<< HEAD
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
@@ -136,3 +176,9 @@ public class Users {
     
     
 }
+=======
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+}
+>>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
