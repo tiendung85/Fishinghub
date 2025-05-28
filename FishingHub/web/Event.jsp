@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Event List - Fishing Community</title>
+        <title>Danh sách sự kiện</title>
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,14 +24,14 @@
                 <div class="flex items-center">
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <!-- Header navigation links -->
-                    <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
-                    </nav>
+                     <nav class="hidden md:flex ml-10">
+                <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+            </nav>
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -52,80 +52,78 @@
                         <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
 
-                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Log In</button>
-                    <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Sign Up</button>
+                     <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
                 </div>
             </div>
         </header>
         <!-- Breadcrumb -->
         <div class="bg-gray-50 border-b border-gray-200">
             <div class="container mx-auto px-4 py-3">
-                <div class="flex items-center text-sm">
-                    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
-                    <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
-                        <i class="ri-arrow-right-s-line"></i>
+                <!-- Breadcrumb translation -->
+<div class="flex items-center text-sm">
+    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Trang chủ</a>
+    <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
+        <i class="ri-arrow-right-s-line"></i>
+    </div>
+    <span class="text-primary font-medium">Sự Kiện Nổi Bật</span>
+</div>
+
+                <!-- Title and Search section -->
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Sự Kiện Nổi Bật</h1>
+                    <p class="text-gray-600 mt-2">Tất cả sự kiện câu cá đang diễn ra và sắp tới</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Tìm kiếm sự kiện..."
+                               class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        <div
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
+                            <i class="ri-search-line"></i>
+                        </div>
                     </div>
-                    <span class="text-primary font-medium">Featured Events</span>
+                    <!-- Create Event Button -->
+                    <a href="EventController?action=create_event"
+                       class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
+                        <i class="ri-add-line"></i>
+                        <span>Tạo Sự Kiện</span>
+                    </a>
+                </div>
+
+                <!-- Tabs translation -->
+                <div class="flex border-b border-gray-200">
+                    <button class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả</button>
+                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
+                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Sự Kiện Của Tôi</button>
                 </div>
             </div>
         </div>
         <!-- Main Content -->
         <main class="py-8">
             <div class="container mx-auto px-4">
-                <!-- Title and Search -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Featured Events</h1>
-                        <p class="text-gray-600 mt-2">All ongoing and upcoming fishing events</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <input type="text" placeholder="Search for events..."
-                                   class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                            <div
-                                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
-                                <i class="ri-search-line"></i>
-                            </div>
-                        </div>
-                        <!-- Create Event Button -->
-                        <a href="EventController?action=create_event"
-                           class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
-                            <i class="ri-add-line"></i>
-                            <span>Create Event</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded shadow-sm mb-8">
-                    <!-- Tabs -->
-                    <div class="flex border-b border-gray-200">
-                        <button class="tab-button active px-6 py-4 text-primary font-medium">All Events</button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Saved</button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">My Events</button>
-                    </div>
-                </div>
-                <!-- Filters -->
+                <!-- Filters translation -->
                 <div class="bg-white rounded shadow-sm p-4 mb-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                        <h2 class="text-lg font-medium">Filters</h2>
+                        <h2 class="text-lg font-medium">Bộ Lọc</h2>
                         <button class="text-primary text-sm flex items-center">
                             <div class="w-5 h-5 flex items-center justify-center">
                                 <i class="ri-refresh-line"></i>
                             </div>
-                            <span class="ml-1">Reset Filters</span>
+                            <span class="ml-1">Đặt Lại</span>
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Status -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Trạng Thái</label>
                             <div class="relative">
                                 <select
                                     class="w-full pl-4 pr-10 py-2 rounded-button appearance-none bg-gray-50 border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                    <option value="">All</option>
-                                    <option value="upcoming">Upcoming</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="completed">Completed</option>
+                                    <option value="">Tất Cả</option>
+                                    <option value="upcoming">Sắp Diễn Ra</option>
+                                    <option value="ongoing">Đang Diễn Ra</option>
+                                    <option value="completed">Đã Kết Thúc</option>
                                 </select>
                                 <div
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 pointer-events-none">
@@ -135,14 +133,14 @@
                         </div>
                         <!-- Region -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Khu Vực</label>
                             <div class="relative">
                                 <select
                                     class="w-full pl-4 pr-10 py-2 rounded-button appearance-none bg-gray-50 border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                    <option value="">All</option>
-                                    <option value="north">North</option>
-                                    <option value="central">Central</option>
-                                    <option value="south">South</option>
+                                    <option value="">Tất Cả</option>
+                                    <option value="north">Miền Bắc</option>
+                                    <option value="central">Miền Trung</option>
+                                    <option value="south">Miền Nam</option>
                                 </select>
                                 <div
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 pointer-events-none">
@@ -152,26 +150,26 @@
                         </div>
                         <!-- From Date -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Từ Ngày</label>
                             <div class="relative date-filter">
                                 <div class="w-full pl-4 pr-10 py-2 rounded-button bg-gray-50 text-sm flex items-center">
                                     <div class="w-5 h-5 flex items-center justify-center text-gray-400 mr-2">
                                         <i class="ri-calendar-line"></i>
                                     </div>
-                                    <span class="text-gray-500">Select Date</span>
+                                    <span class="text-gray-500">Chọn Ngày</span>
                                 </div>
                                 <input type="date" class="w-full h-full">
                             </div>
                         </div>
                         <!-- To Date -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Đến Ngày</label>
                             <div class="relative date-filter">
                                 <div class="w-full pl-4 pr-10 py-2 rounded-button bg-gray-50 text-sm flex items-center">
                                     <div class="w-5 h-5 flex items-center justify-center text-gray-400 mr-2">
                                         <i class="ri-calendar-line"></i>
                                     </div>
-                                    <span class="text-gray-500">Select Date</span>
+                                    <span class="text-gray-500">Chọn Ngày</span>
                                 </div>
                                 <input type="date" class="w-full h-full">
                             </div>
@@ -185,19 +183,13 @@
                 <!-- Sorting and View Options -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div class="flex items-center">
-                        <span class="text-gray-600 text-sm mr-2">Sort by:</span>
-                        <div class="relative">
-                            <select
-                                class="pl-4 pr-10 py-2 rounded-button appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                <option value="newest">Newest</option>
-                                <option value="popular">Most Popular</option>
-                                <option value="upcoming">Upcoming</option>
-                            </select>
-                            <div
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 pointer-events-none">
-                                <i class="ri-arrow-down-s-line"></i>
-                            </div>
-                        </div>
+                        <!-- Sort by translation -->
+<span class="text-gray-600 text-sm mr-2">Sắp xếp theo:</span>
+<select class="pl-4 pr-10 py-2 rounded-button appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+    <option value="newest">Mới Nhất</option>
+    <option value="popular">Phổ Biến Nhất</option>
+    <option value="upcoming">Sắp Diễn Ra</option>
+</select>
                     </div>
                 </div>
                 <!-- Events List -->
@@ -229,7 +221,8 @@
                                     <span class="ml-1 text-sm text-gray-500">120/150 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 2 -->
@@ -259,7 +252,8 @@
                                     <span class="ml-1 text-sm text-gray-500">25/30 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 3 -->
@@ -289,7 +283,8 @@
                                     <span class="ml-1 text-sm text-gray-500">85/200 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 4 -->
@@ -319,7 +314,8 @@
                                     <span class="ml-1 text-sm text-gray-500">50/100 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 5 -->
@@ -349,7 +345,8 @@
                                     <span class="ml-1 text-sm text-gray-500">35/60 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 6 -->
@@ -379,7 +376,8 @@
                                     <span class="ml-1 text-sm text-gray-500">15/30 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 7 -->
@@ -409,7 +407,8 @@
                                     <span class="ml-1 text-sm text-gray-500">18/25 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 8 -->
@@ -439,7 +438,8 @@
                                     <span class="ml-1 text-sm text-gray-500">30/40 people</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Event 9 -->
@@ -469,7 +469,8 @@
                                     <span class="ml-1 text-sm text-gray-500">Unlimited</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                     <!-- Duplicate Event 9 (as in original code) -->
@@ -499,13 +500,14 @@
                                     <span class="ml-1 text-sm text-gray-500">Unlimited</span>
                                 </div>
                             </div>
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Register to Join</button>
+                            <!-- Event card button translation -->
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
                 </div>
                 <!-- Pagination -->
                 <div class="flex justify-between items-center">
-                    <div class="text-sm text-gray-600">Showing 1-9 of 42 events</div>
+                    <div class="text-sm text-gray-600">Hiển thị 1-9 trong số 42 sự kiện</div>
                     <div class="flex items-center gap-2">
                         <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
                             <i class="ri-arrow-left-s-line"></i>
@@ -524,7 +526,7 @@
                         </button>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-sm text-gray-600">Show:</span>
+                        <span class="text-sm text-gray-600">Hiển thị:</span>
                         <div class="relative">
                             <select
                                 class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">

@@ -1,11 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Fishing Products | Fishing Community</title>
+        <title>Sản Phẩm Câu Cá</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -172,53 +172,13 @@
         </style>
     </head>
     <body>
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <!-- Header navigation links -->
-                    <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
-                    </nav>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <!-- Cart -->
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                            >3</span
-                        >
-                    </div>
-                    <div class="relative">
-                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
-                            <i class="ri-notification-3-line text-gray-600"></i>
-                        </div>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
-                    </div>
-
-                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Login</button>
-                    <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Register</button>
-                </div>
-            </div>
-        </header>
-
         <!-- Breadcrumb -->
         <div class="bg-white border-b">
             <div class="container mx-auto px-4 py-3">
                 <div class="flex items-center text-sm">
-                    <a href="Home.jsp" class="text-gray-500 hover:text-primary">Home</a>
+                    <a href="Home.jsp" class="text-gray-500 hover:text-primary">Trang Chủ</a>
                     <span class="mx-2 text-gray-400">/</span>
-                    <span class="text-primary font-medium">Products</span>
+                    <span class="text-primary font-medium">Sản Phẩm</span>
                 </div>
             </div>
         </div>
@@ -233,9 +193,9 @@
                         <div class="relative">
                             <input
                                 type="text"
-                                placeholder="Search products..."
+                                placeholder="Tìm kiếm sản phẩm..."
                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                                />
+                            />
                             <div
                                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none w-10 h-full"
                                 >
@@ -246,7 +206,7 @@
 
                     <!-- Brand Filter -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="font-bold text-gray-800 mb-3">Brands</h3>
+                        <h3 class="font-bold text-gray-800 mb-3">Thương Hiệu</h3>
                         <ul class="space-y-2">
                             <li class="flex items-center">
                                 <div class="custom-checkbox checked" id="brand1"></div>
@@ -274,14 +234,11 @@
 
                     <!-- Rating Filter -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="font-bold text-gray-800 mb-3">Ratings</h3>
+                        <h3 class="font-bold text-gray-800 mb-3">Đánh Giá</h3>
                         <ul class="space-y-2">
                             <li class="flex items-center">
                                 <div class="custom-checkbox checked" id="rating5"></div>
-                                <label
-                                    for="rating5"
-                                    class="ml-2 flex items-center cursor-pointer"
-                                    >
+                                <label for="rating5" class="ml-2 flex items-center cursor-pointer">
                                     <div class="flex text-yellow-400">
                                         <i class="ri-star-fill"></i>
                                         <i class="ri-star-fill"></i>
@@ -289,7 +246,7 @@
                                         <i class="ri-star-fill"></i>
                                         <i class="ri-star-fill"></i>
                                     </div>
-                                    <span class="ml-1 text-gray-700">5 stars</span>
+                                    <span class="ml-1 text-gray-700">5 sao</span>
                                 </label>
                                 <span class="ml-auto text-gray-500 text-sm">(142)</span>
                             </li>
@@ -306,7 +263,7 @@
                                         <i class="ri-star-fill"></i>
                                         <i class="ri-star-line"></i>
                                     </div>
-                                    <span class="ml-1 text-gray-700">4 stars</span>
+                                    <span class="ml-1 text-gray-700">4 sao</span>
                                 </label>
                                 <span class="ml-auto text-gray-500 text-sm">(287)</span>
                             </li>
@@ -323,7 +280,7 @@
                                         <i class="ri-star-line"></i>
                                         <i class="ri-star-line"></i>
                                     </div>
-                                    <span class="ml-1 text-gray-700">3 stars</span>
+                                    <span class="ml-1 text-gray-700">3 sao</span>
                                 </label>
                                 <span class="ml-auto text-gray-500 text-sm">(412)</span>
                             </li>
@@ -331,10 +288,8 @@
                     </div>
 
                     <!-- Reset Filters -->
-                    <button
-                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
-                        >
-                        <i class="ri-refresh-line mr-2"></i>Reset Filters
+                    <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-button font-medium transition duration-300 whitespace-nowrap">
+                        <i class="ri-refresh-line mr-2"></i>Đặt Lại Bộ Lọc
                     </button>
                 </div>
 
@@ -343,7 +298,7 @@
                     <!-- Popular Categories -->
                     <div class="mb-8">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">
-                            Popular Categories
+                            Danh Mục Phổ Biến
                         </h2>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             <!-- Category 1 -->
@@ -358,8 +313,8 @@
                                         />
                                 </div>
                                 <div class="p-3 text-center">
-                                    <h3 class="font-medium text-gray-800">Fishing Rods</h3>
-                                    <p class="text-sm text-gray-500">124 products</p>
+                                    <h3 class="font-medium text-gray-800">Cần Câu</h3>
+                                    <p class="text-sm text-gray-500">124 sản phẩm</p>
                                 </div>
                             </div>
                             <!-- Category 2 -->
@@ -374,8 +329,8 @@
                                         />
                                 </div>
                                 <div class="p-3 text-center">
-                                    <h3 class="font-medium text-gray-800">Fishing Reels</h3>
-                                    <p class="text-sm text-gray-500">98 products</p>
+                                    <h3 class="font-medium text-gray-800">Mồi Câu</h3>
+                                    <p class="text-sm text-gray-500">98 sản phẩm</p>
                                 </div>
                             </div>
                             <!-- Category 3 -->
@@ -390,8 +345,8 @@
                                         />
                                 </div>
                                 <div class="p-3 text-center">
-                                    <h3 class="font-medium text-gray-800">Fishing Lures</h3>
-                                    <p class="text-sm text-gray-500">156 products</p>
+                                    <h3 class="font-medium text-gray-800">Lure Giả</h3>
+                                    <p class="text-sm text-gray-500">156 sản phẩm</p>
                                 </div>
                             </div>
                         </div>
@@ -404,16 +359,14 @@
                             >
                             <div>
                                 <h1 class="text-xl font-bold text-gray-800">
-                                    Fishing Products
+                                    Sản Phẩm Câu Cá
                                 </h1>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Products Grid -->
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
-                        >
+                    <!-- Product Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                         <!-- Product 1 -->
                         <div
                             class="bg-white rounded-lg shadow-sm overflow-hidden product-card transition duration-300"
@@ -452,7 +405,7 @@
                                 <button
                                     class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
                                     >
-                                    <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
+                                    <i class="ri-shopping-cart-add-line mr-2"></i>Thêm Vào Giỏ
                                 </button>
                             </div>
                         </div>
@@ -494,7 +447,7 @@
                                 <button
                                     class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
                                     >
-                                    <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
+                                    <i class="ri-shopping-cart-add-line mr-2"></i>Thêm Vào Giỏ
                                 </button>
                             </div>
                         </div>
@@ -536,7 +489,7 @@
                                 <button
                                     class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
                                     >
-                                    <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
+                                    <i class="ri-shopping-cart-add-line mr-2"></i>Thêm Vào Giỏ
                                 </button>
                             </div>
                         </div>
@@ -578,7 +531,7 @@
                                 <button
                                     class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
                                     >
-                                    <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
+                                    <i class="ri-shopping-cart-add-line mr-2"></i>Thêm Vào Giỏ
                                 </button>
                             </div>
                         </div>
@@ -652,29 +605,29 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                        <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Newsfeed</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Store</a></li>
-                            <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Achievements</a></li>
+                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
+                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
+                            <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
+                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Support</h3>
+                        <h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Support Center</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Terms of Use</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Return Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Trung Tâm Hỗ Trợ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Bảo Mật</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Điều Khoản Sử Dụng</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Đổi Trả</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Câu Hỏi Thường Gặp</a></li>
                         </ul>
                     </div>
                     <div>
                         <div class="mt-4">
-                            <h4 class="text-sm font-medium mb-2">Payment Methods</h4>
+                            <h4 class="text-sm font-medium mb-2">Phương Thức Thanh Toán</h4>
                             <div class="flex space-x-3">
                                 <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
                                     <i class="ri-visa-fill text-blue-800 text-lg"></i>
@@ -693,7 +646,7 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-700 pt-6">
-                    <p class="text-center text-gray-500 text-sm">© 2025 Vietnam Fishing Community. All rights reserved.</p>
+                    <p class="text-center text-gray-500 text-sm">© 2025 Cộng Đồng Câu Cá Việt Nam. Đã đăng ký bản quyền.</p>
                 </div>
             </div>
         </footer>

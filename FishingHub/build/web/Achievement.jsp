@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Personal Achievements</title>
+        <title>Thành tựu cá nhân</title>
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#64B5F6'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,12 +22,12 @@
                 <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                 <!-- Header navigation links -->
                 <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
+                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang chủ</a>
+                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự kiện</a>
+                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng tin</a>
+                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa hàng</a>
+                        <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến thức</a>
+                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp hạng</a>
                     </nav>
             </div>
 
@@ -49,8 +49,8 @@
                     <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                 </div>
 
-                <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Log In</button>
-                <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Sign Up</button>
+                <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng nhập</button>
+                <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng ký</button>
             </div>
         </div>
     </header>
@@ -58,9 +58,9 @@
     <div class="bg-white border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center text-sm">
-                <a href="Home.jsp" class="text-gray-500 hover:text-primary">Home</a>
+                <a href="Home.jsp" class="text-gray-500 hover:text-primary">Trang chủ</a>
                 <span class="mx-2 text-gray-400">/</span>
-                <span class="text-primary font-medium">Achievements</span>
+                <span class="text-primary font-medium">Thành tích</span>
             </div>
         </div>
     </div>
@@ -71,18 +71,18 @@
       <div class="tab-content active" id="my-achievements">
          <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">My Achievements</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Thành tích của tôi</h2>
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center space-x-2">
-                        <span class="text-gray-700">Total Points:</span>
+                        <span class="text-gray-700">Tổng điểm:</span>
                         <span class="font-bold text-primary">325</span>
                     </div>
                     <div class="relative">
                         <select class="appearance-none bg-white border border-gray-300 rounded-button py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer">
-                            <option>Newest</option>
-                            <option>Oldest</option>
-                            <option>Highest Points</option>
-                            <option>Most Likes</option>
+                            <option>Mới nhất</option>
+                            <option>Cũ nhất</option>
+                            <option>Điểm cao nhất</option>
+                            <option>Lượt thích nhiều nhất</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <i class="ri-arrow-down-s-line text-gray-500"></i>
@@ -227,26 +227,26 @@
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center">
             <div class="w-1/3">
-                <p class="text-sm text-gray-500">© 2025 Personal Achievements</p>
+                <p class="text-sm text-gray-500">© 2025 Thành tích cá nhân</p>
             </div>
             <div class="w-1/3 flex justify-center">
                 <nav class="flex bg-gray-100 rounded-full p-1">
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium whitespace-nowrap transition-colors active bg-white text-primary" data-tab="post-achievement">
                         <div class="flex items-center justify-center">
                             <i class="ri-add-circle-line mr-1"></i>
-                            <span>Post</span>
+                            <span>Đăng bài</span>
                         </div>
                     </button>
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium whitespace-nowrap transition-colors" data-tab="my-achievements">
                         <div class="flex items-center justify-center">
                             <i class="ri-trophy-line mr-1"></i>
-                            <span>Achievements</span>
+                            <span>Thành tích</span>
                         </div>
                     </button>
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium whitespace-nowrap transition-colors" data-tab="leaderboard">
                         <div class="flex items-center justify-center">
                             <i class="ri-bar-chart-line mr-1"></i>
-                            <span>Leaderboard</span>
+                            <span>Bảng xếp hạng</span>
                         </div>
                     </button>
                 </nav>

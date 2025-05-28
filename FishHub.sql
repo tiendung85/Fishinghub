@@ -1,14 +1,14 @@
-﻿-- Bước 1: Chuyển sang database khác (như master)
+﻿
 USE master;
 GO
 
--- Bước 2: Ngắt kết nối tất cả các phiên đang dùng database FishingHub
+
 ALTER DATABASE FishingHub
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
--- Bước 3: Xóa database
+
 DROP DATABASE FishingHub;
 GO
 
@@ -16,7 +16,7 @@ CREATE DATABASE FishingHub;
 GO
 USE FishingHub;
 GO
-DROP DATABASE FishingHub
+
 -- Roles
 CREATE TABLE Role (
     RoleId INT PRIMARY KEY IDENTITY,
@@ -171,7 +171,7 @@ CREATE TABLE FishSpecies (
     Behavior NVARCHAR(MAX),
     Tips NVARCHAR(MAX)
 );
-DELETE FROM FishSpecies;
+
 
 DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
 INSERT INTO FishSpecies (CommonName, ScientificName, Description, ImageUrl, Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques, DifficultyLevel, AverageWeightKg, Length, Habitat, Behavior, Tips)
@@ -240,26 +240,4 @@ CREATE TABLE Notification (
 
 
 
-INSERT INTO Role (RoleName)
-VALUES 
-('User');
 
-INSERT INTO Users (FullName, Email, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
-VALUES 
-(N'Nguyễn Văn A', 'nguyenvana@example.com', 'hashedpassword123', NULL, 1, N'Nam', '1995-04-12', N'Hồ Chí Minh'),
-(N'Lê Thị B', 'lethib@example.com', 'hashedpassword456', NULL, 1, N'Nữ', '1998-08-22', N'Hà Nội');
-
-
-INSERT INTO Users (FullName, Email, Password, RoleId, Gender, DateOfBirth, Location)
-VALUES 
-(N'Admin', 'admin@example.com', 'admin123', (SELECT RoleId FROM Role WHERE RoleName = N'admin'), N'Nam', '1990-01-01', N'Hanoi'),
-(N'Event Admin', 'adminevents@example.com', 'event123', (SELECT RoleId FROM Role WHERE RoleName = N'admin events'), N'Nam', '1990-01-01', N'Hanoi');
-
-
-select * from Users
-
-select * from Post
-
-select * from Image
-
-select * from Event

@@ -7,106 +7,105 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>News Feed - Fishing Community</title>
-        <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-        <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-          <link rel="stylesheet" href="assets/css/style.css">
-    </head>
-    <body>
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <!-- Header navigation links -->
-                    <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
-                    </nav>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <!-- Cart -->
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                            >3</span
-                        >
-                    </div>
-                    <div class="relative">
-                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
-                            <i class="ri-notification-3-line text-gray-600"></i>
-                        </div>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
-                    </div>
-
-                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Sign In</button>
-                    <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Sign Up</button>
-                </div>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Tin</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+      <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
+                <!-- Header navigation links -->
+                 <nav class="hidden md:flex ml-10">
+            <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+            <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+            <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+            <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+            <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+            <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+        </nav>
             </div>
-        </header>
 
-        <!-- Breadcrumb -->
-        <div class="bg-gray-50 border-b border-gray-200">
-            <div class="container mx-auto px-4 py-3">
-                <div class="flex items-center text-sm">
-                    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
-                    <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
-                        <i class="ri-arrow-right-s-line"></i>
-                    </div>
-                    <span class="text-primary font-medium">News Feed</span>
+            <div class="flex items-center space-x-4">
+                <!-- Cart -->
+                <div class="relative w-10 h-10 flex items-center justify-center">
+                    <button class="text-gray-700 hover:text-primary">
+                        <i class="ri-shopping-cart-2-line text-xl"></i>
+                    </button>
+                    <span
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
+                        >3</span
+                    >
                 </div>
+                <div class="relative">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
+                        <i class="ri-notification-3-line text-gray-600"></i>
+                    </div>
+                    <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
+                </div>
+
+                <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+        <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
             </div>
         </div>
+    </header>
 
-        <!-- Main Content -->
-        <main class="py-8">
-            <div class="container mx-auto px-4">
-                <!-- Title and Search -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Community News Feed</h1>
-                        <p class="text-gray-600 mt-2">Share experiences, news, and discussions about fishing</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <input type="text" placeholder="Search posts..." class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
-                                <i class="ri-search-line"></i>
-                            </div>
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center text-sm">
+                <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Trang Chủ</a>
+                <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
+                    <i class="ri-arrow-right-s-line"></i>
+                </div>
+                <span class="text-primary font-medium">Bảng Tin</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-8">
+        <div class="container mx-auto px-4">
+            <!-- Title and Search -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Bảng Tin Cộng Đồng</h1>
+                    <p class="text-gray-600 mt-2">Chia sẻ kinh nghiệm, tin tức và thảo luận về câu cá</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Tìm kiếm bài viết..." class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
+                            <i class="ri-search-line"></i>
                         </div>
-                        <button class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2" onclick="openCreatePostDialog()">
-                            <i class="ri-add-line"></i>
-                            <span>Create New Post</span>
-                        </button>
                     </div>
+                    <button class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2" onclick="openCreatePostDialog()">
+                        <i class="ri-add-line"></i>
+                        <span>Tạo Bài Viết Mới</span>
+                    </button>
                 </div>
+            </div>
 
-                <!-- Filters and Tabs -->
-                <div class="bg-white rounded shadow-sm mb-8">
-                    <!-- Tabs -->
-                    <div class="flex border-b border-gray-200">
-                        <button class="tab-button active px-6 py-4 text-primary font-medium">All Posts</button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Saved</button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">My Posts</button>
-                    </div>
+            <!-- Filters and Tabs -->
+            <div class="bg-white rounded shadow-sm mb-8">
+                <div class="flex border-b border-gray-200">
+                    <button class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả Bài Viết</button>
+                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
+                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>
                 </div>
+            </div>
 
  <!-- Posts List -->
                 <div class="space-y-6">
@@ -165,11 +164,11 @@
             <div class="flex items-center gap-4">
                 <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
                     <i class="ri-heart-line text-xl"></i>
-                    <span>Like</span>
+                    <span>Thích</span>
                 </button>
                 <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
                     <i class="ri-chat-1-line text-xl"></i>
-                    <span>Comment</span>
+                    <span>Bình Luận</span>
                 </button>
                
             </div>
@@ -184,7 +183,9 @@
                 
                 <!-- Load More & Pagination -->
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-                    <button class="bg-white text-primary border border-primary px-6 py-2 rounded-button whitespace-nowrap mb-4 md:mb-0 w-full md:w-auto">Load More Posts</button>
+                    <button class="bg-white text-primary border border-primary px-6 py-2 rounded-button whitespace-nowrap mb-4 md:mb-0 w-full md:w-auto">
+                        Xem Thêm Bài Viết
+                    </button>
 
                     <div class="flex items-center gap-2">
                         <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
@@ -203,7 +204,7 @@
 
                 <!-- Featured Members -->
                 <div class="bg-white rounded shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-bold mb-4">Active Members</h2>
+                    <h2 class="text-xl font-bold mb-4">Thành Viên Tích Cực</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <!-- Member 1 -->
                         <div class="flex flex-col items-center">
@@ -243,80 +244,79 @@
         </main>
 
         <!-- Create Post Dialog -->
-<div id="createPostDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-    <div class="bg-white rounded-lg w-full max-w-2xl mx-4">
-        <!-- Dialog Header -->
-        <div class="flex items-center justify-between p-4 border-b">
-            <h3 class="text-xl font-semibold">Create New Post</h3>
-            <button onclick="closeCreatePostDialog()" class="text-gray-500 hover:text-gray-700">
-                <i class="ri-close-line text-2xl"></i>
-            </button>
-        </div>
-        
-        <!-- Dialog Content -->
-        <form action="PostServlet" method="POST" enctype="multipart/form-data" class="p-4">
-             <!-- User Info -->
+        <div id="createPostDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+            <div class="bg-white rounded-lg w-full max-w-2xl mx-4">
+                <!-- Dialog Header -->
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-xl font-semibold">Tạo Bài Viết Mới</h3>
+                    <button onclick="closeCreatePostDialog()" class="text-gray-500 hover:text-gray-700">
+                        <i class="ri-close-line text-2xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Dialog Content -->
+                <form action="PostServlet" method="POST" enctype="multipart/form-data" class="p-4">
+                     <!-- User Info -->
      <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 rounded-full bg-gray-200"></div>
         <div>
-            <p class="font-medium">Your Name</p>
+            <p class="font-medium">Tên của bạn</p>
             <input type="text" 
                    name="topic"
-                   placeholder="Add a topic..." 
+                   placeholder="Thêm chủ đề..." 
                    class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
                    maxlength="50">
         </div>
     </div>
-            <!-- Post Content -->
-            <div class="mb-4">
-                <textarea name="title" 
-                          placeholder="What's your title?" 
-                          class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm mb-3"
-                          rows="1"></textarea>
-                <textarea name="content" 
-                          placeholder="What's new?" 
-                          class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                          rows="4"></textarea>
-            </div>
+                    <!-- Post Content -->
+                    <div class="mb-4">
+                        <textarea name="title" 
+                                  placeholder="Tiêu đề bài viết là gì?" 
+                                  class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm mb-3"
+                                  rows="1"></textarea>
+                        <textarea name="content" 
+                                  placeholder="Bạn muốn chia sẻ điều gì?" 
+                                  class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
+                                  rows="4"></textarea>
+                    </div>
 
-           
-           <!-- Hidden file input and preview -->
-<div class="mb-4">
-    <input type="file" 
-           id="imageInput" 
-           name="images" 
-           accept="image/*" 
-           multiple
-           class="hidden"
-           onchange="previewImages(event)">
+                   
+                   <!-- Hidden file input and preview -->
+    <div class="mb-4">
+        <input type="file" 
+               id="imageInput" 
+               name="images" 
+               accept="image/*" 
+               multiple
+               class="hidden"
+               onchange="previewImages(event)">
 
-    <div id="imagePreviewContainer" class="grid grid-cols-2 gap-4 mb-4 hidden">
-        <!-- Image previews will be added here -->
+        <div id="imagePreviewContainer" class="grid grid-cols-2 gap-4 mb-4 hidden">
+            <!-- Image previews will be added here -->
+        </div>
     </div>
-</div>
 
 
-            <!-- Post Actions -->
-            <div class="flex items-center gap-3 border-t border-b py-3">
-                <button type="button" 
-                        onclick="document.getElementById('imageInput').click()" 
-                        class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
-                    <i class="ri-image-line text-xl text-gray-600"></i>
-                    <span class="text-sm text-gray-600">Photo</span>
-                </button>
-              
+                    <!-- Post Actions -->
+                    <div class="flex items-center gap-3 border-t border-b py-3">
+                        <button type="button" 
+                                onclick="document.getElementById('imageInput').click()" 
+                                class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
+                            <i class="ri-image-line text-xl text-gray-600"></i>
+                            <span class="text-sm text-gray-600">Photo</span>
+                        </button>
+                      
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end mt-4">
+                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-primary/90">
+                            Đăng Bài
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <!-- Submit Button -->
-            <div class="flex justify-end mt-4">
-                <button type="submit" 
-                        class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-primary/90">
-                    Post
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white pt-12 pb-6">
@@ -490,5 +490,5 @@ document.getElementById('imageInput').addEventListener('change', previewImage);
         document.getElementById('imageInput').value = '';
     }
 </script>
-    </body>
+</body>
 </html>

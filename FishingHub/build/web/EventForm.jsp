@@ -11,7 +11,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create Event</title>
+        <title>Tạo Sự Kiện</title>
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,17 +35,14 @@
                 <div class="flex items-center">
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <!-- Header navigation links -->
-                    <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News
-                            Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp"
-                           class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp"
-                           class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
-                    </nav>
+                  <nav class="hidden md:flex ml-10">
+                <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+            </nav>
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -65,10 +62,8 @@
                             class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
 
-                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Log In</button>
-                    <button
-                        class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Sign
-                        Up</button>
+                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
                 </div>
             </div>
         </header>
@@ -86,61 +81,69 @@
                 </div>
                 <% } %>
                 <input type="hidden" name="action" value="add">
-                <h1 class="text-3xl font-bold text-center text-primary">Create Event</h1>
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700">Event Title:</label>
-                    <input type="text" id="title" name="title" placeholder=" Enter event title" required
-                           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
-                </div>
+                <!-- Form title -->
+<h1 class="text-3xl font-bold text-center text-primary">Tạo Sự Kiện</h1>
 
-                <div>
-                    <label for="description"
-                           class="block text-sm font-medium text-gray-700">Description:</label>
-                    <textarea id="description" name="description" placeholder=" Enter event description"
-                              required rows="5"
-                              class="mt-1 block w-full rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary"></textarea>
-                </div>
+<!-- Form fields -->
+<div>
+    <label for="title" class="block text-sm font-medium text-gray-700">Tên Sự Kiện:</label>
+    <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" required
+           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
+</div>
 
-                <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700">Location:</label>
-                    <input type="text" id="location" name="location" placeholder=" Enter event location"
-                           required
-                           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
-                </div>
+<div>
+    <label for="description" class="block text-sm font-medium text-gray-700">Mô Tả:</label>
+    <textarea id="description" name="description" placeholder="Nhập mô tả sự kiện"
+              required rows="5"
+              class="mt-1 block w-full rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary"></textarea>
+</div>
 
-                <div>
-                    <label for="startTime" class="block text-sm font-medium text-gray-700">Start
-                        Time:</label>
-                    <input type="datetime-local" id="startTime" name="startTime" required
-                           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
-                </div>
+<div>
+    <label for="location" class="block text-sm font-medium text-gray-700">Địa Điểm:</label>
+    <input type="text" id="location" name="location" placeholder="Nhập địa điểm"
+           required
+           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
+</div>
 
-                <div>
-                    <label for="endTime" class="block text-sm font-medium text-gray-700">End Time:</label>
-                    <input type="datetime-local" id="endTime" name="endTime" required
-                           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary ">
-                </div>
+<div>
+    <label for="startTime" class="block text-sm font-medium text-gray-700">Thời Gian Bắt Đầu:</label>
+    <input type="datetime-local" id="startTime" name="startTime" required
+           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
+</div>
 
-                <div>
-                    <label for="maxParticipants" class="block text-sm font-medium text-gray-700">Max
-                        Participants:</label>
-                    <input type="number" id="maxParticipants" name="maxParticipants" min="1"
-                           placeholder=" Enter max participants" required
-                           class="mt-1 block w-full h-12 rounded-md border-2  shadow-sm focus:border-primary focus:ring-primary">
-                </div>
+<div>
+    <label for="endTime" class="block text-sm font-medium text-gray-700">Thời Gian Kết Thúc:</label>
+    <input type="datetime-local" id="endTime" name="endTime" required
+           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
+</div>
 
-                <div>
-                    <label for="posterFile" class="block text-sm font-medium text-gray-700">Poster
-                        Image:</label>
-                    <input type="file" id="posterFile" name="posterFile" accept="image/*"
-                           class="mt-1 block w-full h-12 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-medium file:bg-gray-50 file:text-primary hover:file:bg-gray-100">
-                </div>
+<div>
+    <label for="maxParticipants" class="block text-sm font-medium text-gray-700">Số Người Tham Gia Tối Đa:</label>
+    <input type="number" id="maxParticipants" name="maxParticipants" min="1"
+           placeholder="Nhập số người tham gia tối đa" required
+           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
+</div>
 
-                <div class="flex justify-end">
-                    <button type="submit"
-                            class="bg-primary text-white px-6 py-3 rounded-button hover:bg-blue-600">Create
-                        Event</button>
-                </div>
+<div>
+    <label for="posterFile" class="block text-sm font-medium text-gray-700">Ảnh Poster:</label>
+    <input type="file" id="posterFile" name="posterFile" accept="image/*"
+           class="mt-1 block w-full h-12 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-medium file:bg-gray-50 file:text-primary hover:file:bg-gray-100">
+</div>
+
+<!-- Submit button -->
+<div class="flex justify-end">
+    <button type="submit" class="bg-primary text-white px-6 py-3 rounded-button hover:bg-blue-600">
+        Tạo Sự Kiện
+    </button>
+</div>
+
+<!-- Footer links -->
+<h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
+<h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
+<h4 class="text-sm font-medium mb-2">Phương Thức Thanh Toán</h4>
+
+<!-- Copyright -->
+<p class="text-center text-gray-500 text-sm">© 2025 Cộng Đồng Câu Cá Việt Nam. Đã đăng ký bản quyền.</p>
             </form>
         </div>
 

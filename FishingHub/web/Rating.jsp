@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Achievements</title>
+    <title>Thành Tích Cá Nhân</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script>
         tailwind.config = {
@@ -42,14 +42,14 @@
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center">
                 <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-               <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
-                    </nav>
+          <nav class="hidden md:flex ml-10">
+                <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+            </nav>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="relative w-10 h-10 flex items-center justify-center">
@@ -64,19 +64,19 @@
                     </div>
                     <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                 </div>
-                <button class="bg-primary text-white px-4 py-2 rounded-button">Login</button>
-                <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button">Sign Up</button>
+                 <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
             </div>
         </div>
     </header>
 
     <!-- Breadcrumb -->
-    <nav class="bg-white border-b" aria-label="Breadcrumb">
+    <nav class="bg-white border-b" aria-label="Điều hướng">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center text-sm">
-                <a href="Home.jsp" class="text-gray-500 hover:text-primary">Home</a>
+                <a href="Home.jsp" class="text-gray-500 hover:text-primary">Trang Chủ</a>
                 <span class="mx-2 text-gray-400">/</span>
-                <span class="text-primary font-medium" aria-current="page">Achievements</span>
+                <span class="text-primary font-medium" aria-current="page">Thành Tích</span>
             </div>
         </div>
     </nav>
@@ -86,7 +86,7 @@
         <section class="tab-content active" id="leaderboard" aria-labelledby="leaderboard-title">
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 id="leaderboard-title" class="text-2xl font-bold text-gray-800 mb-8 text-center">Leaderboard</h2>
+                    <h2 id="leaderboard-title" class="text-2xl font-bold text-gray-800 mb-8 text-center">Bảng Xếp Hạng</h2>
                     <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-10">
                         <!-- Rank 2 -->
                         <div class="top-user text-center order-2 md:order-1">
@@ -138,11 +138,11 @@
                         <table class="w-full bg-gray-50 rounded-t-lg">
                             <thead>
                                 <tr class="text-gray-600 font-medium">
-                                    <th class="w-12 text-center py-3 px-4">#</th>
+                                    <th class="w-12 text-center py-3 px-4">Hạng</th>
                                     <th class="w-12"></th>
-                                    <th class="flex-1 text-left py-3 px-4">User</th>
-                                    <th class="w-24 text-center py-3 px-4">Points</th>
-                                    <th class="w-24 text-center py-3 px-4 hidden md:table-cell">Achievements</th>
+                                    <th class="flex-1 text-left py-3 px-4">Người Dùng</th>
+                                    <th class="w-24 text-center py-3 px-4">Điểm</th>
+                                    <th class="w-24 text-center py-3 px-4 hidden md:table-cell">Thành Tích</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -179,9 +179,10 @@
                             </tbody>
                         </table>
                     </div>
+                    
                     <div class="mt-8 text-center">
-                        <button class="text-primary font-medium hover:text-primary-dark flex items-center justify-center mx-auto gap-1" aria-label="View more users in the leaderboard">
-                            <span>View More</span>
+                        <button class="text-primary font-medium hover:text-primary-dark flex items-center justify-center mx-auto gap-1" aria-label="Xem thêm người dùng trong bảng xếp hạng">
+                            <span>Xem Thêm</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -196,28 +197,28 @@
     <footer class="bg-white border-t border-gray-200 py-4">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-sm text-gray-500">© 2025 Personal Achievements</div>
+                <div class="text-sm text-gray-500">© 2025 Thành Tích Cá Nhân</div>
                 <nav class="flex bg-gray-100 rounded-full p-1 w-full md:w-auto">
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors active bg-white text-primary" data-tab="post-achievement">
                         <div class="flex items-center justify-center">
                             <i class="ri-add-circle-line mr-1"></i>
-                            <span>Post</span>
+                            <span>Đăng Bài</span>
                         </div>
                     </button>
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors" data-tab="my-achievements">
                         <div class="flex items-center justify-center">
                             <i class="ri-trophy-line mr-1"></i>
-                            <span>Achievements</span>
+                            <span>Thành Tích</span>
                         </div>
                     </button>
                     <button class="tab-button flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors active bg-white text-primary" data-tab="leaderboard">
                         <div class="flex items-center justify-center">
                             <i class="ri-bar-chart-line mr-1"></i>
-                            <span>Rankings</span>
+                            <span>Xếp Hạng</span>
                         </div>
                     </button>
                 </nav>
-                <button class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center" aria-label="Settings">
+                <button class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center" aria-label="Cài Đặt">
                     <i class="ri-settings-3-line"></i>
                 </button>
             </div>
