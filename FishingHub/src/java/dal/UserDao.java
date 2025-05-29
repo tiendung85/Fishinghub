@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UserDBContext extends DBConnect {
+public class UserDao extends DBConnect {
 
     public ArrayList<Users> list() {
         ArrayList<Users> users = new ArrayList<>();
@@ -32,29 +32,28 @@ public class UserDBContext extends DBConnect {
             rs.close();
             stmt.close();
         } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return users;
     }
 
     public void insert(Users user) {
-        try {
-            String sql = "INSERT INTO Users (FullName, Email, Password, GoogleId, RoleId, Gender, DateOfBirth, Location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, user.getFullName());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
-            stmt.setString(4, user.getGoogleId());
-            stmt.setInt(5, user.getRoleId());
-            stmt.setString(6, user.getGender());
-            stmt.setDate(7, user.getDateOfBirth());
-            stmt.setString(8, user.getLocation());
-
-            stmt.executeUpdate();
-            stmt.close();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    try {
+        String sql = "INSERT INTO Users (FullName, Email, Phone, Password, RoleId, Gender, DateOfBirth, Location) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, user.getFullName());
+        ps.setString(2, user.getEmail());
+        ps.setString(3, user.getPhone());
+        ps.setString(4, user.getPassword());
+        ps.setInt(5, user.getRoleId());
+        ps.setString(6, user.getGender());
+        ps.setDate(7, user.getDateOfBirth());
+        ps.setString(8, user.getLocation());
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+
 }

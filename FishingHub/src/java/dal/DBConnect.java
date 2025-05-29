@@ -12,14 +12,9 @@ public class DBConnect {
     private String serverName = "localhost";
     private String dbName = "FishingHub";
     private String portNumber = "1433";
-    private String instance = "SQLEXPRESS"; // Leave empty if SQL is single instance
-<<<<<<< HEAD
-    private String userID = "sa";
-    private String password = "1234567";
-=======
+    private String instance = "SQLEXPRESS";
     private String userID = "lam";
     private String password = "lamdz123";
->>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d
 
     public DBConnect() {
  try {
@@ -36,8 +31,4 @@ public class DBConnect {
     public boolean isConnected() {
         return connection != null;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3135c405d0c21f91352b1fabb0686b846c00ca7d

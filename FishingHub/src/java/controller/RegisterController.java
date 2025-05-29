@@ -1,6 +1,6 @@
 package controller;
 
-import dal.UserDBContext;
+import dal.UserDao;
 import model.Users;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,53 +11,55 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 
+@WebServlet(name = "RegisterController", urlPatterns = {"/Register"})
 public class RegisterController extends HttpServlet {
 
-    private UserDBContext userDB = new UserDBContext();
+    private UserDao userDB = new UserDao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Lấy tham số từ form
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
         String gender = request.getParameter("gender");
         String dobStr = request.getParameter("dob");
         String location = request.getParameter("location");
+        String role = request.getParameter("role"); // lấy từ select
         String terms = request.getParameter("terms"); // checkbox
-
-        // Debug log giá trị checkbox terms
-        System.out.println("Checkbox terms value: " + terms);
 
         // Validate cơ bản
         if (fullName == null || fullName.isEmpty() ||
             email == null || email.isEmpty() ||
+            phone == null || phone.isEmpty() ||
             password == null || password.isEmpty() ||
             confirmPassword == null || !password.equals(confirmPassword) ||
             gender == null || gender.isEmpty() ||
             dobStr == null || dobStr.isEmpty() ||
             location == null || location.isEmpty() ||
+            role == null || role.isEmpty() ||
             terms == null || !terms.equals("on")) {
-
-            request.setAttribute("error", "Please fill all fields correctly and accept terms.");
-            request.getRequestDispatcher("/Register/Register.jsp").forward(request, response);
+            request.setAttribute("error", "Vui lòng điền đầy đủ thông tin và đồng ý điều khoản.");
+            request.getRequestDispatcher("/Register.jsp").forward(request, response);
             return;
         }
 
-        // Chuyển đổi kiểu ngày sinh
-        Date dob = null;
+        Date dob;
         try {
             dob = Date.valueOf(dobStr);
         } catch (IllegalArgumentException e) {
-            request.setAttribute("error", "Invalid date of birth.");
-            request.getRequestDispatcher("/Register/Register.jsp").forward(request, response);
+            request.setAttribute("error", "Ngày sinh không hợp lệ.");
+            request.getRequestDispatcher("/Register.jsp").forward(request, response);
             return;
         }
 
-        int roleId = 3;
+        // Mapping role string sang roleId
+        int roleId = 2; // mặc định user
+        if ("fish_owner".equals(role)) roleId = 3;
 
-        Users newUser = new Users(fullName, email, password, roleId, gender, dob, location);
+        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location);
 
         // Lưu vào database qua UserDBContext
         userDB.insert(newUser);
@@ -69,6 +71,6 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Chuyển hướng đến trang đăng ký
-        request.getRequestDispatcher("/Register/Register.jsp").forward(request, response);
+        request.getRequestDispatcher("/Register.jsp").forward(request, response);
     }
 }

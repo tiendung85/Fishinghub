@@ -16,50 +16,60 @@
     <path fill="#6b73ff" d="M22 12l-4-4v3H2v2h16v3z"/>
   </svg>
 </a>
-        <h2>Create Your Account</h2>
+        <h2>Tạo một tài khoản mới</h2>
         <form action="Register" method="post">
-            <label for="fullName">Full Name</label>
+            <label for="fullName">Tên đầy đủ</label>
             <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
 
-            <label for="email">Email Address</label>
+            <label for="email">Địa chỉ email</label>
             <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            
+            <label for="phone">Số điện thoại</label>
+            <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
 
-            <label for="password">Password</label>
+
+            <label for="password">Mật khẩu</label>
             <input type="password" id="password" name="password" placeholder="Create a password" required>
 
-            <label for="confirmPassword">Confirm Password</label>
+            <label for="confirmPassword">Nhập lại mật khẩu</label>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
 
-            <label for="gender">Gender</label>
+            <label for="gender">Giới tính</label>
             <select id="gender" name="gender" required>
-                <option value="" disabled selected>Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="" disabled selected>Chọn giới tính </option>
+                <option value="Male">Nam</option>
+                <option value="Female">Nữ</option>
+                <option value="Other">Khác</option>
+            </select>
+            <label for="gender">Vai trò</label>
+            <select name="role" required>
+            <option value="" disabled selected>Chọn vai trò </option>
+            <option value="user">Người dùng</option>
+            <option value="fish_owner">Chủ hồ câu</option>
             </select>
 
-            <label for="dob">Date Of Birth</label>
+            <label for="dob">Ngày tháng năm sinh</label>
             <input type="date" id="dob" name="dob" required>
 
-            <label for="location">Location</label>
+            <label for="location">Địa chỉ</label>
             <input type="text" id="location" name="location" placeholder="Enter your location" required>
 
             <label class="checkbox-label">
                 <input type="checkbox" name="terms" required> By proceeding, you agree to the Terms of Service and Privacy Notice.
             </label>
 
-            <button type="submit" class="register-btn">Register</button>
+            <button type="submit" class="register-btn">Đăng ký</button>
             
             <div class="or-separator">
-    <span>or</span>
+    <span>hoặc</span>
 </div>
 
 <a href="google-login-url" class="google-btn">
     <img src="assets/img/gg.png" alt="Google logo" class="google-logo" />
-    Continue with Google
+    Tiếp tục với Google
 </a>
         </form>
-        <p class="login-link">Already have an account? <a href="login.jsp">Login</a></p>
+        <p class="login-link">Đã có tài khoản ? <a href="login.jsp">Đăng nhập</a></p>
     </div>
     <div class="image-section"></div>
 </div>
