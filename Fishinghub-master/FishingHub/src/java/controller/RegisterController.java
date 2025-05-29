@@ -65,7 +65,7 @@ public class RegisterController extends HttpServlet {
         userDB.insert(newUser);
 
         // Redirect sang trang login sau khi đăng ký thành công
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/Login.jsp");
     }
 
     @Override

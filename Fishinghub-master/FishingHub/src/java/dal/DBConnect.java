@@ -12,9 +12,9 @@ public class DBConnect {
     private String serverName = "localhost";
     private String dbName = "FishingHub";
     private String portNumber = "1433";
-    private String instance = "SQLEXPRESS"; // Leave empty if SQL is single instance
-    private String userID = "sa";
-    private String password = "123";
+    private String instance = "SQLEXPRESS";
+    private String userID = "lam";
+    private String password = "lamdz123";
 
     public DBConnect() {
  try {

@@ -55,5 +55,34 @@ public class UserDao extends DBConnect {
         e.printStackTrace();
     }
 }
+public Users getByEmailAndPassword(String email, String password) {
+    Users user = null;
+    try {
+        String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            user = new Users();
+            user.setUserId(rs.getInt("UserId"));
+            user.setFullName(rs.getString("FullName"));
+            user.setEmail(rs.getString("Email"));
+            user.setPhone(rs.getString("Phone")); // Nếu có field Phone
+            user.setPassword(rs.getString("Password"));
+            user.setGoogleId(rs.getString("GoogleId"));
+            user.setRoleId(rs.getInt("RoleId"));
+            user.setGender(rs.getString("Gender"));
+            user.setDateOfBirth(rs.getDate("DateOfBirth"));
+            user.setLocation(rs.getString("Location"));
+            user.setCreatedAt(rs.getTimestamp("CreatedAt"));
+        }
+        rs.close();
+        ps.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return user;
+}
 
 }
