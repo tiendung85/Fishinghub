@@ -166,4 +166,6 @@ public class EventController extends HttpServlet {
     public String getServletInfo() {
         return "Handles event creation and management.";
     }
+
 }
+

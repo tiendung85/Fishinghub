@@ -2,10 +2,11 @@ package dal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 public class DBConnect {
-    public Connection c;
+
+    public Connection connection;
 
     public DBConnect() {
         openConnection();
@@ -13,12 +14,12 @@ public class DBConnect {
 
     private void openConnection() {
         try {
-            if (c == null || c.isClosed()) {
+            if (connection == null || connection.isClosed()) {
                 String url = "jdbc:sqlserver://localhost:1433;databaseName=FishingHub;encrypt=true;trustServerCertificate=true;characterEncoding=UTF-8;sendStringParametersAsUnicode=true";
                 String username = "sa";
                 String pass = "123";
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                c = DriverManager.getConnection(url, username, pass);
+                connection = DriverManager.getConnection(url, username, pass);
                 System.out.println("Database connection established successfully.");
             }
         } catch (Exception e) {
@@ -28,11 +29,11 @@ public class DBConnect {
 
     public void closeConnection() {
         try {
-            if (c != null && !c.isClosed()) {
-                c.close();
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
                 System.out.println("Connection closed successfully.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Error closing connection: " + e.getMessage());
         }
     }

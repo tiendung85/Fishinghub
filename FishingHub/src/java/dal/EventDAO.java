@@ -14,15 +14,17 @@ import java.sql.ResultSet;
  *
  * @author LENOVO
  */
-public class EventDAO extends DBConnect{
+public class EventDAO extends DBConnect {
 
-    public   ArrayList<Events> getEvents() {
+    public ArrayList<Events> getEvents() {
         ArrayList<Events> events = new ArrayList<>();
-        
 
         try {
             String sql = "SELECT * FROM Event";
-            PreparedStatement statement = c.prepareStatement(sql);
+
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -53,12 +55,12 @@ public class EventDAO extends DBConnect{
     }
 
     public Events addEvent(Events event) {
-        
-       
+
         try {
             String sql = "INSERT INTO Event (Title, Description, Location, HostId, StartTime, EndTime, Status, PosterUrl, MaxParticipants) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = c.prepareStatement(sql);
+
+            PreparedStatement statement = connection.prepareStatement(sql);
 
             statement.setString(1, event.getTitle());
             statement.setString(2, event.getDescription());
@@ -71,11 +73,12 @@ public class EventDAO extends DBConnect{
             statement.setInt(9, event.getMaxParticipants());
 
             int rs = statement.executeUpdate();
-                return rs > 0 ? event : null;
+            return rs > 0 ? event : null;
         } catch (Exception e) {
             System.err.println("Lỗi khi chèn sự kiện: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
+
 }

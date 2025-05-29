@@ -6,12 +6,12 @@ package model;
 
 import java.sql.Timestamp;
 
-
 /**
  *
  * @author LENOVO
  */
 public class Events {
+
     private int EventId;
     private String Title;
     private String Description;
@@ -124,8 +124,6 @@ public class Events {
         this.MaxParticipants = MaxParticipants;
     }
 
-    
-    
-    
-    
 }
+
+

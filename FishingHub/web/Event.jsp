@@ -6,7 +6,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Event List - Fishing Community</title>
+
+        <title>Danh sách sự kiện</title>
+
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,14 +28,18 @@
                 <div class="flex items-center">
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <!-- Header navigation links -->
+
+                    
+
                     <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Home</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Events</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">News Feed</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Shop</a>
-                        <a href="FishKnowledge.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Knowledge</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Rankings</a>
+                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                        <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
                     </nav>
+
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -48,15 +56,21 @@
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
                             <i class="ri-notification-3-line text-gray-600"></i>
+
+
                         </div>
                         <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
 
-                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Log In</button>
-                    <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Sign Up</button>
+                     <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
                 </div>
             </div>
         </header>
+       
+       
+
+        
         <!-- Breadcrumb -->
         <div class="bg-gray-50 border-b border-gray-200">
             <div class="container mx-auto px-4 py-3">
@@ -541,6 +555,8 @@
                     </div>
                 </div>
             </div>
+
+
         </main>
         <!-- Footer -->
         <footer class="bg-gray-800 text-white pt-12 pb-6">
@@ -567,31 +583,31 @@
                     </div>
                     <!-- Quick Links -->
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                        <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Feed</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li> 
-                            <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Rankings</a></li>
+                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
+                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li> 
+                            <li><a href="KnowledgeFish" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
+                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
                         </ul>
                     </div>
                     <!-- Support -->
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Support</h3>
+                        <h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Terms of Use</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Return Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Trung Tâm Trợ Giúp</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Bảo Mật</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Điều Khoản Sử Dụng</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Đổi Trả</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Câu Hỏi Thường Gặp</a></li>
                         </ul>
                     </div>
                     <!-- Payment Methods -->
                     <div>
                         <div class="mt-4">
-                            <h4 class="text-sm font-medium mb-2">Payment Methods</h4>
+                            <h4 class="text-sm font-medium mb-2">Phương Thức Thanh Toán</h4>
                             <div class="flex space-x-3">
                                 <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
                                     <i class="ri-visa-fill text-blue-800 text-lg"></i>
@@ -610,7 +626,7 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-700 pt-6">
-                    <p class="text-center text-gray-500 text-sm">© 2025 Vietnam Fishing Community. All rights reserved.</p>
+                    <p class="text-center text-gray-500 text-sm">© 2025 Cộng Đồng Câu Cá Việt Nam. Đã đăng ký bản quyền.</p>
                 </div>
             </div>
         </footer>
