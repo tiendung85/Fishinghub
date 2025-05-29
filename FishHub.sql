@@ -154,60 +154,327 @@ CREATE TABLE PostComment (
 
 -- FishSpecies
 CREATE TABLE FishSpecies (
-    Id INT PRIMARY KEY IDENTITY,
+    Id INT PRIMARY KEY IDENTITY(1,1),
     CommonName NVARCHAR(100) NOT NULL,
     ScientificName NVARCHAR(150),
-    Description TEXT,
-    ImageUrl NVARCHAR(MAX),
+    Description NVARCHAR(MAX),
+    MainImageUrl NVARCHAR(500),
+
     Bait NVARCHAR(MAX),
     BestSeason NVARCHAR(50),
     BestTimeOfDay NVARCHAR(50),
     FishingSpots NVARCHAR(MAX),
     FishingTechniques NVARCHAR(MAX),
-    DifficultyLevel INT CHECK (DifficultyLevel BETWEEN 1 AND 5),
+
+    DifficultyLevel TINYINT CHECK (DifficultyLevel BETWEEN 1 AND 4),
     AverageWeightKg FLOAT,
-    Length FLOAT,
+    AverageLengthCm FLOAT,
+
     Habitat NVARCHAR(MAX),
     Behavior NVARCHAR(MAX),
     Tips NVARCHAR(MAX)
 );
 
 
-DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
-INSERT INTO FishSpecies (CommonName, ScientificName, Description, ImageUrl, Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques, DifficultyLevel, AverageWeightKg, Length, Habitat, Behavior, Tips)
+CREATE TABLE FishSpeciesImages (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    FishSpeciesId INT NOT NULL,
+    ImageUrl NVARCHAR(500) NOT NULL,
+    IsMain BIT DEFAULT 0,
+    
+
+    FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- Cá chép
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá chép', N'Cyprinus carpio', N'Cá nước ngọt phổ biến, có giá trị cao.', N'assets/img/FishKnowledge-images/cachep_0.png',
+N'Giun, ngô, khoai', N'Mùa thu', N'Sáng sớm, chiều tối', N'Ao, hồ, sông tĩnh', N'Câu đáy, câu lục',
+2, 2.5, 35,
+N'Nước ngọt tĩnh', N'Hiền, ăn tầng đáy', N'Sử dụng mồi thơm, tránh gây tiếng động');
+
+-- Ảnh chính cá chép
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(1, N'assets/img/FishKnowledge-images/cachep_0.png', 1);
+
+-- Ảnh phụ cá chép
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
 VALUES
-(N'Cá Lóc (Snakehead)', N'Channa striata', N'Common predatory fish found in Vietnamese waters.', N'assets/img/FishKnowledge-images/CaLoc.png', N'Small fish, frogs, insects', N'Summer - Autumn', N'Early morning', N'Rivers, ponds, rice fields', N'Lure casting, live bait', 3, 2.0, 0.6, N'Freshwater', N'Aggressive predator', N'Fish near vegetation and use surface lures.'),
-(N'Cá Rô Phi (Tilapia)', N'Oreochromis niloticus', N'Popular food fish in Vietnam.', N'assets/img/FishKnowledge-images/CaRoPhi.png', N'Worms, bread, corn', N'Summer', N'Morning', N'Ponds, lakes', N'Float fishing', 1, 1.0, 0.4, N'Freshwater', N'Omnivorous, schooling', N'Use simple bait and fish in shallow waters.'),
-(N'Cá Trê (Catfish)', N'Clarias batrachus', N'Common bottom-dwelling fish in Vietnam.', N'assets/img/FishKnowledge-images/CaTre.png', N'Worms, shrimp, smelly bait', N'Summer', N'Night', N'Rivers, ponds', N'Bottom fishing', 2, 2.0, 0.4, N'Freshwater', N'Nocturnal, bottom feeder', N'Use smelly bait and fish at night.'),
-(N'Cá Lăng (Mystus Catfish)', N'Mystus wyckii', N'Medium-sized catfish found in Vietnamese rivers.', N'assets/img/FishKnowledge-images/CaLang.png', N'Worms, shrimp', N'Summer', N'Evening', N'Rivers', N'Bottom fishing', 2, 1.5, 0.5, N'Freshwater', N'Nocturnal, bottom dweller', N'Fish in deep river sections.'),
-(N'Cá Bống (Goby)', N'Glossogobius giuris', N'Small fish common in Vietnamese waters.', N'assets/img/FishKnowledge-images/CaBong.png', N'Worms, small insects', N'All year', N'Morning', N'Rivers, estuaries', N'Small hook fishing', 1, 0.1, 0.15, N'Freshwater, brackish', N'Bottom dweller', N'Use small hooks and natural bait.'),
-(N'Cá Mè (Silver Carp)', N'Hypophthalmichthys molitrix', N'Large filter-feeding fish.', N'assets/img/FishKnowledge-images/CaMe.png', N'Bread, corn', N'Summer', N'Morning', N'Lakes, rivers', N'Float fishing', 2, 0.8, 0.4, N'Freshwater', N'Filter feeder', N'Use floating bait near surface.'),
-(N'Cá Chép (Common Carp)', N'Cyprinus carpio', N'Popular sport fish in Vietnam.', N'assets/img/FishKnowledge-images/CaChep.png', N'Corn, bread, worms', N'Spring - Summer', N'Morning', N'Lakes, rivers', N'Bottom fishing', 2, 2.0, 0.6, N'Freshwater', N'Bottom feeder', N'Use slightly fermented bait.'),
-(N'Cá Rô Đồng (Climbing Perch)', N'Anabas testudineus', N'Hardy fish that can breathe air.', N'assets/img/FishKnowledge-images/CaRoDong.png', N'Worms, insects', N'Rainy season', N'Morning', N'Rice fields, ditches', N'Float fishing', 1, 0.2, 0.18, N'Freshwater', N'Air breather', N'Fish in shallow, muddy water.'),
-(N'Cá Lóc Bông (Giant Snakehead)', N'Channa micropeltes', N'Large predatory fish.', N'assets/img/FishKnowledge-images/CaLocBong.png', N'Live fish, frogs', N'Summer', N'Dawn', N'Rivers, lakes', N'Lure casting', 4, 3.0, 0.5, N'Freshwater', N'Aggressive predator', N'Use strong gear and live bait.'),
-(N'Cá Tra (Pangasius)', N'Pangasius hypophthalmus', N'Large catfish species.', N'assets/img/FishKnowledge-images/CaTra.png', N'Fish chunks, shrimp', N'Summer', N'Night', N'Rivers', N'Bottom fishing', 3, 8.0, 0.7, N'Freshwater', N'Nocturnal', N'Fish in deep water at night.'),
-(N'Cá Bớp (Grouper)', N'Epinephelus coioides', N'Marine fish found in coastal waters.', N'assets/img/FishKnowledge-images/CaBopGrouper.png', N'Small fish, shrimp', N'Summer', N'Dawn', N'Coastal waters', N'Bottom fishing', 3, 10, 0.8, N'Saltwater', N'Predatory', N'Fish near coral reefs.'),
-(N'Cá Mú (Grouper)', N'Epinephelus malabaricus', N'Large marine predator.', N'assets/img/FishKnowledge-images/CaMu.png', N'Live fish, squid', N'Summer', N'Dawn', N'Coastal reefs', N'Bottom fishing', 4, 5.0, 0.6, N'Saltwater', N'Ambush predator', N'Use live bait near reefs.'),
-(N'Cá Đối (Mullet)', N'Mugil cephalus', N'Common coastal fish.', N'assets/img/FishKnowledge-images/CaDoi.png', N'Bread, worms', N'Summer', N'Morning', N'Estuaries', N'Float fishing', 2, 1.5, 0.4, N'Brackish water', N'Surface feeder', N'Use floating bait.'),
-(N'Cá Bớp (Cobia)', N'Rachycentron canadum', N'Large marine fish.', N'assets/img/FishKnowledge-images/CaBopCobia.png', N'Live fish, squid', N'Summer', N'Dawn', N'Offshore waters', N'Trolling', 4, 10.0, 0.9, N'Saltwater', N'Predatory', N'Use strong gear offshore.'),
-(N'Cá Trắm (Grass Carp)', N'Ctenopharyngodon idella', N'Large herbivorous fish.', N'assets/img/FishKnowledge-images/CaTram.png', N'Vegetables, grass', N'Summer', N'Morning', N'Lakes, rivers', N'Float fishing', 2, 5.0, 0.6, N'Freshwater', N'Herbivorous', N'Use plant-based bait.'),
-(N'Cá Mè Vinh (Bighead Carp)', N'Hypophthalmichthys nobilis', N'Large filter-feeding fish.', N'assets/img/FishKnowledge-images/CaMeVinh.png', N'Bread, corn', N'Summer', N'Morning', N'Lakes, rivers', N'Float fishing', 2, 1.3, 0.4, N'Freshwater', N'Filter feeder', N'Use floating bait.'),
-(N'Cá Rô Đầu Vuông (Squarehead Catfish)', N'Pangasius larnaudii', N'Medium-sized catfish.', N'assets/img/FishKnowledge-images/CaRoDauVuong.png', N'Worms, shrimp', N'Summer', N'Night', N'Rivers', N'Bottom fishing', 2, 0.7, 0.3, N'Freshwater', N'Nocturnal', N'Fish in deep water.'),
-(N'Cá Bống Tượng (Giant Goby)', N'Oxyeleotris marmorata', N'Large bottom-dwelling fish.', N'assets/img/FishKnowledge-images/CaBongTruong.png', N'Worms, small fish', N'Summer', N'Night', N'Rivers, ponds', N'Bottom fishing', 3, 0.3, 0.2, N'Freshwater', N'Nocturnal', N'Use live bait.'),
-(N'Cá Lăng Chấm (Spotted Catfish)', N'Hemibagrus guttatus', N'Medium-sized catfish with spots.', N'assets/img/FishKnowledge-images/CaLangCham.png', N'Worms, shrimp', N'Summer', N'Night', N'Rivers', N'Bottom fishing', 2, 3.0, 0.4, N'Freshwater', N'Nocturnal', N'Fish near river banks.'),
-(N'Cá Mè Hoa (Mottled Carp)', N'Aristichthys nobilis', N'Large filter-feeding fish.', N'assets/img/FishKnowledge-images/CaMeHoa.png', N'Bread, corn', N'Summer', N'Morning', N'Lakes, rivers', N'Float fishing', 2, 0.9, 0.3, N'Freshwater', N'Filter feeder', N'Use floating bait.'),
-(N'Cá Rô Phi Đỏ (Red Tilapia)', N'Oreochromis mossambicus', N'Colorful tilapia species.', N'assets/img/FishKnowledge-images/CaRoPhiDo.png', N'Worms, bread', N'Summer', N'Morning', N'Ponds, lakes', N'Float fishing', 1, 0.9, 0.3, N'Freshwater', N'Omnivorous', N'Use simple bait.'),
-(N'Cá Lóc Đen (Black Snakehead)', N'Channa melasoma', N'Dark-colored snakehead.', N'assets/img/FishKnowledge-images/CaLocDen.png', N'Small fish, frogs', N'Summer', N'Dawn', N'Rivers, ponds', N'Lure casting', 3, 1.5, 0.8, N'Freshwater', N'Predatory', N'Use surface lures.'),
-(N'Cá Mú Đỏ (Red Grouper)', N'Epinephelus morio', N'Colorful marine fish.', N'assets/img/FishKnowledge-images/CaMuDo.png', N'Live fish, shrimp', N'Summer', N'Dawn', N'Coral reefs', N'Bottom fishing', 3, 3.0, 0.5, N'Saltwater', N'Predatory', N'Fish near reefs.'),
-(N'Cá Đối Mục (Mullet)', N'Mugil cephalus', N'Common coastal fish.', N'assets/img/FishKnowledge-images/CaDoiMuc.png', N'Bread, worms', N'Summer', N'Morning', N'Estuaries', N'Float fishing', 2, 2.0, 0.5, N'Brackish water', N'Surface feeder', N'Use floating bait.'),
-(N'Cá Bớp Sọc (Striped Cobia)', N'Rachycentron canadum', N'Large marine fish.', N'assets/img/FishKnowledge-images/CaBopSoc.png', N'Live fish, squid', N'Summer', N'Dawn', N'Offshore waters', N'Trolling', 4, 4.0, 0.5, N'Saltwater', N'Predatory', N'Use strong gear.'),
-(N'Cá Mú Đen (Black Grouper)', N'Mycteroperca bonaci', N'Large marine predator.', N'assets/img/FishKnowledge-images/CaMuDen.png', N'Live fish, squid', N'Summer', N'Dawn', N'Deep reefs', N'Bottom fishing', 4, 7.0, 1.0, N'Saltwater', N'Ambush predator', N'Use live bait.'),
-(N'Cá Đối Bạc (Silver Mullet)', N'Mugil curema', N'Silver-colored mullet.', N'assets/img/FishKnowledge-images/CaDoiBac.png', N'Bread, worms', N'Summer', N'Morning', N'Coastal waters', N'Float fishing', 2, 0.2, 0.4, N'Saltwater', N'Surface feeder', N'Use floating bait.'),
-(N'Cá Bớp Vàng (Yellow Cobia)', N'Rachycentron canadum', N'Large marine fish.', N'assets/img/FishKnowledge-images/CaBopVang.png', N'Live fish, squid', N'Summer', N'Dawn', N'Offshore waters', N'Trolling', 4, 11.0, 0.8, N'Saltwater', N'Predatory', N'Use strong gear.');
+(1, N'assets/img/FishKnowledge-images/cachep_1.png', 0),
+(1, N'assets/img/FishKnowledge-images/cachep_2.png', 0);
+
+
+-- Cá lóc
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá lóc', N'Channa striata', N'Cá săn mồi mạnh mẽ, rất phổ biến.', N'assets/img/FishKnowledge-images/caloc_0.png',
+N'Ếch, nhái, cá nhỏ', N'Mùa mưa', N'Sáng sớm', N'Ruộng ngập, ao cạn, mương', N'Câu lure, rê mồi sống',
+3, 1.2, 30,
+N'Nước ngọt, nông', N'Áp sát bờ, săn mồi nhanh', N'Dùng mồi giả nhái, rê sát cỏ');
+
+-- Ảnh chính cá lóc
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(2, N'assets/img/FishKnowledge-images/caloc_0.png', 1);
+
+-- Ảnh phụ cá lóc
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(2, N'assets/img/FishKnowledge-images/caloc_1.png', 0),
+(2, N'assets/img/FishKnowledge-images/caloc_2.png', 0);
+
+
+-- Cá rô đồng
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá rô đồng', N'Anabas testudineus', N'Loài cá nhỏ nhưng khoẻ, ngon.', N'assets/img/FishKnowledge-images/carodong_0.png',
+N'Giun, trùn, cám', N'Mùa hè', N'Chiều tối', N'Đồng ruộng, ao nhỏ', N'Câu đơn, lưỡi nhỏ',
+1, 0.2, 15,
+N'Nước tù, ruộng ngập', N'Lẩn trốn tốt, phản xạ nhanh', N'Dùng lưỡi nhỏ, cước mảnh');
+
+-- Ảnh chính cá rô đồng
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(3, N'assets/img/FishKnowledge-images/carodong_0.png', 1);
+
+-- Ảnh phụ cá rô đồng
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(3, N'assets/img/FishKnowledge-images/carodong_1.png', 0),
+(3, N'assets/img/FishKnowledge-images/carodong_2.png', 0);
+
+
+-- Cá trắm
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá trắm', N'Ctenopharyngodon idella', N'Cá ăn cỏ, kích thước lớn.', N'assets/img/FishKnowledge-images/catram_0.png',
+N'Lá mía, rau muống, cám', N'Mùa hè', N'Trưa', N'Hồ lớn, ao nuôi', N'Câu nổi, câu bèo',
+3, 4.0, 60,
+N'Hồ lớn, sông chậm', N'Ăn thực vật, hiền', N'Dùng rau tươi làm mồi');
+
+-- Ảnh chính cá trắm
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(4, N'assets/img/FishKnowledge-images/catram_0.png', 1);
+
+-- Ảnh phụ cá trắm
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(4, N'assets/img/FishKnowledge-images/catram_1.png', 0),
+(4, N'assets/img/FishKnowledge-images/catram_2.png', 0);
+
+
+-- Cá trê
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá trê', N'Clarias batrachus', N'Cá da trơn, hoạt động về đêm.', N'assets/img/FishKnowledge-images/catre_0.png',
+N'Giun, lòng gà, mồi tanh', N'Mùa mưa', N'Tối', N'Ao tù, kênh mương', N'Câu đáy, câu đơn',
+2, 1.0, 30,
+N'Nước tù, đáy bùn', N'Đi săn đêm, thích mùi tanh', N'Dùng mồi ủ tanh, tránh ánh sáng');
+
+-- Ảnh chính cá trê
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(5, N'assets/img/FishKnowledge-images/catre_0.png', 1);
+
+-- Ảnh phụ cá trê
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(5, N'assets/img/FishKnowledge-images/catre_1.png', 0),
+(5, N'assets/img/FishKnowledge-images/catre_2.png', 0);
+
+-- Cá ngạnh
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá ngạnh', N'Mystus spp.', N'Cá da trơn có râu dài.', N'assets/img/FishKnowledge-images/canghanh_0.png',
+N'Giun, cá nhỏ, mồi trộn', N'Mùa mưa', N'Ban đêm', N'Sông suối sâu', N'Câu đáy',
+3, 0.8, 25,
+N'Sông sâu, đáy bùn', N'Hoạt động mạnh ban đêm', N'Mồi ủ kỹ, dùng chì nặng');
+
+-- Ảnh chính cá ngạnh
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(6, N'assets/img/FishKnowledge-images/canghanh_0.png', 1);
+
+-- Ảnh phụ cá ngạnh
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(6, N'assets/img/FishKnowledge-images/canghanh_1.png', 0),
+(6, N'assets/img/FishKnowledge-images/canghanh_2.png', 0);
+
+-- Cá tra
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá tra', N'Pangasius hypophthalmus', N'Cá nuôi phổ biến, thịt trắng ngon.', N'assets/img/FishKnowledge-images/catra_0.png',
+N'Cám viên, cá nhỏ', N'Quanh năm', N'Sáng sớm', N'Ao nuôi, hồ lớn', N'Câu lục, câu đáy',
+2, 2.0, 45,
+N'Nước tĩnh, ao hồ', N'Ăn tầng giữa và đáy', N'Mồi cám thơm, dùng lưỡi to');
+
+-- Ảnh chính cá tra
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(7, N'assets/img/FishKnowledge-images/catra_0.png', 1);
+
+-- Ảnh phụ cá tra
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(7, N'assets/img/FishKnowledge-images/catra_1.png', 0),
+(7, N'assets/img/FishKnowledge-images/catra_2.png', 0);
+
+-- Cá chim trắng nước ngọt
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá chim trắng nước ngọt', N'Piaractus brachypomus', N'Cá nước ngọt lai nuôi, phàm ăn.', N'assets/img/FishKnowledge-images/cachim_0.png',
+N'Cám viên, chuối, ngô', N'Mùa hè', N'Sáng và chiều', N'Hồ dịch vụ', N'Câu lục, câu đơn',
+2, 3.0, 40,
+N'Ao hồ, nước tĩnh', N'Ăn tạp, bơi nhanh', N'Mồi mềm, móc chắc lưỡi');
+
+-- Ảnh chính cá chim trắng nước ngọt
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(8, N'assets/img/FishKnowledge-images/cachim_0.png', 1);
+
+-- Ảnh phụ cá chim trắng nước ngọt
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(8, N'assets/img/FishKnowledge-images/cachim_1.png', 0),
+(8, N'assets/img/FishKnowledge-images/cachim_2.png', 0);
+
+-- Cá lăng
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá lăng', N'Bagarius yarrelli', N'Cá lớn sống vùng nước chảy mạnh.', N'assets/img/FishKnowledge-images/calang_0.png',
+N'Cá nhỏ, mồi tanh', N'Mùa mưa', N'Tối', N'Sông sâu, thác ghềnh', N'Câu đáy',
+4, 5.0, 70,
+N'Sông lớn, nước xiết', N'Săn mồi mạnh về đêm', N'Sử dụng dây chắc, cần khỏe');
+
+-- Ảnh chính cá lăng
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(9, N'assets/img/FishKnowledge-images/calang_0.png', 1);
+
+-- Ảnh phụ cá lăng
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(9, N'assets/img/FishKnowledge-images/calang_1.png', 0),
+(9, N'assets/img/FishKnowledge-images/calang_2.png', 0);
+
+-- Cá chày
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá chày', N'Hemibagrus spp.', N'Cá hoang dã, ít gặp.', N'assets/img/FishKnowledge-images/cachay_0.png',
+N'Giun, cám thơm', N'Mùa xuân', N'Sáng sớm', N'Suối nhỏ, khe đá', N'Câu rê, câu đáy',
+2, 1.0, 30,
+N'Suối sạch, đáy cát', N'Đi theo bầy nhỏ', N'Mồi nhẹ, không ồn ào');
+
+-- Ảnh chính cá chày
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(10, N'assets/img/FishKnowledge-images/cachay_0.png', 1);
+
+-- Ảnh phụ cá chày
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(10, N'assets/img/FishKnowledge-images/cachay_1.png', 0),
+(10, N'assets/img/FishKnowledge-images/cachay_2.png', 0);
+
+-- Cá sặc
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá sặc', N'Trichogaster spp.', N'Cá nhỏ, phổ biến ở miền Tây.', N'assets/img/FishKnowledge-images/casac_0.png',
+N'Cám, trùn', N'Mùa hè', N'Chiều', N'Ruộng, ao nhỏ', N'Câu đơn',
+1, 0.3, 12,
+N'Nước cạn, ao tù', N'Bơi tầng giữa', N'Mồi nhỏ, cần nhẹ');
+
+-- Ảnh chính cá sặc
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(11, N'assets/img/FishKnowledge-images/casac_0.png', 1);
+
+-- Ảnh phụ cá sặc
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(11, N'assets/img/FishKnowledge-images/casac_1.png', 0),
+(11, N'assets/img/FishKnowledge-images/casac_2.png', 0);
+
+-- Cá bống
+INSERT INTO FishSpecies (
+    CommonName, ScientificName, Description, MainImageUrl,
+    Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
+    DifficultyLevel, AverageWeightKg, AverageLengthCm,
+    Habitat, Behavior, Tips
+) VALUES
+(N'Cá bống', N'Oxyeleotris marmorata', N'Cá đáy, thịt chắc, phổ biến ở sông ngòi.', N'assets/img/FishKnowledge-images/cabong_0.png',
+N'Tép, giun, mồi bốc mùi', N'Mùa mưa', N'Tối', N'Sông, kênh, đáy bùn', N'Câu đáy, câu đơn',
+2, 0.5, 20,
+N'Đáy sông, cát bùn', N'Ẩn nấp tốt', N'Dùng chì chìm, rê sát đáy');
+
+-- Ảnh chính cá bống
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES 
+(12, N'assets/img/FishKnowledge-images/cabong_0.png', 1);
+
+-- Ảnh phụ cá bống
+INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
+VALUES
+(12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
+(12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
+
+DELETE FROM FishSpecies;
+
+DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
+
 
 
 select * from FishSpecies
-
 -- Fish
 CREATE TABLE Fish (
     FishId INT PRIMARY KEY IDENTITY,

@@ -1,13 +1,39 @@
 package dal;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import model.FishSpecies;
 
 public class FishSpeciesDAO extends DBConnect {
     public FishSpeciesDAO() {
         super();
+    }
+
+    private String getMainImageByFishSpeciesId(int fishSpeciesId) throws SQLException {
+        String sql = "SELECT ImageUrl FROM FishSpeciesImages WHERE FishSpeciesId = ? AND IsMain = 1";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, fishSpeciesId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("ImageUrl");
+            }
+        }
+        return null;
+    }
+
+    private List<String> getImagesByFishSpeciesId(int fishSpeciesId) throws SQLException {
+        List<String> images = new ArrayList<>();
+        String sql = "SELECT ImageUrl FROM FishSpeciesImages WHERE FishSpeciesId = ? ORDER BY IsMain DESC, Id ASC";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, fishSpeciesId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                images.add(rs.getString("ImageUrl"));
+            }
+        }
+        return images;
     }
 
     public List<FishSpecies> getFishSpeciesByPage(int page, int pageSize) throws SQLException {
@@ -23,7 +49,8 @@ public class FishSpeciesDAO extends DBConnect {
                 fish.setCommonName(rs.getString("CommonName"));
                 fish.setScientificName(rs.getString("ScientificName"));
                 fish.setDescription(rs.getString("Description"));
-                fish.setImageUrl(rs.getString("ImageUrl"));
+                // Lấy ảnh chính từ bảng images
+                fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
                 fish.setBait(rs.getString("Bait"));
                 fish.setBestSeason(rs.getString("BestSeason"));
                 fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
@@ -31,10 +58,12 @@ public class FishSpeciesDAO extends DBConnect {
                 fish.setFishingTechniques(rs.getString("FishingTechniques"));
                 fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
                 fish.setAverageWeightKg(rs.getDouble("AverageWeightKg"));
-                fish.setLength(rs.getDouble("Length"));
+                fish.setLength(rs.getDouble("AverageLengthCm"));
                 fish.setHabitat(rs.getString("Habitat"));
                 fish.setBehavior(rs.getString("Behavior"));
                 fish.setTips(rs.getString("Tips"));
+                // Lấy danh sách ảnh (bổ sung dòng này)
+                fish.setImages(getImagesByFishSpeciesId(fish.getId()));
                 list.add(fish);
             }
         }
@@ -64,7 +93,8 @@ public class FishSpeciesDAO extends DBConnect {
                     fish.setCommonName(rs.getString("CommonName"));
                     fish.setScientificName(rs.getString("ScientificName"));
                     fish.setDescription(rs.getString("Description"));
-                    fish.setImageUrl(rs.getString("ImageUrl"));
+                    // Lấy ảnh chính từ bảng images
+                    fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
                     fish.setBait(rs.getString("Bait"));
                     fish.setBestSeason(rs.getString("BestSeason"));
                     fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
@@ -72,10 +102,12 @@ public class FishSpeciesDAO extends DBConnect {
                     fish.setFishingTechniques(rs.getString("FishingTechniques"));
                     fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
                     fish.setAverageWeightKg(rs.getFloat("AverageWeightKg"));
-                    fish.setLength(rs.getFloat("Length"));
+                    fish.setLength(rs.getFloat("AverageLengthCm"));
                     fish.setHabitat(rs.getString("Habitat"));
                     fish.setBehavior(rs.getString("Behavior"));
                     fish.setTips(rs.getString("Tips"));
+                    // Lấy danh sách ảnh
+                    fish.setImages(getImagesByFishSpeciesId(fish.getId()));
                     return fish;
                 }
             }
@@ -85,3 +117,4 @@ public class FishSpeciesDAO extends DBConnect {
         return null;
     }
 }
+// Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...

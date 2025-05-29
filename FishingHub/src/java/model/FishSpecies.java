@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class FishSpecies {
 
     private int id;
@@ -18,6 +20,7 @@ public class FishSpecies {
     private String habitat;
     private String behavior;
     private String tips;
+    private List<String> images;
 
     public int getId() {
         return id;
@@ -145,5 +148,13 @@ public class FishSpecies {
 
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

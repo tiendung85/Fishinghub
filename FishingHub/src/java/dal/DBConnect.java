@@ -14,7 +14,7 @@ public class DBConnect {
     private String portNumber = "1433";
     private String instance = "SQLEXPRESS"; // Leave empty if SQL is single instance
     private String userID = "sa";
-    private String password = "1234567";
+    private String password = "123";
 
     public DBConnect() {
  try {
