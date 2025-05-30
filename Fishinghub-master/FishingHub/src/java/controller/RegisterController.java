@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 
-  
+
 public class RegisterController extends HttpServlet {
 
     private UserDao userDB = new UserDao();
@@ -46,9 +46,25 @@ public class RegisterController extends HttpServlet {
             return;
         }
 
+        // Validate SĐT
+        if (!phone.matches("\\d{10}")) {
+            request.setAttribute("error", "Số điện thoại phải gồm đúng 10 chữ số.");
+            request.getRequestDispatcher("/Register.jsp").forward(request, response);
+            return;
+        }
+
+        // Validate ngày sinh (>= 18 tuổi)
         Date dob;
         try {
             dob = Date.valueOf(dobStr);
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.YEAR, -18);
+            java.util.Date minBirthDate = cal.getTime();
+            if (dob.toLocalDate().isAfter(new java.sql.Date(minBirthDate.getTime()).toLocalDate())) {
+                request.setAttribute("error", "Bạn phải đủ 18 tuổi trở lên.");
+                request.getRequestDispatcher("/Register.jsp").forward(request, response);
+                return;
+            }
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", "Ngày sinh không hợp lệ.");
             request.getRequestDispatcher("/Register.jsp").forward(request, response);
