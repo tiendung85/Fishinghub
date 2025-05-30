@@ -84,5 +84,31 @@ public Users getByEmailAndPassword(String email, String password) {
     }
     return user;
 }
+public Users getByEmail(String email) {
+    String sql = "SELECT * FROM Users WHERE email = ?";
+    try (Connection conn = this.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Users user = new Users();
+            user.setUserId(rs.getInt("userId")); // hoặc tên cột đúng trong DB của bạn
+            user.setFullName(rs.getString("fullName"));
+            user.setEmail(rs.getString("email"));
+            user.setPhone(rs.getString("phone"));
+            user.setPassword(rs.getString("password"));
+            user.setGoogleId(rs.getString("googleId"));
+            user.setRoleId(rs.getInt("roleId"));
+            user.setGender(rs.getString("gender"));
+            user.setDateOfBirth(rs.getDate("dateOfBirth")); // đúng với model
+            user.setLocation(rs.getString("location"));
+            user.setCreatedAt(rs.getTimestamp("createdAt"));
+            return user;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
 }

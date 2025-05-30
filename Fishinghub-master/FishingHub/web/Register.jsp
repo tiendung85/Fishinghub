@@ -72,7 +72,7 @@
                 Tiếp tục với Google
             </a>
         </form>
-        <p class="login-link">Đã có tài khoản ? <a href="login.jsp">Đăng nhập</a></p>
+        <p class="login-link">Đã có tài khoản ? <a href="Login.jsp">Đăng nhập</a></p>
     </div>
     <div class="image-section"></div>
 </div>
