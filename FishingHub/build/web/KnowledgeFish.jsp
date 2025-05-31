@@ -32,50 +32,99 @@
         </div>
 
         <main class="container mx-auto px-4 py-8">
-            <div id="fishList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <c:choose>
-                    <c:when test="${not empty fishList}">
-                        <c:forEach var="fish" items="${fishList}">
-                            <div class="card-fish bg-white rounded-lg shadow overflow-hidden">
-                                <div class="relative aspect-square w-full">
-                                    <img src="${fish.images[0]}" alt="${fish.commonName}" class="w-full h-full object-cover object-center">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <!-- Sidebar trái: Độ khó -->
+                <aside class="hidden md:block md:col-span-2 bg-white rounded-lg shadow p-4 mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3 text-base">Phân loại cá</h3>
+                    <ul class="space-y-2">
+                        <%-- Cá khó bắt --%>
+                        <li class="flex items-center text-sm text-gray-700 cursor-pointer group px-3 py-2 rounded-md hover:bg-gray-200 transition-colors
+                            ${param.difficulty == 'hard' ? 'bg-blue-100 text-blue-700' : ''}"
+                            onclick="window.location.href='KnowledgeFish?difficulty=hard'">
+                            <span class="mr-2">Cá khó bắt</span> <span class="ml-auto">😈</span>
+                        </li>
+                        <%-- Cá dễ bắt --%>
+                        <li class="flex items-center text-sm text-gray-700 cursor-pointer group px-3 py-2 rounded-md hover:bg-gray-200 transition-colors
+                            ${param.difficulty == 'easy' ? 'bg-blue-100 text-blue-700' : ''}"
+                            onclick="window.location.href='KnowledgeFish?difficulty=easy'">
+                            <span class="mr-2">Cá dễ bắt</span> <span class="ml-auto">🎣</span>
+                        </li>
+                        <%-- Hiện tất cả --%>
+                        <li class="flex items-center text-xs text-gray-400 cursor-pointer group px-3 py-2 rounded-md hover:bg-gray-200 transition-colors
+                            ${param.difficulty == null ? 'bg-blue-100 text-blue-700' : ''}"
+                            onclick="window.location.href='KnowledgeFish'">
+                            <span class="mr-2">Hiện tất cả</span>
+                        </li>
+                    </ul>
+                </aside>
+                <!-- Nội dung chính: Danh sách cá -->
+                <section class="col-span-1 md:col-span-8">
+                    <div class="mb-6">
+                        <h2 class="text-center text-xl font-bold bg-blue-600 text-white py-3 rounded mb-6">Danh sách và thông tin các loài cá</h2>
+                    </div>
+                    <div id="fishList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <c:choose>
+                            <c:when test="${not empty fishList}">
+                                <c:forEach var="fish" items="${fishList}">
+                                    <div class="card-fish bg-white rounded-lg shadow overflow-hidden">
+                                        <div class="relative aspect-square w-full">
+                                            <img src="${fish.images[0]}" alt="${fish.commonName}" class="w-full h-full object-cover object-center">
 
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-gray-800 text-lg mb-1">${fish.commonName}</h3>
-                                    <p class="text-sm text-gray-600 mb-2"><i class="ri-map-pin-line mr-1"></i> ${fish.fishingSpots}</p>
-                                    <div class="flex items-center space-x-2 mb-4">
-                                        <span class="text-xs text-gray-500">Độ Khó:</span>
-                                        <span class="text-xs font-semibold text-primary">${fish.difficultyLevel}</span>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-gray-800 text-lg mb-1">${fish.commonName}</h3>
+                                            <p class="text-sm text-gray-600 mb-2"><i class="ri-map-pin-line mr-1"></i> ${fish.fishingSpots}</p>
+                                            <div class="flex items-center space-x-2 mb-4">
+                                                <span class="text-xs text-gray-500">Độ Khó:</span>
+                                                <span class="text-xs font-semibold text-primary">${fish.difficultyLevel}</span>
+                                            </div>
+                                            <div class="flex justify-end">
+                                                <a href="FishDetails?id=${fish.id}"
+                                                   class="inline-block px-4 py-1 border border-primary text-primary rounded-button text-sm hover:bg-primary hover:text-white transition-colors">
+                                                    Chi Tiết
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-end">
-                                        <a href="FishDetails?id=${fish.id}"
-                                           class="inline-block px-4 py-1 border border-primary text-primary rounded-button text-sm hover:bg-primary hover:text-white transition-colors">
-                                            Chi Tiết
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="col-span-4 text-center text-gray-500">Không tìm thấy loài cá nào</div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="mt-10 flex justify-center">
-                <nav class="flex items-center space-x-1">
-                    <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == 1 ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage - 1}'">
-                        <i class="ri-arrow-left-s-line"></i>
-                    </button>
-                    <c:forEach var="i" begin="1" end="${totalPages}">
-                        <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm ${currentPage == i ? 'active bg-primary text-white' : ''}"
-                                onclick="window.location.href = 'KnowledgeFish?page=${i}'">${i}</button>
-                    </c:forEach>
-                    <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == totalPages ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage + 1}'">
-                        <i class="ri-arrow-right-s-line"></i>
-                    </button>
-                </nav>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="col-span-4 text-center text-gray-500">Không tìm thấy loài cá nào</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <!-- Phân trang: chỉ hiển thị khi không filter -->
+                    <c:if test="${param.difficulty == null}">
+                    <div class="mt-10 flex justify-center">
+                        <nav id="paginationNav" class="flex items-center space-x-1">
+                            <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == 1 ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage - 1}'">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                            <c:forEach var="i" begin="1" end="${totalPages}">
+                                <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm ${currentPage == i ? 'active bg-primary text-white' : ''}"
+                                        onclick="window.location.href = 'KnowledgeFish?page=${i}'">${i}</button>
+                            </c:forEach>
+                            <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == totalPages ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage + 1}'">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
+                        </nav>
+                    </div>
+                    </c:if>
+                </section>
+                <!-- Sidebar phải: Tips/Cần câu -->
+                <aside class="hidden md:block md:col-span-2 bg-white rounded-lg shadow p-4 mb-6 hover:bg-gray-100 transition-colors">
+                    <div class="bg-white rounded-lg shadow p-4 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-3 text-base">Tips &amp; Cần câu</h3>
+                        <ul class="space-y-2">
+                            <li class="text-sm text-gray-700">
+                                <a href="TipsToCatch.html" class="hover:text-primary transition-colors">Cách Câu được nhiều cá hơn</a>
+                            </li>
+                            <li class="text-sm text-gray-700">
+                                <a href="RoodsForBeginners.html" class="hover:text-primary transition-colors">Cần câu tốt nhất cho người mới</a>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
             </div>
         </main>
         <button id="backToTop" class="back-to-top fixed bottom-6 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center">
@@ -154,5 +203,8 @@
             </div>
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+        <script>
+            // Đã chuyển filter sang server, không cần JS filter nữa
+        </script>
     </body>
 </html>

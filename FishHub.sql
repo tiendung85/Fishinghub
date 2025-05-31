@@ -23,6 +23,8 @@ CREATE TABLE Role (
     RoleName VARCHAR(50) NOT NULL
 );
 
+INSERT INTO Role (RoleName)
+VALUES ('Customer'), ('Admin'), ('Staff');
 
 
 -- Users
@@ -40,6 +42,13 @@ CREATE TABLE Users (
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Văn A', 'a@example.com', '0912345678', 'hashed1', NULL, 1, N'Nam', '1990-01-01', N'Hà Nội'),
+(N'Trần Thị B', 'b@example.com', '0987654321', 'hashed2', NULL, 1, N'Nữ', '1992-05-10', N'Hồ Chí Minh'),
+(N'Lê Văn C', 'c@example.com', '0933222111', 'hashed3', NULL, 2, N'Nam', '1985-08-20', N'Đà Nẵng');
+
 
 -- Categories
 CREATE TABLE Category (
@@ -70,15 +79,88 @@ CREATE TABLE ShoppingCart (
     FOREIGN KEY (ProductId) REFERENCES Product(ProductId) ON DELETE CASCADE
 );
 
+
+
+CREATE TABLE OrderStatus (
+    StatusID INT PRIMARY KEY,
+    StatusName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL
+);
+
+-- Dữ liệu mẫu
+INSERT INTO OrderStatus (StatusID, StatusName) VALUES
+(1, N'Đang xử lý'),
+(2, N'Đang giao hàng'),
+(3, N'Hoàn thành'),
+(4, N'Đã thanh toán'),
+(5, N'Đã hủy');
+
 -- Orders
 CREATE TABLE Orders (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    UserId INT,
-    Subtotal DECIMAL(10,2) NOT NULL,
-    Total DECIMAL(10,2) NOT NULL,
-    Status NVARCHAR(50) COLLATE Vietnamese_CI_AS DEFAULT N'Đang chờ duyệt',
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+    UserId INT NOT NULL,
+    Subtotal DECIMAL(18,2) NOT NULL,
+    Total DECIMAL(18,2) NOT NULL,
+    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+    StatusID INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
+
+-- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (1, 500000, 550000, '2025-05-30 10:30:00', 1);
+
+-- Đơn hàng 2: Dùng mặc định (StatusID = 1, OrderDate = GETDATE())
+INSERT INTO Orders (UserId, Subtotal, Total)
+VALUES (2, 1200000, 1250000);
+
+-- Đơn hàng 3: Trạng thái Hoàn thành (StatusID = 3)
+INSERT INTO Orders (UserId, Subtotal, Total, StatusID)
+VALUES (3, 250000, 270000, 3);
+
+-- Đơn hàng 4: Đang xử lý (StatusID = 1)
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (2, 300000, 330000, '2025-05-29 09:15:00', 1);
+
+-- Đơn hàng 5: Mặc định (StatusID = 1, OrderDate = GETDATE())
+INSERT INTO Orders (UserId, Subtotal, Total)
+VALUES (3, 750000, 800000);
+
+-- Đơn hàng 6: Đã hủy (StatusID = 4)
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (2, 400000, 420000, '2025-05-28 14:20:00', 4);
+
+-- Đơn hàng 7: Hoàn thành (StatusID = 3)
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (1, 180000, 200000, '2025-05-27 11:00:00', 3);
+
+-- Đơn hàng 8: Mặc định
+INSERT INTO Orders (UserId, Subtotal, Total)
+VALUES (1, 950000, 1000000);
+
+-- Đơn hàng 9: Đang xử lý
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (3, 220000, 250000, '2025-05-30 08:45:00', 1);
+
+-- Đơn hàng 10: Đã hủy
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (3, 500000, 550000, '2025-05-26 16:10:00', 4);
+
+-- Đơn hàng 11: Hoàn thành
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (1, 620000, 670000, '2025-05-25 13:30:00', 3);
+
+-- Đơn hàng 12: Mặc định
+INSERT INTO Orders (UserId, Subtotal, Total)
+VALUES (2, 320000, 350000);
+
+-- Đơn hàng 13: Đang xử lý
+INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
+VALUES (3, 150000, 180000, '2025-05-30 17:55:00', 1);
+
+
+SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID 
+                     FROM Orders o JOIN Users u ON o.UserId = u.UserId ORDER BY o.OrderDate DESC
 
 -- OrderDetails
 CREATE TABLE OrderDetail (
@@ -91,6 +173,8 @@ CREATE TABLE OrderDetail (
     FOREIGN KEY (OrderId) REFERENCES Orders(Id) ON DELETE CASCADE,
     FOREIGN KEY (ProductId) REFERENCES Product(ProductId) ON DELETE CASCADE
 );
+
+
 
 -- Events
 CREATE TABLE Event (
@@ -175,7 +259,7 @@ CREATE TABLE FishSpecies (
     Tips NVARCHAR(MAX)
 );
 
-
+select * from FishSpecies
 CREATE TABLE FishSpeciesImages (
     Id INT PRIMARY KEY IDENTITY(1,1),
     FishSpeciesId INT NOT NULL,

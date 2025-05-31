@@ -101,7 +101,7 @@
                                 <li><strong>Địa Điểm Câu:</strong> ${fish.fishingSpots}</li>
                                 <li><strong>Kỹ Thuật Câu:</strong> ${fish.fishingTechniques}</li>
                                 <li><strong>Trọng Lượng Trung Bình (kg):</strong> ${fish.averageWeightKg}</li>
-                                <li><strong>Chiều Dài (m):</strong> ${fish.length}</li>
+                                <li><strong>Chiều Dài (cm):</strong> ${fish.length}</li>
                                 <li><strong>Môi Trường Sống:</strong> ${fish.habitat}</li>
                                 <li><strong>Tập Tính:</strong> ${fish.behavior}</li>
                             </ul>
