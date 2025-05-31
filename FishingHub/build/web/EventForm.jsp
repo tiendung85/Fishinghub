@@ -72,7 +72,7 @@
         </header>
         <div class="flex items-center justify-center min-h-screen mb-12 mt-10">
             <!-- Biểu mẫu tạo sự kiện -->
-            <form action="EventController" method="post" id="createEventForm" enctype="multipart/form-data" 
+            <form action="Event" method="post" id="createEventForm" enctype="multipart/form-data" 
                   class="w-full max-w-4xl bg-white p-10 rounded-lg shadow-md space-y-2">
 
                 <!-- Hiển thị thông báo thành công -->
@@ -108,6 +108,12 @@
                     <textarea id="description" name="description" placeholder=" Nhập mô tả sự kiện"
                               required rows="5"
                               class="mt-1 block w-full rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary"></textarea>
+                </div>
+
+                <div>
+                    <label for="lakeName" class="block text-sm font-medium text-gray-700">Tên hồ câu:</label>
+                    <input type="text" id="lakeName" name="lakeName" placeholder=" Nhập tên hồ câu" required
+                           class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
                 <!-- Địa điểm tổ chức sự kiện -->
@@ -156,6 +162,32 @@
                 </div>
             </form>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const fieldMessages = {
+                    title: "Vui lòng nhập tiêu đề sự kiện.",
+                    description: "Vui lòng nhập mô tả sự kiện.",
+                    lakeName: "Vui lòng nhập tên hồ câu.",
+                    location: "Vui lòng nhập địa điểm tổ chức.",
+                    startTime: "Vui lòng chọn thời gian bắt đầu.",
+                    endTime: "Vui lòng chọn thời gian kết thúc.",
+                    maxParticipants: "Vui lòng nhập số người tham gia tối đa."
+                };
+
+                for (const [fieldId, message] of Object.entries(fieldMessages)) {
+                    const input = document.getElementById(fieldId);
+                    if (input) {
+                        input.addEventListener("invalid", function () {
+                            input.setCustomValidity(message);
+                        });
+
+                        input.addEventListener("input", function () {
+                            input.setCustomValidity("");
+                        });
+                    }
+                }
+            });
+        </script>
 
 
         <!-- Footer -->
