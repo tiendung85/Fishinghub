@@ -126,121 +126,132 @@
                     </div>
                 </div>
 
-                <c:if test="${not empty success}">
-                    <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
-                        ${success}
-                    </div>
-                </c:if>
-                <c:if test="${not empty error}">
-                    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
-                        ${error}
-                    </c:if>
+                
+                    <!-- Events List -->
                     <!-- Events List -->
                     <div id="all-events" class="event-list">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            <c:set var="index" value="0" />
-                            <c:forEach items="${listE}" var="o">
-                                <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                                    <div class="h-48 overflow-hidden">
-                                        <img src="assets/img/eventPoster/${o.posterUrl}"
-                                             alt="${o.title}" class="w-full h-full object-cover object-top">
-                                    </div>
-                                    <div class="p-5">
-                                        <div class="flex justify-between items-center mb-3">
-                                            <c:choose>
-                                                <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
-                                                    <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">
-                                                        ${o.eventStatus}
-                                                    </span>
-                                                </c:when>
-                                                <c:when test="${o.eventStatus == 'Đang diễn ra'}">
-                                                    <span class="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">
-                                                        ${o.eventStatus}
-                                                    </span>
-                                                </c:when>
-                                                <c:when test="${o.eventStatus == 'Đã kết thúc'}">
-                                                    <span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">
-                                                        ${o.eventStatus}
-                                                    </span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="bg-yellow-100 text-yellow-600 text-xs px-3 py-1 rounded-full">
-                                                        ${o.eventStatus}
-                                                    </span>
-                                                </c:otherwise>
-                                            </c:choose>
-
-                                            <span class="text-sm text-gray-500">
-                                                <c:choose>
-                                                    <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
-                                                        ${o.formattedStartDate} - ${o.formattedEndDate}
-                                                    </c:when>
-                                                    <c:when test="${o.eventStatus == 'Đang diễn ra'}">
-                                                        ${o.formattedEndDate}
-                                                    </c:when>
-                                                    <c:when test="${o.eventStatus == 'Đã kết thúc'}">
-                                                        ${o.formattedStartDate}
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        ${o.formattedStartDate}
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </span>
-                                        </div>
-                                        <h3 class="text-xl font-bold mb-2">${o.title}</h3>
-                                        <p class="text-gray-600 mb-4 line-clamp-2">
-                                            ${o.description}
-                                        </p>
-                                        <div class="flex justify-between items-center">
-                                            <div class="flex items-center">
-                                                <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                                    <i class="ri-map-pin-line"></i>
-                                                </div>
-                                                <span class="ml-1 text-sm text-gray-500">${o.location}</span>
+                        <c:if test="${not empty success}">
+                            <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
+                                ${success}
+                            </div>
+                        </c:if>
+                        <c:if test="${not empty error}">
+                            <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                                ${error}
+                            </c:if>
+                        <c:choose>
+                            <c:when test="${empty listE}">
+                                <div class="bg-white rounded shadow-sm p-6 text-center">
+                                    <p class="text-gray-600 text-lg">Không có sự kiện nào.</p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                    <c:set var="index" value="0" />
+                                    <c:forEach items="${listE}" var="o">
+                                        <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
+                                            <div class="h-48 overflow-hidden">
+                                                <img src="assets/img/eventPoster/${o.posterUrl}"
+                                                     alt="${o.title}" class="w-full h-full object-cover object-top">
                                             </div>
-                                            <div class="flex items-center">
-                                                <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                                    <i class="ri-user-line"></i>
-                                                </div>
-                                                <span class="ml-1 text-sm text-gray-500 participant-count" data-event-id="${o.eventId}">
-                                                    ${o.currentParticipants}/${o.maxParticipants} people
-                                                </span>
-                                            </div>
-                                        </div>
+                                            <div class="p-5">
+                                                <div class="flex justify-between items-center mb-3">
+                                                    <c:choose>
+                                                        <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
+                                                            <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">
+                                                                ${o.eventStatus}
+                                                            </span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đang diễn ra'}">
+                                                            <span class="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">
+                                                                ${o.eventStatus}
+                                                            </span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đã kết thúc'}">
+                                                            <span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">
+                                                                ${o.eventStatus}
+                                                            </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="bg-yellow-100 text-yellow-600 text-xs px-3 py-1 rounded-full">
+                                                                ${o.eventStatus}
+                                                            </span>
+                                                        </c:otherwise>
+                                                    </c:choose>
 
-                                        <div class="flex gap-4 mt-4">
-                                            <c:choose>
-                                                <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
-                                                    <!-- User is registered, event is full, event has ended, or event is ongoing -->
-                                                    <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
+                                                    <span class="text-sm text-gray-500">
                                                         <c:choose>
-                                                            <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
-                                                            <c:when test="${o.eventStatus == 'Đang diễn ra'}">Event Ongoing</c:when>
-                                                            <c:when test="${o.currentParticipants >= o.maxParticipants}">Event Full</c:when>
-                                                            <c:otherwise>Already Registered</c:otherwise>
+                                                            <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
+                                                                ${o.formattedStartDate} - ${o.formattedEndDate}
+                                                            </c:when>
+                                                            <c:when test="${o.eventStatus == 'Đang diễn ra'}">
+                                                                ${o.formattedEndDate}
+                                                            </c:when>
+                                                            <c:when test="${o.eventStatus == 'Đã kết thúc'}">
+                                                                ${o.formattedStartDate}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                ${o.formattedStartDate}
+                                                            </c:otherwise>
                                                         </c:choose>
                                                     </span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <!-- User is not registered, event is not full, and event is upcoming -->
-                                                    <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
-                                                            data-event-id="${o.eventId}"
-                                                            onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
-                                                        Register to Join
-                                                    </button>
-                                                </c:otherwise>
-                                            </c:choose>
+                                                </div>
+                                                <h3 class="text-xl font-bold mb-2">${o.title}</h3>
+                                                <p class="text-gray-600 mb-4 line-clamp-2">
+                                                    ${o.description}
+                                                </p>
+                                                <div class="flex justify-between items-center">
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-map-pin-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500">${o.location}</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-user-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500 participant-count" data-event-id="${o.eventId}">
+                                                            ${o.currentParticipants}/${o.maxParticipants} people
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-                                            <a href="EventDetails?eventId=${o.eventId}" 
-                                               class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
-                                                View
-                                            </a>
+                                                <div class="flex gap-4 mt-4">
+                                                    <c:choose>
+                                                        <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
+                                                            <!-- User is registered, event is full, event has ended, or event is ongoing -->
+                                                            <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
+                                                                <c:choose>
+                                                                    <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
+                                                                    <c:when test="${o.eventStatus == 'Đang diễn ra'}">Event Ongoing</c:when>
+                                                                    <c:when test="${o.currentParticipants >= o.maxParticipants}">Event Full</c:when>
+                                                                    <c:otherwise>Already Registered</c:otherwise>
+                                                                </c:choose>
+                                                            </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <!-- User is not registered, event is not full, and event is upcoming -->
+                                                            <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
+                                                                    data-event-id="${o.eventId}"
+                                                                    onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
+                                                                Register to Join
+                                                            </button>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                    <a href="EventDetails?eventId=${o.eventId}" 
+                                                       class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
+                                                        View
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <c:set var="index" value="${index + 1}" />
+                                    </c:forEach>
                                 </div>
-                                <c:set var="index" value="${index + 1}" />
-                            </c:forEach>
-                        </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div id="my-events" class="event-list hidden">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

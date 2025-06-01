@@ -12,7 +12,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import model.EventParticipant;
+import model.Events;
 import model.Users;
 
 /**
@@ -96,10 +99,9 @@ public class RegisterEventController extends HttpServlet {
             response.sendRedirect("login");
             return;
         } else {
-            if(action !=null){
+            if (action != null) {
                 request.getRequestDispatcher("Event.jsp").forward(request, response);
-            }
-            else if ("register".equals(action)) {
+            } else if ("register".equals(action)) {
                 handleRegistration(request, response);
             }
         }
@@ -107,38 +109,65 @@ public class RegisterEventController extends HttpServlet {
 
     private void handleRegistration(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        EventDAO dao = new EventDAO();
+
         try {
             int eventId = Integer.parseInt(request.getParameter("eventId"));
-            HttpSession session = request.getSession();
-            Users user = (Users) session.getAttribute("user");
-            EventDAO dao = new EventDAO();
 
-            // Check if event exists and is not full
+            // Check if event is full
             if (dao.isEventFull(eventId)) {
-                request.setAttribute("error", "Event has reached maximum participants.");
-            } else if (dao.isUserRegistered(eventId, user.getUserId())) {
-                request.setAttribute("error", "You are already registered for this event.");
-            } else {
+                request.setAttribute("error", "Sự kiện đã đạt số lượng người tham gia tối đa.");
+            } // Check if user is already registered
+            else if (dao.isUserRegistered(eventId, user.getUserId())) {
+                request.setAttribute("error", "Bạn đã đăng ký tham gia sự kiện này rồi.");
+            } // Register user to the event
+            else {
                 EventParticipant ep = new EventParticipant();
                 ep.setEventId(eventId);
                 ep.setUserId(user.getUserId());
 
                 EventParticipant result = dao.register(ep);
                 if (result != null) {
-                    request.setAttribute("success", "Successfully registered for the event!");
+                    request.setAttribute("success", "Đăng ký sự kiện thành công!");
                 } else {
-                    request.setAttribute("error", "Failed to register for the event.");
+                    request.setAttribute("error", "Đăng ký sự kiện thất bại.");
                 }
             }
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid event ID.");
-        } catch (Exception e) {
-            request.setAttribute("error", "An error occurred during registration: " + e.getMessage());
+        } catch (NumberFormatException nfe) {
+            request.setAttribute("error", "ID sự kiện không hợp lệ.");
+        } catch (Exception ex) {
+            request.setAttribute("error", "Đã xảy ra lỗi trong quá trình đăng ký: " + ex.getMessage());
         }
-        request.getRequestDispatcher("EventList").forward(request, response);
+
+        // Always reload the event list and forward
+        loadEventList(request, user, dao);
+        request.getRequestDispatcher("Event.jsp").forward(request, response);
     }
 
-    
+    private void loadEventList(HttpServletRequest request, Users user, EventDAO dao) {
+        ArrayList<Events> list = dao.getEvents(user.getUserId());
+        ArrayList<Boolean> isRegisteredList = new ArrayList<>();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        for (Events event : list) {
+            if (now.before(event.getStartTime())) {
+                event.setEventStatus("Sắp diễn ra");
+            } else if (now.after(event.getEndTime())) {
+                event.setEventStatus("Đã kết thúc");
+            } else {
+                event.setEventStatus("Đang diễn ra");
+            }
+
+            boolean isRegistered = dao.isUserRegistered(event.getEventId(), user.getUserId());
+            isRegisteredList.add(isRegistered);
+        }
+
+        request.setAttribute("listE", list);
+        request.setAttribute("isRegisteredList", isRegisteredList);
+    }
+
     /**
      * Returns a short description of the servlet.
      *
@@ -148,7 +177,5 @@ public class RegisterEventController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    
 
 }

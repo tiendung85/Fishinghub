@@ -104,7 +104,7 @@ CREATE TABLE Event (
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
-    ApprovedAt DATETIME DEFAULT GETDATE(),
+    ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
 	CurrentParticipants INT,

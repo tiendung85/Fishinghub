@@ -20,8 +20,7 @@ public class EventDAO extends DBConnect {
     public ArrayList<Events> getEvents(int hostID) {
         ArrayList<Events> events = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Event Where Status='approved' and HostId != ? ORDER BY EventId DESC";
-
+            String sql = "SELECT * FROM Event WHERE Status='approved' AND HostId != ? ORDER BY EventId DESC";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, hostID);
             ResultSet rs = statement.executeQuery();
@@ -42,17 +41,13 @@ public class EventDAO extends DBConnect {
                 event.setPosterUrl(rs.getString("PosterUrl"));
                 event.setMaxParticipants(rs.getInt("MaxParticipants"));
                 event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
-
                 events.add(event);
             }
-
         } catch (Exception e) {
             System.err.println("Error while fetching events: " + e.getMessage());
             e.printStackTrace();
-            return null;
         }
-
-        return events.isEmpty() ? null : events;
+        return events; // Trả về danh sách rỗng thay vì null nếu không có sự kiện
     }
 
     public Events addEvent(Events event) {
