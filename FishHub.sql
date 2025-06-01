@@ -20,11 +20,11 @@ GO
 -- Roles
 CREATE TABLE Role (
     RoleId INT PRIMARY KEY IDENTITY,
-    RoleName VARCHAR(50) NOT NULL
+    RoleName NVARCHAR(50) NOT NULL
 );
 
 INSERT INTO Role (RoleName)
-VALUES ('Customer'), ('Admin'), ('Staff');
+VALUES ('User'), ('FishingOwner'), ('Admin');
 
 
 -- Users
@@ -179,7 +179,7 @@ CREATE TABLE OrderDetail (
 -- Events
 CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
-    Title VARCHAR(255) NOT NULL,
+    Title NVARCHAR(255) NOT NULL,
 	LakeName NVARCHAR(255), 
     Description TEXT,
     Location NVARCHAR(255),
@@ -191,6 +191,7 @@ CREATE TABLE Event (
     ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
+	CurrentParticipants INT,
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
 
@@ -208,7 +209,7 @@ CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
 	Topic NVARCHAR(50),
-    Title VARCHAR(255),
+    Title NVARCHAR(255),
     Content TEXT,
    
     CreatedAt DATETIME DEFAULT GETDATE(),
@@ -562,7 +563,7 @@ select * from FishSpecies
 -- Fish
 CREATE TABLE Fish (
     FishId INT PRIMARY KEY IDENTITY,
-    Name VARCHAR(255),
+    Name NVARCHAR(255),
     Point INT NOT NULL,
     FishSpeciesId INT,
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)

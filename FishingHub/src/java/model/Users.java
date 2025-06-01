@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Users {
+
     private int userId;
     private String fullName;
     private String email;
+    private String phone;      // Thêm trường này
     private String password;
     private String googleId;
     private int roleId;
@@ -18,12 +20,13 @@ public class Users {
     public Users() {
     }
 
-    // Constructor (có thể thêm/bớt nếu cần)
-    public Users(int userId, String fullName, String email, String password, String googleId,
+    // Constructor đầy đủ
+    public Users(int userId, String fullName, String email, String phone, String password, String googleId,
             int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
+        this.phone = phone;
         this.password = password;
         this.googleId = googleId;
         this.roleId = roleId;
@@ -34,10 +37,11 @@ public class Users {
     }
 
     // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
-    public Users(String fullName, String email, String password, int roleId,
+    public Users(String fullName, String email, String phone, String password, int roleId,
             String gender, Date dateOfBirth, String location) {
         this.fullName = fullName;
         this.email = email;
+        this.phone = phone;
         this.password = password;
         this.roleId = roleId;
         this.gender = gender;
@@ -48,7 +52,6 @@ public class Users {
     }
 
     // Getter và Setter
-
     public int getUserId() {
         return userId;
     }
@@ -71,6 +74,14 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
@@ -131,8 +142,18 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Users{" + "userId=" + userId + ", fullName=" + fullName + ", email=" + email + ", password=" + password + ", googleId=" + googleId + ", roleId=" + roleId + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", location=" + location + ", createdAt=" + createdAt + '}';
+        return "Users{"
+                + "userId=" + userId
+                + ", fullName='" + fullName + '\''
+                + ", email='" + email + '\''
+                + ", phone='" + phone + '\''
+                + ", password='" + password + '\''
+                + ", googleId='" + googleId + '\''
+                + ", roleId=" + roleId
+                + ", gender='" + gender + '\''
+                + ", dateOfBirth=" + dateOfBirth
+                + ", location='" + location + '\''
+                + ", createdAt=" + createdAt
+                + '}';
     }
-    
-    
 }

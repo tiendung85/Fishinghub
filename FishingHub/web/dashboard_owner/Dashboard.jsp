@@ -1,7 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="model.Users" %>
 <link rel="stylesheet" href="<c:url value='/css/style.css'/>">
-
+<%
+    Users currentUser = (Users) session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -207,7 +210,7 @@
                                 Danh sách sản phẩm
                             </a>
                             <a
-                                href="Order"
+                                href="<c:url value='/Order'/>"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
@@ -221,18 +224,30 @@
                         </div>
                     </div>
                     <div class="flex items-center p-4 border-t border-gray-200">
-                        <div class="flex-shrink-0">
-                            <img
-                                class="w-10 h-10 rounded-full"
-                                src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
-                                alt="Admin"
-                                />
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-700">Nguyễn Văn Quản</p>
-                            <p class="text-xs font-medium text-gray-500">Quản trị viên</p>
-                        </div>
+                    <div class="flex-shrink-0">
+                        <img class="w-10 h-10 rounded-full"
+                            src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
+                            alt="Admin" />
                     </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-700">
+                            <%= currentUser != null ? currentUser.getFullName() : "Khách" %>
+                        </p>
+                        <p class="text-xs font-medium text-gray-500">
+                            <% if(currentUser != null && currentUser.getRoleId() == 2) { %>
+                            Chủ Hồ Câu
+                            <% } else { %>
+                            Quản trị viên
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+                <!-- Nút quay lại Home -->
+                <div class="p-4">
+                    <a href="Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                        <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
+                    </a>
+                </div>
                 </div>
             </div>
             <!-- Main content -->
