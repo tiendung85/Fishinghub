@@ -14,7 +14,7 @@ public class DBConnect {
     private String portNumber = "1433";
     private String instance = "SQLEXPRESS"; // Leave empty if SQL is single instance
     private String userID = "sa";
-    private String password = "123";
+    private String password = "1234567";
 
     public DBConnect() {
  try {
@@ -30,5 +30,17 @@ public class DBConnect {
     // thêm phương thức test kết nối
     public boolean isConnected() {
         return connection != null;
+    }
+      public static Connection getConnection() {
+        try {
+            String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
+            String user = "lam";
+            String pass = "lamdz123";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            return DriverManager.getConnection(url, user, pass);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

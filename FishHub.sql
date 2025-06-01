@@ -123,13 +123,13 @@ CREATE TABLE EventParticipant (
 CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
-	Topic NVARCHAR(50),
-    Title VARCHAR(255),
-    Content TEXT,
-   
+    Topic NVARCHAR(50),
+    Title NVARCHAR(255),
+    Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
+
 
 CREATE TABLE Image (
     ImageId INT PRIMARY KEY IDENTITY,
@@ -137,7 +137,12 @@ CREATE TABLE Image (
     ImagePath VARCHAR(255),
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
-
+CREATE TABLE Video (
+    VideoId INT PRIMARY KEY IDENTITY,
+    PostId INT,
+    VideoPath VARCHAR(255),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId)
+);
 
 
 -- PostComments
@@ -145,11 +150,38 @@ CREATE TABLE PostComment (
     CommentId INT PRIMARY KEY IDENTITY,
     PostId INT,
     UserId INT,
-    Content TEXT,
-    Likes INT DEFAULT 0,
+    Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (PostId) REFERENCES Post(PostId),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+);
+
+CREATE TABLE PostLike (
+    PostId INT,
+    UserId INT,
+    LikedAt DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (PostId, UserId),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+);
+
+CREATE TABLE CommentLike (
+    CommentId INT,
+    UserId INT,
+    LikedAt DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (CommentId, UserId),
+    FOREIGN KEY (CommentId) REFERENCES PostComment(CommentId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+);
+
+CREATE TABLE CommentReply (
+    ReplyId INT PRIMARY KEY IDENTITY,
+    CommentId INT,
+    UserId INT,
+    Content NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CommentId) REFERENCES PostComment(CommentId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
 
 -- FishSpecies
@@ -506,5 +538,17 @@ CREATE TABLE Notification (
 );
 
 
+INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES ('Charlie Le', 'charlie@eample.com', '0933444555', 'hashedpassword3', 'google12345', 1, 'Other', '1985-12-01', 'Da ang'),
+(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
+(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì');
+  
+select * from users
+
+select * from image
+
+select * from PostComment
 
 
