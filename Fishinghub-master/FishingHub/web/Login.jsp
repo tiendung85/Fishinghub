@@ -77,17 +77,23 @@
     </c:if>
 
     <form action="login" method="post">
-        <input type="text" name="email" placeholder="Email or Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-    </form>
-    <div class="or-separator">
-    <span>or</span>
-    </div>
+    <input type="text" name="email" placeholder="Email or Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Đăng nhập</button>
+</form>
+
+<div style="margin: 15px 0 5px 0;">
+    <a href="forgot-password" class="forgot-link">Quên mật khẩu?</a>
+</div>
+
+<div class="or-separator">
+    <span>hoặc</span>
+</div>
+
 
     <a href="google-login" class="google-btn">
         <img src="assets/img/gg.png" alt="Google logo" class="google-logo" />
-        Continue with Google
+        Tiếp tục với google
     </a>
 </div>
 
