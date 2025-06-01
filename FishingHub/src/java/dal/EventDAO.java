@@ -262,4 +262,42 @@ public class EventDAO extends DBConnect {
         return events;
     }
 
+    public boolean cancelRegistration(int eventId, int userId) {
+        String deleteParticipantSQL = "DELETE FROM EventParticipant WHERE EventId = ? AND UserId = ?";
+        String updateEventSQL = "UPDATE Event SET CurrentParticipants = CurrentParticipants - 1 WHERE EventId = ?";
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement participantStmt = connection.prepareStatement(deleteParticipantSQL)) {
+                participantStmt.setInt(1, eventId);
+                participantStmt.setInt(2, userId);
+                int rowsAffected = participantStmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    try (PreparedStatement eventStmt = connection.prepareStatement(updateEventSQL)) {
+                        eventStmt.setInt(1, eventId);
+                        eventStmt.executeUpdate();
+                    }
+                    connection.commit();
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (Exception rollbackEx) {
+                System.err.println("Error during rollback: " + rollbackEx.getMessage());
+                rollbackEx.printStackTrace();
+            }
+            System.err.println("Error canceling registration: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (Exception e) {
+                System.err.println("Error resetting auto-commit: " + e.getMessage());
+            }
+        }
+        return false;
+    }
 }
