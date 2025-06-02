@@ -70,6 +70,22 @@ public class RegisterController extends HttpServlet {
             request.getRequestDispatcher("/Register.jsp").forward(request, response);
             return;
         }
+        // Kiểm tra email đã tồn tại
+        if (userDB.checkEmailExists(email)) {
+        request.setAttribute("error", "Email đã tồn tại. Vui lòng nhập email khác.");
+
+        // Trả lại dữ liệu đã nhập cho form
+        request.setAttribute("fullName", fullName);
+        request.setAttribute("email", email); // vẫn cho nhập lại email nếu muốn
+        request.setAttribute("gender", gender);
+        request.setAttribute("dob", dobStr);
+        request.setAttribute("location", location);
+        request.setAttribute("phone", phone); // nếu có trường phone
+    // Đừng gán lại password!
+
+    request.getRequestDispatcher("/Register.jsp").forward(request, response);
+    return;
+}
 
         // Mapping role string sang roleId
         int roleId = 2; // mặc định user

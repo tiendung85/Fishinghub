@@ -163,6 +163,16 @@ public void markResetTokenUsed(String email, String code) {
         e.printStackTrace();
     }
 }
+public boolean checkEmailExists(String email) {
+    try {
+        String sql = "SELECT COUNT(*) FROM Users WHERE Email = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next() && rs.getInt(1) > 0) return true;
+    } catch (Exception e) { e.printStackTrace(); }
+    return false;
+}
 
 }
 
