@@ -140,4 +140,58 @@ public class UserDao extends DBConnect {
         }
         return user;
     }
+    
+    public void saveResetToken(String email, String code, java.sql.Timestamp expiresAt) {
+    String sql = "INSERT INTO password_reset (email, code, expires_at, used) VALUES (?, ?, ?, 0)";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ps.setString(2, code);
+        ps.setTimestamp(3, expiresAt);
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+public boolean checkResetToken(String email, String code) {
+    String sql = "SELECT * FROM password_reset WHERE email = ? AND code = ? AND used = 0 AND expires_at > GETDATE()";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ps.setString(2, code);
+        ResultSet rs = ps.executeQuery();
+        boolean found = rs.next();
+        rs.close();
+        ps.close();
+        return found;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+public void updatePassword(String email, String newPassword) {
+    String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, newPassword);
+        ps.setString(2, email);
+        ps.executeUpdate();
+        ps.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+public void markResetTokenUsed(String email, String code) {
+    String sql = "UPDATE password_reset SET used = 1 WHERE email = ? AND code = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ps.setString(2, code);
+        ps.executeUpdate();
+        ps.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }

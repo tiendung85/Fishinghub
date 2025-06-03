@@ -34,8 +34,8 @@ public class DBConnect {
       public static Connection getConnection() {
         try {
             String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
-            String user = "lam";
-            String pass = "lamdz123";
+            String user = "sa";
+            String pass = "1234567";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             return DriverManager.getConnection(url, user, pass);
         } catch (Exception ex) {

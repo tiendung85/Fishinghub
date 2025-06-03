@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="model.Users" %>
+<%
+    Users currentUser = (Users) session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +36,49 @@
 
     <body class="font-roboto bg-gray-100">
         <!-- Header -->
-        <jsp:include page="Header.jsp" />
+        <header class="bg-white shadow-sm">
+            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
+                    <nav class="hidden md:flex ml-10">
+                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                        <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative w-10 h-10 flex items-center justify-center">
+                        <button class="text-gray-700 hover:text-primary">
+                            <i class="ri-shopping-cart-2-line text-xl"></i>
+                        </button>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
+                    </div>
+                    <div class="relative">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
+                            <i class="ri-notification-3-line text-gray-600"></i>
+                        </div>
+                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
+                    </div>
+                    <% if (currentUser == null) { %>
+                        <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
+                        <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
+                    <% } else { %>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
+                            <% if(currentUser.getRoleId() == 2) { %>
+                                <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                            <% } %>
+                            <form action="logout" method="post" style="display:inline;">
+                                <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                            </form>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </header>
 
         <!-- Breadcrumb with icons -->
         <div class="bg-white border-b">
@@ -101,7 +147,7 @@
                                 <li><strong>Địa Điểm Câu:</strong> ${fish.fishingSpots}</li>
                                 <li><strong>Kỹ Thuật Câu:</strong> ${fish.fishingTechniques}</li>
                                 <li><strong>Trọng Lượng Trung Bình (kg):</strong> ${fish.averageWeightKg}</li>
-                                <li><strong>Chiều Dài (m):</strong> ${fish.length}</li>
+                                <li><strong>Chiều Dài (cm):</strong> ${fish.length}</li>
                                 <li><strong>Môi Trường Sống:</strong> ${fish.habitat}</li>
                                 <li><strong>Tập Tính:</strong> ${fish.behavior}</li>
                             </ul>

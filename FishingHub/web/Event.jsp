@@ -1,12 +1,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page import="model.Users" %>
+<%
+    Users currentUser = (Users) session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Danh sách sự kiện</title>
+        <title>Event List - Fishing Community</title>
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,34 +19,27 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
         <link rel="stylesheet" href="assets/css/style.css">
     </head>
-
     <body>
         <!-- Header -->
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <!-- Header navigation links -->
-                     <nav class="hidden md:flex ml-10">
-                <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-                <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
-                <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
-                <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
-                <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
-                <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
-            </nav>
+                    <nav class="hidden md:flex ml-10">
+                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                        <a href="Event" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                        <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+                    </nav>
                 </div>
-
                 <div class="flex items-center space-x-4">
-                    <!-- Cart -->
                     <div class="relative w-10 h-10 flex items-center justify-center">
                         <button class="text-gray-700 hover:text-primary">
                             <i class="ri-shopping-cart-2-line text-xl"></i>
                         </button>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                            >3</span
-                        >
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
                     </div>
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
@@ -51,504 +47,247 @@
                         </div>
                         <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
-
-                     <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
-            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
+                    
+                    
+                  <% if (currentUser == null) { %>
+                        <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
+                        <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
+                    <% } else { %>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
+                            <% if(currentUser.getRoleId() == 2) { %>
+                                <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                            <% } %>
+                            <form action="logout" method="post" style="display:inline;">
+                                <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                            </form>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </header>
+
         <!-- Breadcrumb -->
         <div class="bg-gray-50 border-b border-gray-200">
             <div class="container mx-auto px-4 py-3">
-                <!-- Breadcrumb translation -->
-<div class="flex items-center text-sm">
-    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Trang chủ</a>
-    <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
-        <i class="ri-arrow-right-s-line"></i>
-    </div>
-    <span class="text-primary font-medium">Sự Kiện Nổi Bật</span>
-</div>
-
-                <!-- Title and Search section -->
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Sự Kiện Nổi Bật</h1>
-                    <p class="text-gray-600 mt-2">Tất cả sự kiện câu cá đang diễn ra và sắp tới</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="relative">
-                        <input type="text" placeholder="Tìm kiếm sự kiện..."
-                               class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                        <div
-                            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
-                            <i class="ri-search-line"></i>
-                        </div>
+                <div class="flex items-center text-sm">
+                    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
+                    <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
+                        <i class="ri-arrow-right-s-line"></i>
                     </div>
-                    <!-- Create Event Button -->
-                    <a href="EventController?action=create_event"
-                       class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
-                        <i class="ri-add-line"></i>
-                        <span>Tạo Sự Kiện</span>
-                    </a>
-                </div>
-
-                <!-- Tabs translation -->
-                <div class="flex border-b border-gray-200">
-                    <button class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả</button>
-                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
-                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Sự Kiện Của Tôi</button>
+                    <span class="text-primary font-medium">Sự kiện</span>
                 </div>
             </div>
         </div>
+
         <!-- Main Content -->
         <main class="py-8">
             <div class="container mx-auto px-4">
-                <!-- Filters translation -->
-                <div class="bg-white rounded shadow-sm p-4 mb-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                        <h2 class="text-lg font-medium">Bộ Lọc</h2>
-                        <button class="text-primary text-sm flex items-center">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-refresh-line"></i>
-                            </div>
-                            <span class="ml-1">Đặt Lại</span>
-                        </button>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Featured Events</h1>
+                        <p class="text-gray-600 mt-2">All ongoing and upcoming fishing events</p>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <!-- Status -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Trạng Thái</label>
-                            <div class="relative">
-                                <select
-                                    class="w-full pl-4 pr-10 py-2 rounded-button appearance-none bg-gray-50 border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                    <option value="">Tất Cả</option>
-                                    <option value="upcoming">Sắp Diễn Ra</option>
-                                    <option value="ongoing">Đang Diễn Ra</option>
-                                    <option value="completed">Đã Kết Thúc</option>
-                                </select>
-                                <div
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Region -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Khu Vực</label>
-                            <div class="relative">
-                                <select
-                                    class="w-full pl-4 pr-10 py-2 rounded-button appearance-none bg-gray-50 border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                    <option value="">Tất Cả</option>
-                                    <option value="north">Miền Bắc</option>
-                                    <option value="central">Miền Trung</option>
-                                    <option value="south">Miền Nam</option>
-                                </select>
-                                <div
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- From Date -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Từ Ngày</label>
-                            <div class="relative date-filter">
-                                <div class="w-full pl-4 pr-10 py-2 rounded-button bg-gray-50 text-sm flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-400 mr-2">
-                                        <i class="ri-calendar-line"></i>
-                                    </div>
-                                    <span class="text-gray-500">Chọn Ngày</span>
-                                </div>
-                                <input type="date" class="w-full h-full">
-                            </div>
-                        </div>
-                        <!-- To Date -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Đến Ngày</label>
-                            <div class="relative date-filter">
-                                <div class="w-full pl-4 pr-10 py-2 rounded-button bg-gray-50 text-sm flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-400 mr-2">
-                                        <i class="ri-calendar-line"></i>
-                                    </div>
-                                    <span class="text-gray-500">Chọn Ngày</span>
-                                </div>
-                                <input type="date" class="w-full h-full">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        </div>
+                    <div class="flex items-center justify-between gap-4">
+                        <form action="SearchEvent" method="GET" class="flex items-center w-full max-w-lg">
+                            <input type="text" name="query" placeholder="Search for events..."
+                                   class="w-full pl-4 pr-20 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                            <button type="submit" class="bg-primary text-white px-4 py-2 hover:bg-blue-700 flex items-center justify-center">
+                                <i class="ri-search-line"></i>
+                            </button>
+                        </form>
+                        <c:if test="${user.getRoleId() == 2}">
+                            <a href="Event?action=create_event" class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
+                                <i class="ri-add-line"></i>
+                                <span>Create Event</span>
+                            </a>
+                        </c:if>
                     </div>
                 </div>
-                <!-- Sorting and View Options -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <div class="flex items-center">
-                        <!-- Sort by translation -->
-<span class="text-gray-600 text-sm mr-2">Sắp xếp theo:</span>
-<select class="pl-4 pr-10 py-2 rounded-button appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-    <option value="newest">Mới Nhất</option>
-    <option value="popular">Phổ Biến Nhất</option>
-    <option value="upcoming">Sắp Diễn Ra</option>
-</select>
+
+                <div class="bg-white rounded shadow-sm mb-8">
+                    <div class="flex border-b border-gray-200">
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList'"> All Events </button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary cursor-pointer" onclick="location.href = 'EventList?action=upcoming'">Up Coming Events</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=ongoing'">Ongoing Events</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">My Events</button>
                     </div>
                 </div>
+
                 <!-- Events List -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <!-- Event 1 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fishing%2520tournament%2520event%2520at%2520a%2520beautiful%2520lake%252C%2520many%2520participants%2520with%2520fishing%2520rods%252C%2520tents%2520and%2520banners%2520set%2520up%252C%2520sunny%2520day%252C%2520vibrant%2520atmosphere%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event1&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
+                <div id="all-events" class="event-list">
+                    <c:if test="${not empty success}">
+                        <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
+                            ${success}
                         </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">05/17/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">West Lake Fishing Tournament 2025</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">Join the largest fishing tournament in the North with a total prize pool of 50 million VND and many exciting rewards.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">West Lake, Hanoi</span>
+                    </c:if>
+                    <c:if test="${not empty error}">
+                        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                            ${error}
+                        </c:if>
+                        <c:choose>
+                            <c:when test="${empty listE}">
+                                <div class="bg-white rounded shadow-sm p-6 text-center">
+                                    <p class="text-gray-600 text-lg">Không có sự kiện nào.</p>
                                 </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">120/150 people</span>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                    <c:set var="index" value="0" />
+                                    <c:forEach items="${listE}" var="o">
+                                        <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
+                                            <div class="h-48 overflow-hidden">
+                                                <img src="assets/img/eventPoster/${o.posterUrl}" alt="${o.title}" class="w-full h-full object-cover object-top">
+                                            </div>
+                                            <div class="p-5">
+                                                <div class="flex justify-between items-center mb-3">
+                                                    <c:choose>
+                                                        <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
+                                                            <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đang diễn ra'}">
+                                                            <span class="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đã kết thúc'}">
+                                                            <span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="bg-yellow-100 text-yellow-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <span class="text-sm text-gray-500">
+                                                        <c:choose>
+                                                            <c:when test="${o.eventStatus == 'Sắp diễn ra'}">${o.formattedStartDate} - ${o.formattedEndDate}</c:when>
+                                                            <c:when test="${o.eventStatus == 'Đang diễn ra'}">${o.formattedEndDate}</c:when>
+                                                            <c:when test="${o.eventStatus == 'Đã kết thúc'}">${o.formattedStartDate}</c:when>
+                                                            <c:otherwise>${o.formattedStartDate}</c:otherwise>
+                                                        </c:choose>
+                                                    </span>
+                                                </div>
+                                                <h3 class="text-xl font-bold mb-2">${o.title}</h3>
+                                                <p class="text-gray-600 mb-4 line-clamp-2">${o.description}</p>
+                                                <div class="flex justify-between items-center">
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-map-pin-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500">${o.location}</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-user-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500 participant-count" data-event-id="${o.eventId}">
+                                                            ${o.currentParticipants}/${o.maxParticipants} people
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex gap-4 mt-4">
+                                                    <c:choose>
+                                                        <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
+                                                            <!-- User is registered and event is upcoming -->
+                                                            <button class="w-full bg-red-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-red-700 cancel-btn"
+                                                                    data-event-id="${o.eventId}"
+                                                                    onclick="showCancelModal('RegisterEvent?action=cancel&eventId=${o.eventId}', '${o.title}')">
+                                                                Cancel Registration
+                                                            </button>
+                                                        </c:when>
+                                                        <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
+                                                            <!-- User is registered, event is full, event has ended, or event is ongoing -->
+                                                            <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
+                                                                <c:choose>
+                                                                    <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
+                                                                    <c:when test="${o.eventStatus == 'Đang diễn ra'}">Event Ongoing</c:when>
+                                                                    <c:when test="${o.currentParticipants >= o.maxParticipants}">Event Full</c:when>
+                                                                    <c:otherwise>Already Registered</c:otherwise>
+                                                                </c:choose>
+                                                            </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <!-- User is not registered, event is not full, and event is upcoming -->
+                                                            <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
+                                                                    data-event-id="${o.eventId}"
+                                                                    onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
+                                                                Register to Join
+                                                            </button>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <a href="EventDetails?eventId=${o.eventId}" 
+                                                       class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
+                                                        View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <c:set var="index" value="${index + 1}" />
+                                    </c:forEach>
                                 </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
+                    <!-- Registration Modal -->
+                    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                            <h2 class="text-xl font-bold mb-4">Confirm Registration</h2>
+                            <p class="text-gray-600 mb-6">Are you sure you want to register for <span id="eventTitle" class="font-semibold"></span>?</p>
+                            <div class="flex justify-end gap-4">
+                                <button id="cancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
+                                <button id="confirmButton" class="bg-blue-600 text-white px-4 py-2 rounded-button hover:bg-blue-700">Confirm</button>
                             </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
-                    <!-- Event 2 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fishing%2520workshop%2520event%2520at%2520a%2520riverside%252C%2520instructor%2520demonstrating%2520fishing%2520techniques%252C%2520small%2520group%2520of%2520learners%252C%2520fishing%2520equipment%2520displayed%252C%2520educational%2520setting%252C%2520sunny%2520day%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event2&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">Ongoing</span>
-                                <span class="text-sm text-gray-500">05/15 - 05/20/2025</span>
+
+                    <!-- Cancel Registration Modal -->
+                    <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                            <h2 class="text-xl font-bold mb-4">Confirm Cancellation</h2>
+                            <p class="text-gray-600 mb-6">Are you sure you want to cancel your registration for <span id="cancelEventTitle" class="font-semibold"></span>?</p>
+                            <div class="flex justify-end gap-4">
+                                <button id="cancelCancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
+                                <button id="confirmCancelButton" class="bg-red-600 text-white px-4 py-2 rounded-button hover:bg-red-700">Confirm</button>
                             </div>
-                            <h3 class="text-xl font-bold mb-2">Advanced Fishing Techniques Workshop</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">A 5-day course with leading experts, learning modern and traditional fishing techniques.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Xuan Huong Lake, Da Lat</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">25/30 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
                         </div>
                     </div>
-                    <!-- Event 3 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=community%2520fishing%2520day%2520at%2520a%2520coastal%2520area%252C%2520families%2520and%2520children%2520learning%2520to%2520fish%252C%2520volunteers%2520helping%2520beginners%252C%2520festive%2520atmosphere%252C%2520tents%2520and%2520food%2520stalls%252C%2520sunny%2520beach%2520setting%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event3&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
+
+                    <!-- Pagination -->
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">Showing 1-9 of 42 events</div>
+                        <div class="flex items-center gap-2">
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">1</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">2</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">3</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">4</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">5</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
                         </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">05/30/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Family Fishing Day</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">An event for all ages, especially families with children wanting to experience fishing for the first time.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Suoi Tien Theme Park, Ho Chi Minh City</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-600">Show:</span>
+                            <div class="relative">
+                                <select class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                                    <option value="9">9</option>
+                                    <option value="18">18</option>
+                                    <option value="27">27</option>
+                                    <option value="36">36</option>
+                                </select>
+                                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400 pointer-events-none">
+                                    <i class="ri-arrow-down-s-line"></i>
                                 </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">85/200 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 4 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=professional%2520fishing%2520competition%2520at%2520a%2520large%2520lake%252C%2520competitive%2520atmosphere%252C%2520judges%2520and%2520spectators%252C%2520professional%2520equipment%252C%2520boats%2520on%2520water%252C%2520sunny%2520day%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event4&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">06/10/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">National Fishing Championship 2025</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">The most prestigious tournament of the year with top anglers from across the country. Total prize pool up to 200 million VND.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Thac Ba Lake, Yen Bai</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">50/100 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 5 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=night%2520fishing%2520event%2520at%2520a%2520lake%252C%2520lanterns%2520and%2520lights%2520around%2520the%2520shore%252C%2520people%2520with%2520fishing%2520rods%252C%2520peaceful%2520atmosphere%252C%2520beautiful%2520night%2520sky%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event5&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">05/25/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Moonlit Fishing Night</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">Experience night fishing in a romantic setting under the moonlight. The event includes a barbecue and acoustic music.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Dai Lai Lake, Vinh Phuc</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">35/60 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 6 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fishing%2520workshop%2520for%2520children%252C%2520kids%2520learning%2520to%2520fish%252C%2520instructors%252C%2520educational%2520setting%252C%2520colorful%2520fishing%2520equipment%2520for%2520children%252C%2520sunny%2520day%2520at%2520a%2520safe%2520pond%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event6&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">06/05/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Children's Fishing Workshop</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">A course designed for children aged 6-12, helping them get acquainted with fishing and learn about environmental protection.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Vam Sat Ecotourism Area, Ho Chi Minh City</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">15/30 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 7 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fly%2520fishing%2520workshop%2520at%2520a%2520mountain%2520stream%252C%2520instructor%2520demonstrating%2520techniques%252C%2520beautiful%2520mountain%2520scenery%252C%2520specialized%2520fly%2520fishing%2520equipment%252C%2520clear%2520water%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event7&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">06/12/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Fly Fishing Workshop</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">Learn how to use artificial lures effectively with expert Tran Duc Phuong, who has over 20 years of professional fishing experience.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Yen Stream, Ba Vi, Hanoi</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">18/25 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 8 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=boat%2520fishing%2520competition%2520on%2520a%2520large%2520lake%252C%2520multiple%2520boats%2520with%2520fishermen%252C%2520competitive%2520atmosphere%252C%2520beautiful%2520scenery%252C%2520sunny%2520day%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event8&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">06/20/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Boat Fishing Tournament</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">Experience boat fishing at Dau Tieng Lake, one of the largest freshwater lakes in Vietnam with diverse fish species.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Dau Tieng Lake, Tay Ninh</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">30/40 people</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Event 9 -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fishing%2520equipment%2520exhibition%252C%2520various%2520fishing%2520gear%2520displayed%2520in%2520booths%252C%2520vendors%2520and%2520visitors%252C%2520indoor%2520exhibition%2520hall%252C%2520professional%2520setting%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event9&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">07/15/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Fishing Equipment Exhibition 2025</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">An exhibition featuring over 50 top domestic and international fishing equipment brands, showcasing the latest products.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Saigon Exhibition and Convention Center (SECC)</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Unlimited</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                    <!-- Duplicate Event 9 (as in original code) -->
-                    <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://readdy.ai/api/search-image?query=fishing%2520equipment%2520exhibition%252C%2520various%2520fishing%2520gear%2520displayed%2520in%2520booths%252C%2520vendors%2520and%2520visitors%252C%2520indoor%2520exhibition%2520hall%252C%2520professional%2520setting%252C%2520high%2520quality%2520photography&width=400&height=240&seq=event9&orientation=landscape"
-                                 alt="Fishing Event" class="w-full h-full object-cover object-top">
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-blue-100 text-primary text-xs px-3 py-1 rounded-full">Upcoming</span>
-                                <span class="text-sm text-gray-500">07/15/2025</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Fishing Equipment Exhibition 2025</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">An exhibition featuring over 50 top domestic and international fishing equipment brands, showcasing the latest products.</p>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-map-pin-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Saigon Exhibition and Convention Center (SECC)</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-5 h-5 flex items-center justify-center text-gray-500">
-                                        <i class="ri-user-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-sm text-gray-500">Unlimited</span>
-                                </div>
-                            </div>
-                            <!-- Event card button translation -->
-                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-button whitespace-nowrap">Đăng Ký Tham Gia</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Pagination -->
-                <div class="flex justify-between items-center">
-                    <div class="text-sm text-gray-600">Hiển thị 1-9 trong số 42 sự kiện</div>
-                    <div class="flex items-center gap-2">
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-left-s-line"></i>
-                        </button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">1</button>
-                        <button
-                            class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">2</button>
-                        <button
-                            class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">3</button>
-                        <button
-                            class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">4</button>
-                        <button
-                            class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">5</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-gray-600">Hiển thị:</span>
-                        <div class="relative">
-                            <select
-                                class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                <option value="9">9</option>
-                                <option value="18">18</option>
-                                <option value="27">27</option>
-                                <option value="36">36</option>
-                            </select>
-                            <div
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400 pointer-events-none">
-                                <i class="ri-arrow-down-s-line"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
+
         <!-- Footer -->
         <footer class="bg-gray-800 text-white pt-12 pb-6">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                    <!-- About section -->
                     <div>
                         <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
                         <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
@@ -567,33 +306,30 @@
                             </a>
                         </div>
                     </div>
-                    <!-- Quick Links -->
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                        <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Feed</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li> 
-                            <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Rankings</a></li>
+                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
+                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
+                            <li><a href="KnowledgeFish" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
+                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
                         </ul>
                     </div>
-                    <!-- Support -->
                     <div>
-                        <h3 class="text-lg font-bold mb-4">Support</h3>
+                        <h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Terms of Use</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Return Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Trung Tâm Trợ Giúp</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Bảo Mật</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Điều Khoản Sử Dụng</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Chính Sách Đổi Trả</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Câu Hỏi Thường Gặp</a></li>
                         </ul>
                     </div>
-                    <!-- Payment Methods -->
                     <div>
                         <div class="mt-4">
-                            <h4 class="text-sm font-medium mb-2">Payment Methods</h4>
+                            <h4 class="text-sm font-medium mb-2">Phương Thức Thanh Toán</h4>
                             <div class="flex space-x-3">
                                 <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
                                     <i class="ri-visa-fill text-blue-800 text-lg"></i>
@@ -612,10 +348,44 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-700 pt-6">
-                    <p class="text-center text-gray-500 text-sm">© 2025 Vietnam Fishing Community. All rights reserved.</p>
+                    <p class="text-center text-gray-500 text-sm">© 2025 Cộng Đồng Câu Cá Việt Nam. Đã đăng ký bản quyền.</p>
                 </div>
             </div>
         </footer>
 
+        <script>
+            let registrationUrl = '';
+            let cancelUrl = '';
+
+            function showRegisterModal(url, eventTitle) {
+                registrationUrl = url;
+                document.getElementById('eventTitle').textContent = eventTitle;
+                document.getElementById('registerModal').classList.remove('hidden');
+            }
+
+            function showCancelModal(url, eventTitle) {
+                cancelUrl = url;
+                document.getElementById('cancelEventTitle').textContent = eventTitle;
+                document.getElementById('cancelModal').classList.remove('hidden');
+            }
+
+            document.getElementById('cancelButton').addEventListener('click', () => {
+                document.getElementById('registerModal').classList.add('hidden');
+            });
+
+            document.getElementById('confirmButton').addEventListener('click', () => {
+                window.location.href = registrationUrl;
+                document.getElementById('registerModal').classList.add('hidden');
+            });
+
+            document.getElementById('cancelCancelButton').addEventListener('click', () => {
+                document.getElementById('cancelModal').classList.add('hidden');
+            });
+
+            document.getElementById('confirmCancelButton').addEventListener('click', () => {
+                window.location.href = cancelUrl;
+                document.getElementById('cancelModal').classList.add('hidden');
+            });
+        </script>
     </body>
 </html>

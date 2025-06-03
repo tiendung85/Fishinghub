@@ -18,23 +18,39 @@ public class KnowledgeFishServlet extends HttpServlet {
             throws ServletException, IOException {
         int page = 1;
         int pageSize = 8;
-        if (request.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(request.getParameter("page"));
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
+        String difficulty = request.getParameter("difficulty");
 
         FishSpeciesDAO dao = new FishSpeciesDAO();
         try {
-            List<FishSpecies> fishList = dao.getFishSpeciesByPage(page, pageSize);
-            int totalFish = dao.getTotalFishSpecies();
-            int totalPages = (int) Math.ceil((double) totalFish / pageSize);
-
+            List<FishSpecies> fishList;
+            int totalPages = 1;
+            if (difficulty != null) {
+                // Lọc theo độ khó, không phân trang
+                if (difficulty.equals("hard")) {
+                    fishList = dao.getFishByDifficulty(3, 4);
+                } else if (difficulty.equals("easy")) {
+                    fishList = dao.getFishByDifficulty(1, 2);
+                } else {
+                    fishList = dao.getAllFishSpecies();
+                }
+                request.setAttribute("currentPage", 1);
+                request.setAttribute("totalPages", 1);
+            } else {
+                // Phân trang như cũ
+                if (request.getParameter("page") != null) {
+                    try {
+                        page = Integer.parseInt(request.getParameter("page"));
+                    } catch (NumberFormatException e) {
+                        page = 1;
+                    }
+                }
+                fishList = dao.getFishSpeciesByPage(page, pageSize);
+                int totalFish = dao.getTotalFishSpecies();
+                totalPages = (int) Math.ceil((double) totalFish / pageSize);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
+            }
             request.setAttribute("fishList", fishList);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", totalPages);
         } catch (Exception e) {
             e.printStackTrace();
         }

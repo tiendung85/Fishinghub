@@ -574,8 +574,8 @@
         </footer>
 
         <!-- Scripts -->
-      <script> 
-        // Dialog control
+  <script>
+// Dialog control
 const createPostBtn = document.querySelector('button:has(.ri-add-line)');
 const createPostDialog = document.getElementById('createPostDialog');
 
@@ -592,6 +592,9 @@ function closeCreatePostDialog() {
     // Reset file inputs and previews when closing the dialog
     removeAllImages();
     removeAllVideos();
+    // Reset form fields
+    const form = createPostDialog.querySelector('form');
+    form.reset();
 }
 
 createPostDialog.addEventListener('click', (e) => {
@@ -623,7 +626,7 @@ function previewImages(event) {
         // Create preview for each file
         selectedImageFiles.forEach((file, index) => {
             const previewDiv = document.createElement('div');
-            previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square'; // Thay đổi ở đây
+            previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square';
             
             // Create image preview
             const img = document.createElement('img');
@@ -694,7 +697,7 @@ function previewVideos(event) {
             const videoURL = URL.createObjectURL(file);
             
             const previewDiv = document.createElement('div');
-            previewDiv.className = 'relative flex-shrink-0 w-[400px]'; // Thay đổi ở đây
+            previewDiv.className = 'relative flex-shrink-0 w-[400px]';
             
             const videoWrapper = document.createElement('div');
             videoWrapper.className = 'aspect-video rounded-lg bg-black overflow-hidden';
@@ -733,7 +736,7 @@ function previewVideos(event) {
     }
 }
 
-// Function to update video input with current selectedVideoFiles
+
 function updateVideoInput() {
     const videoInput = document.getElementById('videoInput');
     const dataTransfer = new DataTransfer();
@@ -741,7 +744,7 @@ function updateVideoInput() {
     videoInput.files = dataTransfer.files;
 }
 
-// Function to remove all images
+
 function removeAllImages() {
     selectedImageFiles = [];
     const container = document.getElementById('imagePreviewContainer');
@@ -751,7 +754,7 @@ function removeAllImages() {
     document.getElementById('imageInput').value = '';
 }
 
-// Function to remove all videos
+
 function removeAllVideos() {
     const container = document.getElementById('videoPreviewContainer');
     const gridContainer = container.querySelector('div');
@@ -769,10 +772,72 @@ function removeAllVideos() {
 document.getElementById('imageInput').addEventListener('change', previewImages);
 document.getElementById('videoInput').addEventListener('change', previewVideos);
 
-// Reset previews when form is submitted
-document.querySelector('form').addEventListener('submit', function() {
-   console.log('Selected images:', selectedImageFiles);
-    console.log('Selected videos:', selectedVideoFiles);
+// Validate form before submission
+function validatePostForm(form) {
+    const topicInput = form.querySelector('input[name="topic"]');
+    const titleInput = form.querySelector('textarea[name="title"]');
+    const contentInput = form.querySelector('textarea[name="content"]');
+    let isValid = true;
+    let errorMessage = '';
+
+   
+    [topicInput, titleInput, contentInput].forEach(input => {
+        input.classList.remove('border-red-500');
+        const errorDiv = input.nextElementSibling;
+        if (errorDiv && errorDiv.classList.contains('error-message')) {
+            errorDiv.remove();
+        }
+    });
+
+    // Check if topic is empty
+    if (!topicInput.value.trim()) {
+        isValid = false;
+        errorMessage += 'Vui lòng nhập chủ đề.\n';
+        topicInput.classList.add('border-red-500');
+        topicInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập chủ đề</div>');
+    }
+
+    // Check if title is empty
+    if (!titleInput.value.trim()) {
+        isValid = false;
+        errorMessage += 'Vui lòng nhập tiêu đề.\n';
+        titleInput.classList.add('border-red-500');
+        titleInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập tiêu đề</div>');
+    }
+
+    // Check if content is empty
+    if (!contentInput.value.trim()) {
+        isValid = false;
+        errorMessage += 'Vui lòng nhập nội dung.\n';
+        contentInput.classList.add('border-red-500');
+        contentInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập nội dung</div>');
+    }
+
+    // Optionally, check for images or videos if required
+    // if (selectedImageFiles.length === 0 && selectedVideoFiles.length === 0) {
+    //     isValid = false;
+    //     errorMessage += 'Vui lòng chọn ít nhất một hình ảnh hoặc video.\n';
+    // }
+
+    if (!isValid) {
+        alert(errorMessage);
+    }
+
+    return isValid;
+}
+
+// Handle form submission
+document.querySelector('#createPostDialog form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    if (validatePostForm(this)) {
+        // Log selected files for debugging
+        console.log('Selected images:', selectedImageFiles);
+        console.log('Selected videos:', selectedVideoFiles);
+        
+        // Submit the form if validation passes
+        this.submit();
+    }
 });
 
 // Image modal functions
@@ -806,7 +871,6 @@ searchInput.addEventListener('keyup', function(e) {
     if (e.key === 'Enter') {
         const searchTerm = this.value.trim();
         if (searchTerm) {
-            // Sử dụng window.location.assign thay vì window.location.href
             window.location.assign('NewFeed.jsp?topic=' + encodeURIComponent(searchTerm));
         } else {
             window.location.assign('NewFeed.jsp');
@@ -841,6 +905,7 @@ function initReadMore() {
         }
     });
 }
+
 function toggleContent(button) {
     const wrapper = button.closest('.content-wrapper');
     const content = wrapper.querySelector('.content-text');
@@ -857,7 +922,6 @@ function toggleContent(button) {
         fade.style.display = 'block';
     }
 }
-
 
 // Load more comments function
 function loadMoreComments(button) {
@@ -884,11 +948,9 @@ function loadMoreComments(button) {
     buttonContainer.appendChild(collapseButton);
 }
 
-
 function collapseComments(button, postId, commentCount) {
     const commentsContainer = button.closest('.comments-container');
     const allComments = Array.from(commentsContainer.querySelectorAll('.comment-item'));
-  
     
     // Hiển thị 2 bình luận mới nhất, ẩn các bình luận còn lại
     allComments.forEach((comment, index) => {
@@ -912,8 +974,6 @@ function collapseComments(button, postId, commentCount) {
     buttonContainer.innerHTML = '';
     buttonContainer.appendChild(loadMoreButton);
 }
-
-
 
 // Toggle Like
 function toggleLike(postId, button) {
@@ -977,9 +1037,9 @@ function submitComment(event, postId, form) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const response = xhr.responseText.trim();
             if (response === 'success') {
-                // Reload page with post ID as hash
-            window.location.href = `NewFeed.jsp#post-${postId}`;
-            window.location.reload();
+               
+                window.location.href = `NewFeed.jsp#post-${postId}`;
+                window.location.reload();
             } else if (response === 'login_required') {
                 window.location.href = 'Login.jsp';
             } else {
@@ -989,7 +1049,6 @@ function submitComment(event, postId, form) {
     };
     
     xhr.send('postId=' + postId + '&userId=' + userId + '&content=' + encodeURIComponent(content));
-    
 }
 
 // Initialize on page load
@@ -1005,16 +1064,16 @@ window.addEventListener('resize', () => {
     setTimeout(initReadMore, 100);
 });
 
-// Add this to your existing DOMContentLoaded event listener
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if there's a hash in the URL
+    
     if (window.location.hash) {
         const postId = window.location.hash;
         const post = document.querySelector(postId);
         if (post) {
-            // Scroll to the post with smooth behavior
+           
             post.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Add highlight effect
+           
             post.classList.add('bg-blue-50');
             setTimeout(() => {
                 post.classList.remove('bg-blue-50');
@@ -1022,10 +1081,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
-
-
-
-      </script>
+</script>
   
 </body>
 </html>

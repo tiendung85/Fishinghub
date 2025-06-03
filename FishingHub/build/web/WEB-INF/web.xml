@@ -3,32 +3,90 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     
-   <servlet>
+       <servlet>
         <servlet-name>EventController</servlet-name>
         <servlet-class>controller.EventController</servlet-class>
     </servlet>
+    
+    <servlet>
+        <servlet-name>EventListController</servlet-name>
+        <servlet-class>controller.EventListController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>controller.RegisterController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>RegisterEventController</servlet-name>
+        <servlet-class>controller.RegisterEventController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SearchEventController</servlet-name>
+        <servlet-class>controller.SearchEventController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ProductServlet</servlet-name>
+        <servlet-class>controller.ProductServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>LoginController</servlet-name>
+        <servlet-class>controller.LoginController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>controller.LogoutController</servlet-class>
+    </servlet>
+
+    <!-- Servlet m  appings -->
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/Register</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>EventController</servlet-name>
-        <url-pattern>/EventController</url-pattern>
-    </servlet-mapping> 
-    
-   <servlet>
-    <servlet-name>LoginController</servlet-name>
-    <servlet-class>controller.LoginController</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>LoginController</servlet-name>
-    <url-pattern>/login</url-pattern>
-</servlet-mapping>
-<servlet>
-    <servlet-name>LogoutController</servlet-name>
-    <servlet-class>controller.LogoutController</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>LogoutController</servlet-name>
-    <url-pattern>/logout</url-pattern>
-</servlet-mapping>
-    
+        <url-pattern>/Event</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>EventListController</servlet-name>
+        <url-pattern>/EventList</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LoginController</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RegisterEventController</servlet-name>
+        <url-pattern>/RegisterEvent</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SearchEventController</servlet-name>
+        <url-pattern>/SearchEvent</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ProductServlet</servlet-name>
+        <url-pattern>/ProductServlet</url-pattern>
+    </servlet-mapping>
+    <context-param>
+    <param-name>web.url</param-name>
+    <param-value>http://localhost:9999</param-value>
+</context-param>
     <welcome-file-list>
         <welcome-file>Home.jsp</welcome-file>
     </welcome-file-list>
