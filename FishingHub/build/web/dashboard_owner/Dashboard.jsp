@@ -151,7 +151,7 @@
                     <div
                         class="flex items-center justify-center h-16 px-4 border-b border-gray-200"
                         >
-                        <h1 class="text-2xl font-['Pacifico'] text-primary">logo</h1>
+                        <h1 class="text-2xl font-['Pacifico'] text-primary">FishingHub</h1>
                     </div>
                     <div
                         class="flex flex-col flex-grow px-2 py-4 overflow-y-auto custom-scrollbar"

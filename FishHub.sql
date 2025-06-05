@@ -12,9 +12,9 @@ GO
 DROP DATABASE FishingHub;
 GO
 
-CREATE DATABASE FishingHub;
+CREATE DATABASE FishingHub1;
 GO
-USE FishingHub;
+USE FishingHub1;
 GO
 
 -- Roles
@@ -164,7 +164,7 @@ CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(255) NOT NULL,
 	LakeName NVARCHAR(255), 
-    Description TEXT,
+    Description NVARCHAR(MAX),
     Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,

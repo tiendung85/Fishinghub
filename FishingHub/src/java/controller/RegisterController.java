@@ -72,8 +72,8 @@ public class RegisterController extends HttpServlet {
         }
 
         // Mapping role string sang roleId
-        int roleId = 2; // mặc định user
-        if ("fish_owner".equals(role)) roleId = 3;
+        int roleId = 1; // mặc định user
+        if ("fish_owner".equals(role)) roleId = 2;
 
         Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location);
 

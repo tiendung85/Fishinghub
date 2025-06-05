@@ -3,41 +3,106 @@
 <head>
     <title>Quên mật khẩu</title>
     <style>
-        body { background: #f6f7fb; font-family: 'Segoe UI', Arial, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #6b73ff 0%, #00ddeb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
         .center-box {
-            width: 350px;
-            margin: 100px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 24px 0 rgba(44,62,80,.12);
-            padding: 32px 28px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.6s ease-in-out;
             text-align: center;
         }
-        .center-box h2 { margin-bottom: 20px; color: #2d4fa0; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .center-box h2 {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+            font-size: 24px;
+        }
         .center-box input {
             width: 100%;
-            padding: 12px;
+            padding: 0.75rem;
             margin: 10px 0 16px 0;
-            border-radius: 6px;
-            border: 1px solid #dbe2ef;
-            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #fff;
             font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .center-box input:focus {
+            outline: none;
+            border-color: #6b73ff;
+            box-shadow: 0 0 0 0.2rem rgba(107, 115, 255, 0.25);
+            transform: scale(1.02);
         }
         .center-box button {
             width: 100%;
-            padding: 12px;
-            background: #3468f7;
+            padding: 0.75rem;
+            background: linear-gradient(90deg, #6b73ff, #00ddeb);
             border: none;
             color: #fff;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .center-box a { color: #2d4fa0; font-size: 14px; text-decoration: none;}
-        .error { color: #dc3545; font-size: 14px; margin-bottom: 8px; }
-        .msg { color: #119750; font-size: 14px; margin-bottom: 8px;}
+        .center-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .center-box button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .center-box a {
+            color: #6b73ff;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .center-box a:hover {
+            color: #00ddeb;
+            text-decoration: underline;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: shake 0.3s ease-in-out;
+        }
+        .msg {
+            color: #119750;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
