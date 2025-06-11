@@ -187,5 +187,7 @@ public class FishSpeciesDAO extends DBConnect {
         }
         return list;
     }
+
+    
 }
 // Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...

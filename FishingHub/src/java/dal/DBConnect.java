@@ -11,7 +11,7 @@ public class DBConnect {
     
  
     private String userID = "sa";
-    private String password = "1234567";
+    private String password = "123";
 
     public DBConnect() {
  try {
