@@ -157,4 +157,18 @@ public class OrderDAO extends DBConnect {
         }
         return list;
     }
+
+    public boolean deleteOrder(int orderId) {
+        String sql = "DELETE FROM Orders WHERE Id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Đã hoàn tác: xóa hàm deleteOrdersWithStatus
 }

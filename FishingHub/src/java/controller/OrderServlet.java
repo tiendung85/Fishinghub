@@ -87,10 +87,19 @@ public class OrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String orderIdStr = request.getParameter("orderId");
-        String statusIdStr = request.getParameter("statusId");
+        String action = request.getParameter("action");
         response.setContentType("application/json");
         try {
+            if ("delete".equals(action)) {
+                String orderIdStr = request.getParameter("orderId");
+                int orderId = Integer.parseInt(orderIdStr);
+                OrderDAO dao = new OrderDAO();
+                boolean ok = dao.deleteOrder(orderId);
+                response.getWriter().write("{\"success\": " + ok + "}");
+                return;
+            }
+            String orderIdStr = request.getParameter("orderId");
+            String statusIdStr = request.getParameter("statusId");
             int orderId = Integer.parseInt(orderIdStr);
             int statusId = Integer.parseInt(statusIdStr);
             OrderDAO dao = new OrderDAO();

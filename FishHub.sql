@@ -1,5 +1,4 @@
-﻿
-USE master;
+﻿USE master;
 GO
 
 
@@ -23,7 +22,8 @@ CREATE TABLE Role (
     RoleName NVARCHAR(50) NOT NULL
 );
 
-
+select * from Role
+select * from Users
 
 -- Users
 CREATE TABLE Users (
@@ -253,6 +253,8 @@ CREATE TABLE CommentReply (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
 
+select * from FishSpecies
+select * from FishSpeciesImages 
 -- FishSpecies
 CREATE TABLE FishSpecies (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -276,7 +278,6 @@ CREATE TABLE FishSpecies (
     Tips NVARCHAR(MAX)
 );
 
-
 CREATE TABLE FishSpeciesImages (
     Id INT PRIMARY KEY IDENTITY(1,1),
     FishSpeciesId INT NOT NULL,
@@ -291,12 +292,12 @@ CREATE TABLE FishSpeciesImages (
 
 -- Cá chép
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá chép', N'Cyprinus carpio', N'Cá nước ngọt phổ biến, có giá trị cao.', N'assets/img/FishKnowledge-images/cachep_0.png',
+(N'Cá chép', N'Cyprinus carpio', N'Cá nước ngọt phổ biến, có giá trị cao.',
 N'Giun, ngô, khoai', N'Mùa thu', N'Sáng sớm, chiều tối', N'Ao, hồ, sông tĩnh', N'Câu đáy, câu lục',
 2, 2.5, 35,
 N'Nước ngọt tĩnh', N'Hiền, ăn tầng đáy', N'Sử dụng mồi thơm, tránh gây tiếng động');
@@ -315,12 +316,12 @@ VALUES
 
 -- Cá lóc
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá lóc', N'Channa striata', N'Cá săn mồi mạnh mẽ, rất phổ biến.', N'assets/img/FishKnowledge-images/caloc_0.png',
+(N'Cá lóc', N'Channa striata', N'Cá săn mồi mạnh mẽ, rất phổ biến.',
 N'Ếch, nhái, cá nhỏ', N'Mùa mưa', N'Sáng sớm', N'Ruộng ngập, ao cạn, mương', N'Câu lure, rê mồi sống',
 3, 1.2, 30,
 N'Nước ngọt, nông', N'Áp sát bờ, săn mồi nhanh', N'Dùng mồi giả nhái, rê sát cỏ');
@@ -339,12 +340,12 @@ VALUES
 
 -- Cá rô đồng
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá rô đồng', N'Anabas testudineus', N'Loài cá nhỏ nhưng khoẻ, ngon.', N'assets/img/FishKnowledge-images/carodong_0.png',
+(N'Cá rô đồng', N'Anabas testudineus', N'Loài cá nhỏ nhưng khoẻ, ngon.',
 N'Giun, trùn, cám', N'Mùa hè', N'Chiều tối', N'Đồng ruộng, ao nhỏ', N'Câu đơn, lưỡi nhỏ',
 1, 0.2, 15,
 N'Nước tù, ruộng ngập', N'Lẩn trốn tốt, phản xạ nhanh', N'Dùng lưỡi nhỏ, cước mảnh');
@@ -363,12 +364,12 @@ VALUES
 
 -- Cá trắm
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá trắm', N'Ctenopharyngodon idella', N'Cá ăn cỏ, kích thước lớn.', N'assets/img/FishKnowledge-images/catram_0.png',
+(N'Cá trắm', N'Ctenopharyngodon idella', N'Cá ăn cỏ, kích thước lớn.',
 N'Lá mía, rau muống, cám', N'Mùa hè', N'Trưa', N'Hồ lớn, ao nuôi', N'Câu nổi, câu bèo',
 3, 4.0, 60,
 N'Hồ lớn, sông chậm', N'Ăn thực vật, hiền', N'Dùng rau tươi làm mồi');
@@ -387,15 +388,17 @@ VALUES
 
 -- Cá trê
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá trê', N'Clarias batrachus', N'Cá da trơn, hoạt động về đêm.', N'assets/img/FishKnowledge-images/catre_0.png',
+(N'Cá trê', N'Clarias batrachus', N'Cá da trơn, hoạt động về đêm.',
 N'Giun, lòng gà, mồi tanh', N'Mùa mưa', N'Tối', N'Ao tù, kênh mương', N'Câu đáy, câu đơn',
 2, 1.0, 30,
 N'Nước tù, đáy bùn', N'Đi săn đêm, thích mùi tanh', N'Dùng mồi ủ tanh, tránh ánh sáng');
+
+
 
 -- Ảnh chính cá trê
 INSERT INTO FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain)
@@ -410,12 +413,12 @@ VALUES
 
 -- Cá ngạnh
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá ngạnh', N'Mystus spp.', N'Cá da trơn có râu dài.', N'assets/img/FishKnowledge-images/canghanh_0.png',
+(N'Cá ngạnh', N'Mystus spp.', N'Cá da trơn có râu dài.',
 N'Giun, cá nhỏ, mồi trộn', N'Mùa mưa', N'Ban đêm', N'Sông suối sâu', N'Câu đáy',
 3, 0.8, 25,
 N'Sông sâu, đáy bùn', N'Hoạt động mạnh ban đêm', N'Mồi ủ kỹ, dùng chì nặng');
@@ -433,12 +436,12 @@ VALUES
 
 -- Cá tra
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá tra', N'Pangasius hypophthalmus', N'Cá nuôi phổ biến, thịt trắng ngon.', N'assets/img/FishKnowledge-images/catra_0.png',
+(N'Cá tra', N'Pangasius hypophthalmus', N'Cá nuôi phổ biến, thịt trắng ngon.',
 N'Cám viên, cá nhỏ', N'Quanh năm', N'Sáng sớm', N'Ao nuôi, hồ lớn', N'Câu lục, câu đáy',
 2, 2.0, 45,
 N'Nước tĩnh, ao hồ', N'Ăn tầng giữa và đáy', N'Mồi cám thơm, dùng lưỡi to');
@@ -456,12 +459,12 @@ VALUES
 
 -- Cá chim trắng nước ngọt
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá chim trắng nước ngọt', N'Piaractus brachypomus', N'Cá nước ngọt lai nuôi, phàm ăn.', N'assets/img/FishKnowledge-images/cachim_0.png',
+(N'Cá chim trắng nước ngọt', N'Piaractus brachypomus', N'Cá nước ngọt lai nuôi, phàm ăn.',
 N'Cám viên, chuối, ngô', N'Mùa hè', N'Sáng và chiều', N'Hồ dịch vụ', N'Câu lục, câu đơn',
 2, 3.0, 40,
 N'Ao hồ, nước tĩnh', N'Ăn tạp, bơi nhanh', N'Mồi mềm, móc chắc lưỡi');
@@ -479,12 +482,12 @@ VALUES
 
 -- Cá lăng
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá lăng', N'Bagarius yarrelli', N'Cá lớn sống vùng nước chảy mạnh.', N'assets/img/FishKnowledge-images/calang_0.png',
+(N'Cá lăng', N'Bagarius yarrelli', N'Cá lớn sống vùng nước chảy mạnh.',
 N'Cá nhỏ, mồi tanh', N'Mùa mưa', N'Tối', N'Sông sâu, thác ghềnh', N'Câu đáy',
 4, 5.0, 70,
 N'Sông lớn, nước xiết', N'Săn mồi mạnh về đêm', N'Sử dụng dây chắc, cần khỏe');
@@ -502,12 +505,12 @@ VALUES
 
 -- Cá chày
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá chày', N'Hemibagrus spp.', N'Cá hoang dã, ít gặp.', N'assets/img/FishKnowledge-images/cachay_0.png',
+(N'Cá chày', N'Hemibagrus spp.', N'Cá hoang dã, ít gặp.',
 N'Giun, cám thơm', N'Mùa xuân', N'Sáng sớm', N'Suối nhỏ, khe đá', N'Câu rê, câu đáy',
 2, 1.0, 30,
 N'Suối sạch, đáy cát', N'Đi theo bầy nhỏ', N'Mồi nhẹ, không ồn ào');
@@ -525,12 +528,12 @@ VALUES
 
 -- Cá sặc
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá sặc', N'Trichogaster spp.', N'Cá nhỏ, phổ biến ở miền Tây.', N'assets/img/FishKnowledge-images/casac_0.png',
+(N'Cá sặc', N'Trichogaster spp.', N'Cá nhỏ, phổ biến ở miền Tây.',
 N'Cám, trùn', N'Mùa hè', N'Chiều', N'Ruộng, ao nhỏ', N'Câu đơn',
 1, 0.3, 12,
 N'Nước cạn, ao tù', N'Bơi tầng giữa', N'Mồi nhỏ, cần nhẹ');
@@ -548,12 +551,12 @@ VALUES
 
 -- Cá bống
 INSERT INTO FishSpecies (
-    CommonName, ScientificName, Description, MainImageUrl,
+    CommonName, ScientificName, Description,
     Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques,
     DifficultyLevel, AverageWeightKg, AverageLengthCm,
     Habitat, Behavior, Tips
 ) VALUES
-(N'Cá bống', N'Oxyeleotris marmorata', N'Cá đáy, thịt chắc, phổ biến ở sông ngòi.', N'assets/img/FishKnowledge-images/cabong_0.png',
+(N'Cá bống', N'Oxyeleotris marmorata', N'Cá đáy, thịt chắc, phổ biến ở sông ngòi.',
 N'Tép, giun, mồi bốc mùi', N'Mùa mưa', N'Tối', N'Sông, kênh, đáy bùn', N'Câu đáy, câu đơn',
 2, 0.5, 20,
 N'Đáy sông, cát bùn', N'Ẩn nấp tốt', N'Dùng chì chìm, rê sát đáy');
@@ -570,9 +573,10 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
 DELETE FROM FishSpecies;
-
+DELETE FROM FishSpeciesImages;
 DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
 
+DBCC CHECKIDENT ('FishSpeciesImages', RESEED, 0);
 
 
 

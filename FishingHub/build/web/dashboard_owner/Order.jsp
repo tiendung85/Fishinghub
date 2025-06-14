@@ -394,7 +394,7 @@
                                                                         <c:forEach var="status" items="${statuses}">
                                                                             <li>
                                                                                 <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                                                   onclick="confirmStatusChange(<c:out value='${status.statusID}'/>, <c:out value='${order.id}'/>, '<c:out value='${status.statusName}'/>')">
+                                                                                   onclick="confirmStatusChange(${status.statusID}, ${order.id}, '${status.statusName}')">
                                                                                 <c:out value='${status.statusName}'/>
                                                                             </a>
                                                                         </li>
