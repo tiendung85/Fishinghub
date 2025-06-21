@@ -317,5 +317,75 @@ public class FishSpeciesDAO extends DBConnect {
         }
     }
 
+    // Lấy danh sách cá có phân trang, tìm kiếm theo tên thường gọi và lọc độ khó
+    public List<FishSpecies> getFishSpeciesByPageAndFilter(int page, int pageSize, String search, Integer difficulty) throws SQLException {
+        List<FishSpecies> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM FishSpecies WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND CommonName LIKE ?");
+            params.add("%" + search.trim() + "%");
+        }
+        if (difficulty != null) {
+            sql.append(" AND DifficultyLevel = ?");
+            params.add(difficulty);
+        }
+        sql.append(" ORDER BY Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add((page - 1) * pageSize);
+        params.add(pageSize);
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FishSpecies fish = new FishSpecies();
+                fish.setId(rs.getInt("Id"));
+                fish.setCommonName(rs.getString("CommonName"));
+                fish.setScientificName(rs.getString("ScientificName"));
+                fish.setDescription(rs.getString("Description"));
+                fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
+                fish.setBait(rs.getString("Bait"));
+                fish.setBestSeason(rs.getString("BestSeason"));
+                fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
+                fish.setFishingSpots(rs.getString("FishingSpots"));
+                fish.setFishingTechniques(rs.getString("FishingTechniques"));
+                fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
+                fish.setAverageWeightKg(rs.getDouble("AverageWeightKg"));
+                fish.setLength(rs.getDouble("AverageLengthCm"));
+                fish.setHabitat(rs.getString("Habitat"));
+                fish.setBehavior(rs.getString("Behavior"));
+                fish.setTips(rs.getString("Tips"));
+                fish.setImages(getImagesByFishSpeciesId(fish.getId()));
+                list.add(fish);
+            }
+        }
+        return list;
+    }
+
+    // Đếm tổng số cá theo filter
+    public int getTotalFishSpeciesByFilter(String search, Integer difficulty) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM FishSpecies WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND CommonName LIKE ?");
+            params.add("%" + search.trim() + "%");
+        }
+        if (difficulty != null) {
+            sql.append(" AND DifficultyLevel = ?");
+            params.add(difficulty);
+        }
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
 }
 // Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...

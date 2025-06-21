@@ -15,7 +15,7 @@ public class DBConnect {
 
     public DBConnect() {
  try {
-        String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
+        String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub1;trustServerCertificate=true;";
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         connection = DriverManager.getConnection(url, userID, password);
         System.out.println("Kết nối thành công đến SQL Server");

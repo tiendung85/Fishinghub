@@ -332,20 +332,22 @@
                 <div class="flex-1 p-6 overflow-y-auto">
                     <!-- Search and Filter -->
                     <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center space-x-4">
+                        <form class="flex items-center space-x-4" method="get" action="${pageContext.request.contextPath}/FishManage">
                             <div class="relative">
-                                <input type="text" placeholder="Tìm kiếm..."
+                                <input type="text" name="search" value="${param.search}" placeholder="Tìm kiếm..."
                                        class="w-64 px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
                                 <i class="ri-search-line absolute right-3 top-2.5 text-gray-400"></i>
                             </div>
-                            <select
-                                class="px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-                                <option value="">Tất cả độ khó</option>
-                                <option value="1">Dễ</option>
-                                <option value="2">Trung bình</option>
-                                <option value="3">Khó</option>
+                            <select name="difficulty"
+                                class="px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                onchange="this.form.submit()">
+                                <option value="" ${empty param.difficulty ? 'selected' : ''}>Tất cả độ khó</option>
+                                <option value="1" ${param.difficulty == '1' ? 'selected' : ''}>Dễ</option>
+                                <option value="2" ${param.difficulty == '2' ? 'selected' : ''}>Trung bình</option>
+                                <option value="3" ${param.difficulty == '3' ? 'selected' : ''}>Khó</option>
                             </select>
-                        </div>
+                            <button type="submit" class="hidden"></button>
+                        </form>
                     </div>
                     <!-- Fish Species Table -->
                     <div class="bg-white rounded-lg shadow">

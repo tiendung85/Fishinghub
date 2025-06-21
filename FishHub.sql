@@ -25,6 +25,8 @@ CREATE TABLE Role (
 select * from Role
 select * from Users
 
+
+
 -- Users
 CREATE TABLE Users (
     UserId INT PRIMARY KEY IDENTITY,
@@ -40,6 +42,20 @@ CREATE TABLE Users (
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES (
+    N'Nguyễn Văn Admin',         -- FullName
+    N'admin@example.com',        -- Email
+    N'0912345678',               -- Phone
+    N'123',      -- Password (nên là hash nếu ứng dụng thật)
+    NULL,                        -- GoogleId (bỏ qua nếu không login bằng Google)
+    3,                           -- RoleId (giả sử 1 là Admin)
+    N'Nam',                      -- Gender
+    '1990-01-01',                -- DateOfBirth
+    N'Hà Nội'                    -- Location
+);
+
 
 -- Categories
 CREATE TABLE Category (
@@ -581,24 +597,60 @@ DBCC CHECKIDENT ('FishSpeciesImages', RESEED, 0);
 
 
 -- Fish
-CREATE TABLE Fish (
-    FishId INT PRIMARY KEY IDENTITY,
-    Name NVARCHAR(255),
-    Point INT NOT NULL,
+CREATE TABLE DifficultyPoint (
+    DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
+    Point INT NOT NULL                -- Ví dụ: 20, 50, 100
+);
+
+INSERT INTO DifficultyPoint (DifficultyLevel, Point)
+VALUES 
+(1, 20),
+(2, 40),
+(3, 70),
+(4,100);
+
+SELECT 
+    fs.Id AS FishSpeciesId,
+    fs.CommonName,
+    fs.Description,
+    fs.DifficultyLevel,
+    dp.Point
+FROM FishSpecies fs
+JOIN DifficultyPoint dp ON fs.DifficultyLevel = dp.DifficultyLevel
+
+
+CREATE TABLE FishingLake (
+    LakeId INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    Location NVARCHAR(255),
+    OwnerId INT, -- FK đến Users(UserId)
+    FOREIGN KEY (OwnerId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE LakeFish (
+    LakeId INT,
     FishSpeciesId INT,
+	Price FLOAT NOT NULL, --giá loài cá
+    PRIMARY KEY (LakeId, FishSpeciesId),
+    FOREIGN KEY (LakeId) REFERENCES FishingLake(LakeId),
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
+
+DROP TABLE LakeFish;
+DROP TABLE FishingLake;
+
+select * from LakeFish
 
 -- Achievements
 CREATE TABLE Achievement (
     AchievementId INT PRIMARY KEY IDENTITY,
     UserId INT,
-    FishId INT,
+    FishSpeciesId INT,
     Image VARCHAR(255),
     Description TEXT,
     DateAchieved DATE DEFAULT GETDATE(),
     FOREIGN KEY (UserId) REFERENCES Users(UserId),
-    FOREIGN KEY (FishId) REFERENCES Fish(FishId)
+    FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
 
 -- Notifications
@@ -619,6 +671,19 @@ CREATE TABLE password_reset (
 );
 
 
+SELECT 
+    u.UserId,
+    u.FullName,
+    u.Location AS UserLocation,
+    fl.LakeId,
+    fl.Name AS LakeName,
+    fl.Location AS LakeLocation
+FROM 
+    Users u
+LEFT JOIN 
+    FishingLake fl ON u.UserId = fl.OwnerId
+WHERE 
+    u.UserId = UserId AND u.RoleId = 2;
 
 INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
 
