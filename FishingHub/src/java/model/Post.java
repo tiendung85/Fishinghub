@@ -1,7 +1,7 @@
 package model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Post {
@@ -11,7 +11,8 @@ public class Post {
     private String title;
     private String content;
 
-    private Timestamp createdAt;
+    private Date createdAt;
+    private String status;
     private List<String> images;
     private List<String> videos;
 
@@ -20,18 +21,17 @@ public class Post {
         this.videos = new ArrayList<>();
     }
 
-   
-
-    public Post(int userId, String topic, String title, String content, Timestamp createdAt) {
+    public Post(int userId, String topic, String title, String content, Date createdAt) {
         this.userId = userId;
         this.topic = topic;
         this.title = title;
         this.content = content;
 
         this.createdAt = createdAt;
+        this.status = status;
     }
 
-    public Post(int postId, int userId, String topic, String title, String content, Timestamp createdAt) {
+    public Post(int postId, int userId, String topic, String title, String content, Date createdAt) {
         this.postId = postId;
         this.userId = userId;
         this.topic = topic;
@@ -39,6 +39,7 @@ public class Post {
         this.content = content;
 
         this.createdAt = createdAt;
+        this.status = status;
     }
 
     public int getPostId() {
@@ -81,11 +82,11 @@ public class Post {
         this.content = content;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -119,10 +120,19 @@ public class Post {
         this.videos = videos;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Post{" + "postId=" + postId + ", userId=" + userId + ", topic=" + topic + ", title=" + title
-                + ", content=" + content + ", createdAt=" + createdAt + '}';
+                + ", content=" + content + ", createdAt=" + createdAt + ", status=" + status + ", images=" + images
+                + ", videos=" + videos + '}';
     }
 
 }

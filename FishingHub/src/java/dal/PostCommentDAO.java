@@ -53,4 +53,27 @@ public class PostCommentDAO extends DBConnect {
         }
         return 0;
     }
+
+    public boolean deleteComment(int commentId) {
+        String sql = "DELETE FROM PostComment WHERE CommentId = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, commentId);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean editComment(int commentId, String content) {
+        String sql = "UPDATE PostComment SET Content = ? WHERE CommentId = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, content);
+            st.setInt(2, commentId);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

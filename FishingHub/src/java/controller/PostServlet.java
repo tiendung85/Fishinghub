@@ -85,6 +85,7 @@ public class PostServlet extends HttpServlet {
             post.setTitle(title);
             post.setContent(content);
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            post.setStatus("chờ duyệt");
 
             // file uploads (both images and videos)
             for (Part part : request.getParts()) {

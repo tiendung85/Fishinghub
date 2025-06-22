@@ -3,13 +3,13 @@ USE master;
 GO
 
 
-ALTER DATABASE FishingHub
+ALTER DATABASE FishingHub1
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
 
-DROP DATABASE FishingHub;
+DROP DATABASE FishingHub1;
 GO
 
 CREATE DATABASE FishingHub;
@@ -196,6 +196,7 @@ CREATE TABLE Post (
     Title NVARCHAR(255),
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
+	Status NVARCHAR(20) DEFAULT N'chờ duyệt',
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
 
@@ -235,6 +236,7 @@ CREATE TABLE PostLike (
 );
 
 CREATE TABLE CommentLike (
+    ReplyId int ,
     CommentId INT,
     UserId INT,
     LikedAt DATETIME DEFAULT GETDATE(),
@@ -249,8 +251,27 @@ CREATE TABLE CommentReply (
     UserId INT,
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
+	--ParentReplyId INT NULL,
     FOREIGN KEY (CommentId) REFERENCES PostComment(CommentId) ON DELETE CASCADE,
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+);
+
+CREATE TABLE ReplyLike (
+    ReplyId INT,
+    UserId INT,
+    LikedAt DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (ReplyId, UserId),
+    FOREIGN KEY (ReplyId) REFERENCES CommentReply(ReplyId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE SavedPost (
+    UserId INT,                           
+    PostId INT,                             
+    SavedAt DATETIME DEFAULT GETDATE(),     
+    PRIMARY KEY (UserId, PostId),           
+    FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
 
 -- FishSpecies
@@ -619,18 +640,26 @@ CREATE TABLE password_reset (
 INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
 
 INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
-VALUES ('Charlie Le', 'charlie@eample.com', '0933444555', 'hashedpassword3', 'google12345', 1, 'Other', '1985-12-01', 'Da ang'),
+VALUES 
 (N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
 (N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì');
+(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
+
   
 select * from users
 
-select * from image
+
 
 select * from PostComment
+select * from Post
+select * from Image
 
+
+SELECT * FROM Post WHERE Status = N'đã duyệt'
 select * from PostLike
+
+select * from SavedPost
 
 INSERT INTO Category (Name) VALUES
 (N'Shimano'),     -- CategoryId = 1

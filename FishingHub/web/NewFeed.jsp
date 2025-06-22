@@ -9,6 +9,11 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.Date"%>
 <%@page import="java.sql.Timestamp"%>
+<%@page import="dal.PostLikeDAO"%>
+<%@page import="dal.CommentLikeDAO"%>
+
+
+
 <%!
     public String getTimeAgo(Date date) {
         long timeInMillis = new Date().getTime() - date.getTime();
@@ -75,7 +80,7 @@
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center">
                 <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                <!-- Header navigation links -->
+
                  <nav class="hidden md:flex ml-10">
             <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
             <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
@@ -87,7 +92,7 @@
             </div>
 
             <div class="flex items-center space-x-4">
-                <!-- Cart -->
+
                 <div class="relative w-10 h-10 flex items-center justify-center">
                     <button class="text-gray-700 hover:text-primary">
                         <i class="ri-shopping-cart-2-line text-xl"></i>
@@ -164,37 +169,46 @@
                 </div>
             </div>
 
-            <!-- Filters and Tabs -->
+
+          
             <div class="bg-white rounded shadow-sm mb-8">
     <div class="flex border-b border-gray-200">
         <button id="allPostsBtn" class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả Bài Viết</button>
-        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
-        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>
-    </div>
+<button id="savedPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
+<button id="myPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>    </div>
+
 </div>
 
  <!-- Posts List -->
 <div class="space-y-6 max-w-4xl mx-auto" id="postsContainer"> 
-    <% 
-        PostDAO postDAO = new PostDAO();
-        UserDao userDao = new UserDao();
-        PostCommentDAO commentDAO = new PostCommentDAO();
-        String searchTopic = request.getParameter("topic");
-        List<Post> posts;
-        
-        if (searchTopic != null && !searchTopic.trim().isEmpty()) {
-            posts = postDAO.searchPostsByTopic(searchTopic);
-        } else {
-            posts = postDAO.getAllPosts();
-        }
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
-        
-        for(Post post : posts) {
-    %>
-    <div class="bg-white rounded-lg shadow-sm" id="post-<%= post.getPostId() %>"> <!-- Bỏ padding p-8 ở đây -->
-        <!-- Post Wrapper để control padding -->
-        <div class="p-6"> <!-- Thêm wrapper với padding nhỏ hơn -->
+
+<%
+    PostDAO postDAO = new PostDAO();
+    UserDao userDao = new UserDao();
+    PostCommentDAO commentDAO = new PostCommentDAO();
+    String searchTopic = request.getParameter("topic");
+    String tab = request.getParameter("tab");
+    List<Post> posts;
+
+    if ("saved".equals(tab) && currentUser != null) {
+        dal.SavedPostDAO savedDao = new dal.SavedPostDAO();
+        posts = savedDao.getSavedPostsByUser(currentUser.getUserId());
+    } else if ("my".equals(tab) && currentUser != null) {
+        posts = postDAO.getPostsByUser(currentUser.getUserId());
+    } else if (searchTopic != null && !searchTopic.trim().isEmpty()) {
+        posts = postDAO.searchPostsByTopic(searchTopic);
+    } else {
+        posts = postDAO.getAllPosts();
+    }
+
+    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
+
+    for(Post post : posts) {
+%>
+    <div class="bg-white rounded-lg shadow-sm" id="post-<%= post.getPostId() %>"> 
+     
+        <div class="p-6"> 
+
             <!-- Post Header -->
             <div class="flex items-start justify-between mb-4">
     <div class="flex items-center gap-3">
@@ -203,7 +217,8 @@
             String userName = (postUser != null) ? postUser.getFullName() : "Unknown User";
             String firstLetter = userName.substring(0, 1).toUpperCase();
         %>
-        <!-- Avatar chữ cái đầu -->
+
+
         <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-primary flex items-center justify-center text-white text-lg font-bold">
             <%= firstLetter %>
         </div>
@@ -213,24 +228,36 @@
             <p class="font-medium text-gray-900"><%= userName %></p>
             <p class="text-sm text-gray-500"><%= sdf.format(post.getCreatedAt()) %></p>
         </div>
-    </div>
 
+
+
+          </div>
+
+ <div class="flex gap-2 items-center">
+       
+        <% boolean isPostOwner = currentUser != null && post.getUserId() == currentUser.getUserId(); %>
+        <% if (isPostOwner) { %>
+            <button class="text-xs text-blue-500 hover:underline" onclick="editPost(<%= post.getPostId() %>, this)">Sửa</button>
+            <button class="text-xs text-red-500 hover:underline" onclick="deletePost(<%= post.getPostId() %>, this)">Xóa</button>
+        <% } %>
+    </div>
    
-    <button class="text-gray-400 hover:text-gray-600">
-        <i class="ri-more-fill text-xl"></i>
-    </button>
+   
+
 </div>
 
 
             <!-- Post Topic -->
             <div class="mb-3">
-                <span class="inline-block px-0 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                    <%= post.getTopic() %>
-                </span>
+
+               <span class="topic inline-block px-0 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+    <%= post.getTopic() %>
+</span>
             </div>
 
             <!-- Post Content Container -->
-            <div class="mb-4"> <!-- Thêm margin bottom cố định -->
+            <div class="mb-4"> 
+
 <p class="text-gray-800 font-bold mb-0"><%= post.getTitle() %></p>
                 
                 <div class="content-wrapper">
@@ -243,13 +270,17 @@
             </div>
 
             <!-- Post Media Container -->
-            <div class="mb-4"> <!-- Thêm margin bottom cố định -->
-                <div class="grid grid-cols-1 gap-4"> <!-- Thay đổi sang grid -->
+
+            <div class="mb-4"> 
+                <div class="grid grid-cols-1 gap-4"> 
+
                     <!-- Images -->
                     <% if(post.getImages() != null && !post.getImages().isEmpty()) { %>
                         <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
                             <% for(String image : post.getImages()) { %>
-                                <div class="flex-shrink-0 w-[300px] h-[225px]"> <!-- Cố định kích thước -->
+
+                                <div class="flex-shrink-0 w-[300px] h-[225px]"> 
+
                                     <img src="assets/img/post/<%= image %>" 
                                          alt="Post image" 
                                          class="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
@@ -277,7 +308,9 @@
             </div>
         </div>
 
-        <!-- Post Interactions - Separate section with different background -->
+
+        <!-- Post Interactions  -->
+
         <div class="px-6 py-3 border-t border-gray-100">
             <div class="flex items-center justify-between">
               
@@ -300,14 +333,23 @@
         </span>
     </button>
 </div>
-                <button class="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors" 
-                        title="Lưu bài viết">
-                    <i class="ri-bookmark-line text-xl"></i>
-                </button>
+
+              <% 
+    dal.SavedPostDAO savedDao = new dal.SavedPostDAO();
+    boolean isSaved = currentUser != null && savedDao.isSaved(currentUser.getUserId(), post.getPostId());
+%>
+<button class="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors" 
+        title="Lưu bài viết"
+        onclick="toggleSavePost(<%= post.getPostId() %>, this)"
+        <%= currentUser == null ? "disabled" : "" %>>
+    <i class="ri-bookmark-<%= isSaved ? "fill text-primary" : "line" %> text-xl"></i>
+    <span><%= isSaved ? "Đã lưu" : "Lưu" %></span>
+</button>
             </div>
         </div>
 
-        <!-- Comments Section -->
+       
+
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
             <!-- Comment Form -->
    
@@ -337,7 +379,7 @@
     </div>
 </form>
 
-    <!-- Comments List -->
+
     <!-- Comments List -->
 <div class="space-y-4 comments-container" data-post-id="<%= post.getPostId() %>">
     <% 
@@ -359,24 +401,112 @@
                     <p class="font-medium text-sm text-gray-900"><%= commentUser.getFullName() %></p>
                     <span class="text-xs text-gray-500">• <%= getTimeAgo(comment.getCreatedAt()) %></span>
                 </div>
-                <p class="text-sm text-gray-800 pt-1"><%= comment.getContent() %></p>
+
+                <p class="text-sm text-gray-800 pt-1 comment-content"><%= comment.getContent() %></p>
             </div>
             <div class="flex items-center gap-4 mt-2 ml-2">
-                <button class="text-xs text-gray-500 hover:text-primary transition-colors">
-                    <i class="ri-heart-line"></i>
-                    <span>Thích</span>
+                <button type="button"
+                        class="text-xs text-gray-500 hover:text-primary transition-colors comment-like-btn"
+                        onclick="toggleCommentLike(<%= comment.getCommentId() %>, 'comment', this)"
+                        <%= currentUser == null ? "disabled" : "" %>>
+                    <i class="ri-heart-<%= new dal.CommentLikeDAO().hasLiked(comment.getCommentId(), currentUser != null ? currentUser.getUserId() : 0) ? "fill text-primary" : "line" %>"></i>
+                    <span>
+                        <span class="comment-like-count" data-comment-id="<%= comment.getCommentId() %>">
+                            <%= new dal.CommentLikeDAO().getLikeCount(comment.getCommentId()) %>
+                        </span> Thích
+                    </span>
                 </button>
-                <button class="text-xs text-gray-500 hover:text-primary transition-colors">
-                    <i class="ri-reply-line"></i>
-                    <span>Phản hồi</span>
-                </button>
-                <span class="text-xs text-gray-500">
-                    <span class="font-medium">0</span> lượt thích
-                </span>
+                
+                 <button type="button"
+    class="text-xs text-gray-500 hover:text-primary transition-colors"
+    onclick="toggleReplyForm(<%= comment.getCommentId() %>)">
+    <i class="ri-reply-line"></i>
+    <span>Phản hồi</span>
+</button>
+<form action="comment-reply" method="post"
+      class="reply-form mt-2 ml-12 flex gap-2 items-center hidden"
+      id="reply-form-<%= comment.getCommentId() %>">
+    <input type="hidden" name="commentId" value="<%= comment.getCommentId() %>">
+    <input type="hidden" name="userId" value="<%= currentUser != null ? currentUser.getUserId() : "" %>">
+    <input type="text" name="content" class="flex-1 px-3 py-1 rounded-full bg-gray-100 text-xs"
+           placeholder="Phản hồi bình luận..." <%= currentUser == null ? "disabled" : "" %> required>
+    <button type="submit"
+            class="text-primary text-xs font-medium px-3 py-1 rounded-full bg-white border border-primary hover:bg-primary hover:text-white transition-colors"
+            <%= currentUser == null ? "disabled" : "" %>>Gửi</button>
+</form>
+           
             </div>
         </div>
-    </div>
+  <%
+
+// Hiển thị danh sách phản hồi cho từng bình luận
+dal.CommentReplyDAO replyDAO = new dal.CommentReplyDAO();
+List<model.CommentReply> replies = replyDAO.getRepliesByCommentId(comment.getCommentId());
+if (!replies.isEmpty()) {
+%>
+    <div class="ml-12 mt-2 flex flex-col gap-2">
+        <% for (model.CommentReply reply : replies) {
+            Users replyUser = userDao.getUserById(reply.getUserId());
+        %>
+            <div class="flex gap-2 items-start">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-primary flex items-center justify-center text-white font-bold text-xs">
+                <%= replyUser.getFullName().substring(0, 1).toUpperCase() %>
+            </div>
+            <div class="bg-gray-50 rounded-2xl px-3 py-2 flex-1">
+                <span class="font-medium text-xs text-gray-900"><%= replyUser.getFullName() %></span>
+                <span class="text-xs text-gray-500">• <%= getTimeAgo(reply.getCreatedAt()) %></span>
+                <div class="text-xs text-gray-800 pt-1"><%= reply.getContent() %></div>
+                <div class="flex items-center gap-4 mt-2">
+                    <!-- Nút thích phản hồi -->
+ <button type="button"
+class="text-xs text-gray-500 hover:text-primary transition-colors reply-like-btn"
+onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
+<%= currentUser == null ? "disabled" : "" %>>
+<i class="ri-heart-<%= new dal.ReplyLikeDAO().hasLiked(reply.getReplyId(), currentUser != null ? currentUser.getUserId() : 0) ? "fill text-primary" : "line" %>"></i>
+<span>
+    <span class="reply-like-count" data-reply-id="<%= reply.getReplyId() %>">
+        <%= new dal.ReplyLikeDAO().getLikeCount(reply.getReplyId()) %>
+    </span> Thích
+</span>
+</button>
+                    <!-- Nút phản hồi lại phản hồi -->
+                    <button type="button"
+                        class="text-xs text-gray-500 hover:text-primary transition-colors"
+                        onclick="toggleReplyForm('reply-<%= reply.getReplyId() %>')">
+                        <i class="ri-reply-line"></i>
+                        <span>Phản hồi</span>
+                    </button>
+                </div>
+                    <!-- Form phản hồi cho từng reply -->
+                <form action="comment-reply" method="post"
+                      class="reply-form mt-2 ml-8 flex gap-2 items-center hidden"
+                      id="reply-form-reply-<%= reply.getReplyId() %>">
+                    <input type="hidden" name="commentId" value="<%= comment.getCommentId() %>">
+                    <!-- <input type="hidden" name="parentReplyId" value="<%= reply.getReplyId() %>"> -->
+                    <input type="hidden" name="userId" value="<%= currentUser != null ? currentUser.getUserId() : "" %>">
+                    <input type="text" name="content" class="flex-1 px-3 py-1 rounded-full bg-gray-100 text-xs"
+                           placeholder="Phản hồi bình luận..." <%= currentUser == null ? "disabled" : "" %> required>
+                    <button type="submit"
+                            class="text-primary text-xs font-medium px-3 py-1 rounded-full bg-white border border-primary hover:bg-primary hover:text-white transition-colors"
+                            <%= currentUser == null ? "disabled" : "" %>>Gửi</button>
+                </form>
+            </div>
+        </div>
     <% } %>
+</div>
+<% } %>
+<% 
+        boolean isCommentOwner = currentUser != null && comment.getUserId() == currentUser.getUserId();
+        if (isCommentOwner || isPostOwner) {
+    %>
+        <button class="text-xs text-red-500 hover:underline" onclick="deleteComment(<%= comment.getCommentId() %>,<%= post.getUserId() %>, <%= comment.getUserId() %>, this)">Xóa</button>
+    <% } %>
+    <% if (isCommentOwner) { %>
+        <button class="text-xs text-blue-500 hover:underline" onclick="editComment(<%= comment.getCommentId() %>, <%= post.getUserId() %>,<%= comment.getUserId() %>, this)">Sửa</button>
+    <% } %>
+    </div>
+    <%  } %>
+    
     <% if (commentCount > 2) { %>
     <div class="text-center">
         <button class="load-more-comments text-primary text-sm font-medium hover:underline"
@@ -396,7 +526,8 @@
         <!-- Create Post Dialog -->
         <div id="createPostDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl w-full max-w-2xl mx-auto flex flex-col max-h-[90vh] shadow-2xl"> 
-        <!-- Dialog Header -->
+      
+
         <div class="flex items-center justify-between p-6 border-b border-gray-100 bg-white rounded-t-xl sticky top-0 z-10">
             <h3 class="text-2xl font-semibold text-gray-800">Tạo Bài Viết Mới</h3>
             <button onclick="closeCreatePostDialog()" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-all">
@@ -443,24 +574,27 @@
                           rows="4"></textarea>
                 </div>
 
-                <!-- File Upload Section -->
+               
+
                 <div class="space-y-4 mb-6">
                     <input type="file" id="imageInput" name="images" accept="image/*" multiple class="hidden">
                     <input type="file" id="videoInput" name="videos" accept="video/*" multiple class="hidden">
                     
-                    <!-- Image Preview Container -->
+
+                    
                     <div id="imagePreviewContainer" class="hidden">
                         <h4 class="font-medium text-gray-700 mb-2">Hình ảnh đã chọn</h4>
                         <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                            <!-- Image previews will be inserted here -->
+                         
                         </div>
                     </div>
 
-                    <!-- Video Preview Container -->
+               
                     <div id="videoPreviewContainer" class="hidden">
                         <h4 class="font-medium text-gray-700 mb-2">Video đã chọn</h4>
                         <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                            <!-- Video previews will be inserted here -->
+                    
+
                         </div>
                     </div>
                 </div>
@@ -589,10 +723,12 @@ function closeCreatePostDialog() {
     createPostDialog.classList.remove('flex');
     createPostDialog.classList.add('hidden');
     document.body.style.overflow = 'auto';
-    // Reset file inputs and previews when closing the dialog
+
+
     removeAllImages();
     removeAllVideos();
-    // Reset form fields
+ 
+
     const form = createPostDialog.querySelector('form');
     form.reset();
 }
@@ -613,14 +749,13 @@ function previewImages(event) {
     const gridContainer = container.querySelector('div');
     const files = event.target.files;
     
-    // Reset everything
+
     gridContainer.innerHTML = '';
     selectedImageFiles = [];
     
     if (files.length > 0) {
         container.classList.remove('hidden');
-        
-        // Convert FileList to Array and store it
+
         selectedImageFiles = Array.from(files);
         
         // Create preview for each file
@@ -628,24 +763,27 @@ function previewImages(event) {
             const previewDiv = document.createElement('div');
             previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square';
             
-            // Create image preview
+
+     
             const img = document.createElement('img');
             img.className = 'w-full h-full object-cover rounded-lg';
             
-            // Read file and set image source
+          
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
             
-            // Create remove button
+
+
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
             removeButton.innerHTML = '<i class="ri-close-line"></i>';
             
-            // Remove button click handler
+
             removeButton.onclick = function() {
                 selectedImageFiles = selectedImageFiles.filter((_, i) => i !== index);
                 previewDiv.remove();
@@ -657,7 +795,7 @@ function previewImages(event) {
                 updateFileInput();
             };
             
-            // Append elements
+
             previewDiv.appendChild(img);
             previewDiv.appendChild(removeButton);
             gridContainer.appendChild(previewDiv);
@@ -666,11 +804,13 @@ function previewImages(event) {
         container.classList.add('hidden');
     }
     
-    // Update file input immediately
+
+
     updateFileInput();
 }
 
-// Function to update file input with current selectedImageFiles
+
+
 function updateFileInput() {
     const imageInput = document.getElementById('imageInput');
     const dataTransfer = new DataTransfer();
@@ -684,10 +824,12 @@ function previewVideos(event) {
     const gridContainer = container.querySelector('div');
     const files = event.target.files;
     
-    // Reset selectedVideoFiles to avoid duplication
+
+   
     selectedVideoFiles = Array.from(files);
     
-    // Clear existing previews
+  
+
     gridContainer.innerHTML = '';
     
     if (files.length > 0) {
@@ -712,17 +854,17 @@ function previewVideos(event) {
             removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
             removeButton.innerHTML = '<i class="ri-close-line"></i>';
             removeButton.onclick = function() {
-                // Remove the specific file from selectedVideoFiles
+
                 selectedVideoFiles.splice(index, 1);
                 URL.revokeObjectURL(videoURL);
                 previewDiv.remove();
                 
-                // Hide container if no videos remain
+
                 if (gridContainer.children.length === 0) {
                     container.classList.add('hidden');
                 }
                 
-                // Update video input to reflect current selection
+
                 updateVideoInput();
             };
             
@@ -745,6 +887,8 @@ function updateVideoInput() {
 }
 
 
+// Function to remove all images
+
 function removeAllImages() {
     selectedImageFiles = [];
     const container = document.getElementById('imagePreviewContainer');
@@ -754,6 +898,8 @@ function removeAllImages() {
     document.getElementById('imageInput').value = '';
 }
 
+
+// Function to remove all videos
 
 function removeAllVideos() {
     const container = document.getElementById('videoPreviewContainer');
@@ -780,7 +926,7 @@ function validatePostForm(form) {
     let isValid = true;
     let errorMessage = '';
 
-   
+
     [topicInput, titleInput, contentInput].forEach(input => {
         input.classList.remove('border-red-500');
         const errorDiv = input.nextElementSibling;
@@ -789,7 +935,7 @@ function validatePostForm(form) {
         }
     });
 
-    // Check if topic is empty
+
     if (!topicInput.value.trim()) {
         isValid = false;
         errorMessage += 'Vui lòng nhập chủ đề.\n';
@@ -797,7 +943,7 @@ function validatePostForm(form) {
         topicInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập chủ đề</div>');
     }
 
-    // Check if title is empty
+
     if (!titleInput.value.trim()) {
         isValid = false;
         errorMessage += 'Vui lòng nhập tiêu đề.\n';
@@ -805,7 +951,7 @@ function validatePostForm(form) {
         titleInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập tiêu đề</div>');
     }
 
-    // Check if content is empty
+
     if (!contentInput.value.trim()) {
         isValid = false;
         errorMessage += 'Vui lòng nhập nội dung.\n';
@@ -813,11 +959,8 @@ function validatePostForm(form) {
         contentInput.insertAdjacentHTML('afterend', '<div class="error-message text-red-500 text-xs mt-1">Vui lòng nhập nội dung</div>');
     }
 
-    // Optionally, check for images or videos if required
-    // if (selectedImageFiles.length === 0 && selectedVideoFiles.length === 0) {
-    //     isValid = false;
-    //     errorMessage += 'Vui lòng chọn ít nhất một hình ảnh hoặc video.\n';
-    // }
+
+
 
     if (!isValid) {
         alert(errorMessage);
@@ -826,16 +969,18 @@ function validatePostForm(form) {
     return isValid;
 }
 
-// Handle form submission
+
 document.querySelector('#createPostDialog form').addEventListener('submit', function(event) {
     event.preventDefault();
     
     if (validatePostForm(this)) {
-        // Log selected files for debugging
+
+     
         console.log('Selected images:', selectedImageFiles);
         console.log('Selected videos:', selectedVideoFiles);
         
-        // Submit the form if validation passes
+     
+
         this.submit();
     }
 });
@@ -891,10 +1036,12 @@ function initReadMore() {
         const button = wrapper.querySelector('.read-more-btn');
         const fade = wrapper.querySelector('.read-more-fade');
         
-        // Reset styles
+
+  
         content.style.removeProperty('max-height');
         
-        // Check if content needs "read more" button
+  
+
         const needsReadMore = content.scrollHeight > 150;
         
         button.style.display = needsReadMore ? 'inline-block' : 'none';
@@ -1037,7 +1184,9 @@ function submitComment(event, postId, form) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const response = xhr.responseText.trim();
             if (response === 'success') {
-               
+
+                // Reload page with post ID as hash
+
                 window.location.href = `NewFeed.jsp#post-${postId}`;
                 window.location.reload();
             } else if (response === 'login_required') {
@@ -1051,29 +1200,34 @@ function submitComment(event, postId, form) {
     xhr.send('postId=' + postId + '&userId=' + userId + '&content=' + encodeURIComponent(content));
 }
 
-// Initialize on page load
+
+
 document.addEventListener('DOMContentLoaded', initReadMore);
 
-// Re-initialize on window load
+
+
 window.addEventListener('load', () => {
     setTimeout(initReadMore, 500);
 });
 
-// Re-initialize on window resize
+
 window.addEventListener('resize', () => {
     setTimeout(initReadMore, 100);
 });
 
 
+// Add this to your existing DOMContentLoaded event listener
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     if (window.location.hash) {
         const postId = window.location.hash;
         const post = document.querySelector(postId);
         if (post) {
-           
+
+         
             post.scrollIntoView({ behavior: 'smooth', block: 'center' });
-           
+      
+
             post.classList.add('bg-blue-50');
             setTimeout(() => {
                 post.classList.remove('bg-blue-50');
@@ -1081,7 +1235,266 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// reload lại phần thích
+function toggleCommentLike(id, type, button) {
+    <% if (currentUser == null) { %>
+        window.location.href = 'Login.jsp';
+        return;
+    <% } %>
+    const userId = <%= currentUser != null ? currentUser.getUserId() : 0 %>;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'comment-like', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = xhr.responseText.trim();
+            const icon = button.querySelector('i');
+            const countSpan = button.querySelector('.comment-like-count');
+            let count = parseInt(countSpan.textContent);
+            if (response === 'liked') {
+                icon.classList.remove('ri-heart-line');
+                icon.classList.add('ri-heart-fill', 'text-primary');
+                countSpan.textContent = count + 1;
+            } else if (response === 'unliked') {
+                icon.classList.remove('ri-heart-fill', 'text-primary');
+                icon.classList.add('ri-heart-line');
+                countSpan.textContent = count - 1;
+            }
+        }
+    };
+    xhr.send('id=' + id + '&type=' + type + '&userId=' + userId);
+}
+
+//  reload lại phần thích
+function toggleReplyLike(replyId, button) {
+    <% if (currentUser == null) { %>
+        window.location.href = 'Login.jsp';
+        return;
+    <% } %>
+    const userId = <%= currentUser != null ? currentUser.getUserId() : 0 %>;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'reply-like', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = xhr.responseText.trim();
+            const icon = button.querySelector('i');
+            const countSpan = button.querySelector('.reply-like-count');
+            let count = parseInt(countSpan.textContent);
+            if (response === 'liked') {
+                icon.classList.remove('ri-heart-line');
+                icon.classList.add('ri-heart-fill', 'text-primary');
+                countSpan.textContent = count + 1;
+            } else if (response === 'unliked') {
+                icon.classList.remove('ri-heart-fill', 'text-primary');
+                icon.classList.add('ri-heart-line');
+                countSpan.textContent = count - 1;
+            }
+        }
+    };
+    xhr.send('replyId=' + replyId + '&userId=' + userId);
+}
+// hiển thị form phản hồi 
+function toggleReplyForm(commentId) {
+    var form = document.getElementById('reply-form-' + commentId);
+    if (form) {
+        form.classList.toggle('hidden');
+        if (!form.classList.contains('hidden')) {
+            form.querySelector('input[name="content"]').focus();
+        }
+    }
+}
+//
+function deleteComment(commentId, postOwnerId, commentOwnerId, btn) {
+    if (!confirm('Bạn có chắc muốn xóa bình luận này?')) return;
+    const commentItem = btn.closest('.comment-item');
+    const commentsContainer = commentItem.closest('.comments-container');
+    const postId = commentsContainer.getAttribute('data-post-id');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'delete-comment', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.responseText.trim() === 'success') {
+            commentItem.remove();
+            window.location.href = `NewFeed.jsp#post-${postId}`;
+                window.location.reload();
+
+         
+        
+            } else {
+                alert('Không thể xóa bình luận!');
+            }
+        }
+    };
+    xhr.send('commentId=' + commentId + '&postOwnerId=' + postOwnerId + '&commentOwnerId=' + commentOwnerId);
+}
+
+
+
+function editComment(commentId, postOwnerId, commentOwnerId, btn) {
+    const commentItem = btn.closest('.comment-item');
+    const contentSpan = commentItem.querySelector('.comment-content');
+    const oldContent = contentSpan.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = oldContent;
+    input.className = 'border px-2 py-1 rounded text-sm';
+    contentSpan.replaceWith(input);
+    btn.textContent = 'Lưu';
+    btn.onclick = function() {
+        const newContent = input.value.trim();
+        if (!newContent) return alert('Nội dung không được để trống!');
+       
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'edit-comment', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                if (xhr.responseText.trim() === 'success') {
+                    const span = document.createElement('span');
+                    span.className = 'comment-content';
+                    span.textContent = newContent;
+                    input.replaceWith(span);
+                    btn.textContent = 'Sửa';
+                    btn.onclick = function() { editComment(commentId, btn); };
+                } else {
+                    alert('Không thể cập nhật bình luận!');
+                }
+            }
+        };
+        xhr.send('commentId=' + commentId + '&content=' + encodeURIComponent(newContent) + '&commentOwnerId=' + commentOwnerId);
+    };
+}
+
+function deletePost(postId, btn) {
+    if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'delete-post', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.responseText.trim() === 'success') {
+                // Xóa khỏi giao diện
+                const postDiv = document.getElementById('post-' + postId);
+                if (postDiv) postDiv.remove();
+                   
+                window.location.reload();
+            } else {
+                alert('Không thể xóa bài viết!');
+            }
+        }
+    };
+    xhr.send('postId=' + postId);
+}
+
+function editPost(postId, btn) {
+    // Lấy phần tử bài viết
+    const postDiv = document.getElementById('post-' + postId);
+    const topicElem = postDiv.querySelector('.topic');
+    const titleElem = postDiv.querySelector('p.font-bold');
+    const contentElem = postDiv.querySelector('.content-text');
+    const oldTopic = topicElem.textContent;
+    const oldTitle = titleElem.textContent;
+    const oldContent = contentElem.textContent;
+
+    // Tạo input để chỉnh sửa
+    const topicInput = document.createElement('input');
+    topicInput.type = 'text';
+    topicInput.value = oldTopic;
+    topicInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.value = oldTitle;
+    titleInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
+
+    const contentInput = document.createElement('textarea');
+    contentInput.value = oldContent;
+    contentInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
+    contentInput.rows = 4;
+
+    topicElem.replaceWith(topicInput);
+    titleElem.replaceWith(titleInput);
+    contentElem.replaceWith(contentInput);
+
+    btn.textContent = 'Lưu';
+    btn.onclick = function() {
+        const newTopic = topicInput.value.trim();
+        const newTitle = titleInput.value.trim();
+        const newContent = contentInput.value.trim();
+        if (!newTopic || !newTitle || !newContent) {
+            alert('Chủ đề, tiêu đề và nội dung không được để trống!');
+            return;
+        }
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'edit-post', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                if (xhr.responseText.trim() === 'success') {
+              
+                
+                window.location.reload();
+                    
+                } else {
+                    alert('Không thể cập nhật bài viết!');
+                }
+            }
+        };
+        xhr.send('postId=' + postId + '&topic=' + encodeURIComponent(newTopic) + '&title=' + encodeURIComponent(newTitle) + '&content=' + encodeURIComponent(newContent));
+    };
+}
+
+function toggleSavePost(postId, btn) {
+    <% if (currentUser == null) { %>
+        window.location.href = 'Login.jsp';
+        return;
+    <% } %>
+    const userId = <%= currentUser != null ? currentUser.getUserId() : 0 %>;
+    const icon = btn.querySelector('i');
+    const span = btn.querySelector('span');
+    const isSaved = icon.classList.contains('ri-bookmark-fill');
+    const action = isSaved ? 'unsave' : 'save';
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'save-post', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.responseText.trim() === 'success') {
+                if (action === 'save') {
+                    icon.classList.remove('ri-bookmark-line');
+                    icon.classList.add('ri-bookmark-fill', 'text-primary');
+                    span.textContent = 'Đã lưu';
+                } else {
+                    icon.classList.remove('ri-bookmark-fill', 'text-primary');
+                    icon.classList.add('ri-bookmark-line');
+                    span.textContent = 'Lưu';
+                      window.location.reload();
+                }
+            } else {
+                alert('Không thể lưu bài viết!');
+            }
+        }
+    };
+    xhr.send('userId=' + userId + '&postId=' + postId + '&action=' + action);
+}
+
+document.getElementById('savedPostsBtn').addEventListener('click', function() {
+    window.location.href = 'NewFeed.jsp?tab=saved';
+});
+
+document.getElementById('myPostsBtn').addEventListener('click', function() {
+    window.location.href = 'NewFeed.jsp?tab=my';
+});
 </script>
   
 </body>
 </html>
+
+// done
+
+
