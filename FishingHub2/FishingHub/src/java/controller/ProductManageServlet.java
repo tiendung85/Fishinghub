@@ -69,7 +69,7 @@ public class ProductManageServlet extends HttpServlet {
         CategoryDAO cateDao = new CategoryDAO();
         try {
             preparePagination(request, dao, cateDao, pageSize);
-            request.getRequestDispatcher("/dashboard_admin/ProductManage.jsp").forward(request, response);
+            request.getRequestDispatcher("/dashboard_owner/ProductManage.jsp").forward(request, response);
         } catch (Exception e) {
             response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
@@ -151,11 +151,11 @@ public class ProductManageServlet extends HttpServlet {
 //                            }
                             preparePagination(request, dao, cateDao, pageSize);
                             request.setAttribute("editFish", fish);
-                            request.getRequestDispatcher("/dashboard_admin/ProductManage.jsp").forward(request, response);
+                            request.getRequestDispatcher("/dashboard_owner/ProductManage.jsp").forward(request, response);
                         } catch (NumberFormatException e) {
                             preparePagination(request, dao, cateDao, pageSize);
                             request.setAttribute("message", "ID sản phẩm không hợp lệ!");
-                            request.getRequestDispatcher("/dashboard_admin/ProductManage.jsp").forward(request, response);
+                            request.getRequestDispatcher("/dashboard_owner/ProductManage.jsp").forward(request, response);
                         }
                         return;
                     } else {

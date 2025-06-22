@@ -195,24 +195,7 @@
                                 </div>
                                 Phân quyền
                             </a>
-                            
-                            <div
-                                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
-                                >
-                                Quản lý sản phẩm
-                            </div>
-                            <a
-                                href="${pageContext.request.contextPath}/ProductManage"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
-                                    <i class="ri-file-list-line"></i>
-                                </div>
-                                Danh sách sản phẩm
-                            </a>
-                            
+                                                     
                             <div
                                 class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
                                 >

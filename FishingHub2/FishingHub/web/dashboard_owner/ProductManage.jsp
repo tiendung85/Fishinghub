@@ -1,9 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="model.Users" %>
+<link rel="stylesheet" href="<c:url value='/css/style.css'/>">
 <!DOCTYPE html>
 <html lang="vi">
-
+    <%
+        Users currentUser = (Users) session.getAttribute("user");
+    %>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,44 +37,44 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600;700&display=swap"
-            rel="stylesheet" />
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+            href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+            />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
         <style>
+            :where([class^="ri-"])::before {
+                content: "\f3c2";
+            }
             body {
                 font-family: 'Inter', sans-serif;
                 background-color: #f9fafb;
             }
-
             .sidebar-item.active {
                 background-color: rgba(79, 70, 229, 0.1);
                 color: #4f46e5;
                 border-left: 3px solid #4f46e5;
             }
-
             .custom-scrollbar::-webkit-scrollbar {
                 width: 5px;
             }
-
             .custom-scrollbar::-webkit-scrollbar-track {
                 background: #f1f1f1;
             }
-
             .custom-scrollbar::-webkit-scrollbar-thumb {
                 background: #d1d5db;
                 border-radius: 8px;
             }
-
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                 background: #9ca3af;
             }
-
             input[type="checkbox"].custom-checkbox {
                 display: none;
             }
-
-            input[type="checkbox"].custom-checkbox+label {
+            input[type="checkbox"].custom-checkbox + label {
                 display: inline-block;
                 width: 18px;
                 height: 18px;
@@ -79,13 +83,11 @@
                 cursor: pointer;
                 position: relative;
             }
-
-            input[type="checkbox"].custom-checkbox:checked+label {
+            input[type="checkbox"].custom-checkbox:checked + label {
                 background-color: #4f46e5;
                 border-color: #4f46e5;
             }
-
-            input[type="checkbox"].custom-checkbox:checked+label:after {
+            input[type="checkbox"].custom-checkbox:checked + label:after {
                 content: "";
                 position: absolute;
                 left: 5px;
@@ -96,20 +98,17 @@
                 border-width: 0 2px 2px 0;
                 transform: rotate(45deg);
             }
-
             .switch {
                 position: relative;
                 display: inline-block;
                 width: 40px;
                 height: 20px;
             }
-
             .switch input {
                 opacity: 0;
                 width: 0;
                 height: 0;
             }
-
             .slider {
                 position: absolute;
                 cursor: pointer;
@@ -121,7 +120,6 @@
                 transition: .4s;
                 border-radius: 20px;
             }
-
             .slider:before {
                 position: absolute;
                 content: "";
@@ -133,15 +131,12 @@
                 transition: .4s;
                 border-radius: 50%;
             }
-
-            input:checked+.slider {
+            input:checked + .slider {
                 background-color: #4f46e5;
             }
-
-            input:checked+.slider:before {
+            input:checked + .slider:before {
                 transform: translateX(20px);
             }
-
             input[type="number"]::-webkit-inner-spin-button,
             input[type="number"]::-webkit-outer-spin-button {
                 -webkit-appearance: none;
@@ -149,7 +144,6 @@
             }
         </style>
     </head>
-
     <body>
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar -->
@@ -158,7 +152,7 @@
                     <div
                         class="flex items-center justify-center h-16 px-4 border-b border-gray-200"
                         >
-                        <h1 class="text-2xl font-['Pacifico'] text-primary">logo</h1>
+                        <h1 class="text-2xl font-['Pacifico'] text-primary">FishingHub</h1>
                     </div>
                     <div
                         class="flex flex-col flex-grow px-2 py-4 overflow-y-auto custom-scrollbar"
@@ -180,38 +174,12 @@
                                 </div>
                                 Dashboard
                             </a>
-                            <div
-                                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
-                                >
-                                Quản lý người dùng
-                            </div>
-                            <a
-                                href="#"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
-                                    <i class="ri-user-line"></i>
-                                </div>
-                                Danh sách người dùng
-                            </a>
-                            <a
-                                href="#"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
-                                    <i class="ri-shield-user-line"></i>
-                                </div>
-                                Phân quyền
-                            </a>
+
 
                             <div
                                 class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
                                 >
-                                Quản lý bài viết
+                                Quản lý sự kiện
                             </div>
                             <a
                                 href="#"
@@ -220,99 +188,124 @@
                                 <div
                                     class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
                                     >
-                                    <i class="ri-file-list-line"></i>
+                                    <i class="ri-calendar-event-line"></i>
                                 </div>
-                                Danh sách bài viết
+                                Sự kiện
                             </a>
-                            <a
-                                href="#"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
-                                    <i class="ri-check-double-line"></i>
-                                </div>
-                                Duyệt bài viết
-                            </a>
+
 
                             <div
                                 class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
                                 >
-                                Quản lý kiến thức
+                                Quản lý sản phẩm
                             </div>
                             <a
-                                href="${pageContext.request.contextPath}/FishManage"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-book-open-line"></i>
-                                </div>
-                                Thông tin loài cá
-                            </a>
-                            <div
-                                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
-                                >
-                                Thành tựu & Xếp hạng
-                            </div>
-                            <a
-                                href="#"
+                                href="${pageContext.request.contextPath}/ProductManage"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
                                     class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
                                     >
-                                    <i class="ri-medal-line"></i>
+                                    <i class="ri-shopping-bag-line"></i>
                                 </div>
-                                Thành tựu
+                                Danh sách sản phẩm
                             </a>
                             <a
-                                href="#"
+                                href="<c:url value='/Order'/>"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
                                     class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
                                     >
-                                    <i class="ri-bar-chart-line"></i>
+                                    <i class="ri-shopping-cart-line"></i>
                                 </div>
-                                Bảng xếp hạng
+                                Đơn hàng
                             </a>
-                            <div
-                                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
-                                >
-                                Thống kê
-                            </div>
-                            <a
-                                href="#"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
-                                    <i class="ri-line-chart-line"></i>
-                                </div>
-                                Báo cáo
-                            </a>
+
                         </div>
                     </div>
                     <div class="flex items-center p-4 border-t border-gray-200">
                         <div class="flex-shrink-0">
-                            <img
-                                class="w-10 h-10 rounded-full"
-                                src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
-                                alt="Admin"
-                                />
+                            <img class="w-10 h-10 rounded-full"
+                                 src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
+                                 alt="Admin" />
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-700">Nguyễn Văn Quản</p>
-                            <p class="text-xs font-medium text-gray-500">Quản trị viên</p>
+                            <p class="text-sm font-medium text-gray-700">
+                                <%= currentUser != null ? currentUser.getFullName() : "Khách" %>
+                            </p>
+                            <p class="text-xs font-medium text-gray-500">
+                                <% if(currentUser != null && currentUser.getRoleId() == 2) { %>
+                                Chủ Hồ Câu
+                                <% } else { %>
+                                Quản trị viên
+                                <% } %>
+                            </p>
                         </div>
+                    </div>
+                    <!-- Nút quay lại Home -->
+                    <div class="p-4">
+                        <a href="../Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                            <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
+                        </a>
                     </div>
                 </div>
             </div>
-            <!-- Main Content -->
-            <div class="flex flex-col flex-1 overflow-hidden">
-                <!-- Top Navigation -->
+            <!-- Main content -->
+            <div class="flex flex-col flex-1 w-0 overflow-hidden">
+                <!-- Top navigation -->
+                <div
+                    class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200"
+                    >
+                    <button
+                        type="button"
+                        class="px-4 border-r border-gray-200 text-gray-500 md:hidden"
+                        >
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-menu-line"></i>
+                        </div>
+                    </button>
+                    <div class="flex-1 px-4 flex justify-between">
+                        <div class="flex-1 flex items-center">
+                            <div class="w-full max-w-2xl">
+                                <div class="relative w-full">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                                        >
+                                        <div
+                                            class="w-5 h-5 flex items-center justify-center text-gray-400"
+                                            >
+                                            <i class="ri-search-line"></i>
+                                        </div>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                        placeholder="Tìm kiếm..."
+                                        />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex items-center md:ml-6">
+                            <button
+                                class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none"
+                                >
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-notification-3-line"></i>
+                                </div>
+                            </button>
+                            <div class="relative ml-3">
+                                <div class="flex items-center">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                                        >
+                                        Online
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200">
                     <div class="flex items-center">
                         <button class="text-gray-500 focus:outline-none md:hidden">

@@ -199,7 +199,7 @@
                                 Quản lý sản phẩm
                             </div>
                             <a
-                                href="#"
+                                href="${pageContext.request.contextPath}/ProductManage"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
