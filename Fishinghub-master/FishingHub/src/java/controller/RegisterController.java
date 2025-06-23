@@ -4,21 +4,18 @@ import dal.UserDao;
 import model.Users;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.sql.Date;
 
-
+@WebServlet(name = "RegisterController", urlPatterns = {"/Register"})
 public class RegisterController extends HttpServlet {
 
     private UserDao userDB = new UserDao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy tham số từ form
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
@@ -27,8 +24,8 @@ public class RegisterController extends HttpServlet {
         String gender = request.getParameter("gender");
         String dobStr = request.getParameter("dob");
         String location = request.getParameter("location");
-        String role = request.getParameter("role"); // lấy từ select
-        String terms = request.getParameter("terms"); // checkbox
+        String role = request.getParameter("role");
+        String terms = request.getParameter("terms");
 
         // Validate cơ bản
         if (fullName == null || fullName.isEmpty() ||
@@ -70,39 +67,25 @@ public class RegisterController extends HttpServlet {
             request.getRequestDispatcher("/Register.jsp").forward(request, response);
             return;
         }
-        // Kiểm tra email đã tồn tại
+
         if (userDB.checkEmailExists(email)) {
-        request.setAttribute("error", "Email đã tồn tại. Vui lòng nhập email khác.");
+            request.setAttribute("error", "Email đã tồn tại. Vui lòng nhập email khác.");
+            request.getRequestDispatcher("/Register.jsp").forward(request, response);
+            return;
+        }
 
-        // Trả lại dữ liệu đã nhập cho form
-        request.setAttribute("fullName", fullName);
-        request.setAttribute("email", email); // vẫn cho nhập lại email nếu muốn
-        request.setAttribute("gender", gender);
-        request.setAttribute("dob", dobStr);
-        request.setAttribute("location", location);
-        request.setAttribute("phone", phone); // nếu có trường phone
-    // Đừng gán lại password!
+        int roleId = 1; // mặc định user
+        if ("fish_owner".equals(role)) roleId = 2;
 
-    request.getRequestDispatcher("/Register.jsp").forward(request, response);
-    return;
-}
-
-        // Mapping role string sang roleId
-        int roleId = 2; // mặc định user
-        if ("fish_owner".equals(role)) roleId = 3;
-
-        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location);
-
-        // Lưu vào database qua UserDBContext
+        // Tạo người dùng mới không có avatar
+        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location, null); // không có avatar
         userDB.insert(newUser);
 
-        // Redirect sang trang login sau khi đăng ký thành công
         response.sendRedirect(request.getContextPath() + "/Login.jsp");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Chuyển hướng đến trang đăng ký
         request.getRequestDispatcher("/Register.jsp").forward(request, response);
     }
 }

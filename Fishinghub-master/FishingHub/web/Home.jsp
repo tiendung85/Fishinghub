@@ -1,75 +1,82 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="model.Users" %>
+
 <%
-    Users currentUser = (Users) session.getAttribute("user");
+    // Lấy đối tượng user từ session
+    Users user = (Users) session.getAttribute("user");
 %>
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Trang chủ</title>
-        <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-        <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-          <link rel="stylesheet" href="assets/css/style.css">
-    </head>
-    <body>
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <!-- Header navigation links -->
-                     <nav class="hidden md:flex ml-10">
-                <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-                <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
-                <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
-                <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
-                <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
-                <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
-            </nav>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <!-- Cart -->
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                            >3</span
-                        >
-                    </div>
-                    <div class="relative">
-                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
-                            <i class="ri-notification-3-line text-gray-600"></i>
-                        </div>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
-                    </div>
-
-                     <% if (currentUser == null) { %>
-        <!-- Chưa đăng nhập -->
-        <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
-        <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
-    <% } else { %>
-        <!-- Đã đăng nhập -->
-        <div class="flex items-center space-x-3">
-            <a href="Profile.jsp" title="Xem hồ sơ cá nhân" class="font-semibold text-primary hover:underline flex items-center">
-            <i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %>
-        </a>
-            <form action="logout" method="post" style="display:inline;">
-                <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
-            </form>
-        </div>
-    <% } %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {primary: '#1E88E5', secondary: '#FFA726'},
+                    borderRadius: {
+                        'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px',
+                        'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
+                <nav class="hidden md:flex ml-10">
+                    <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                    <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                    <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                    <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                    <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
+                    <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+                </nav>
             </div>
-        </header>
+            <div class="flex items-center space-x-4">
+                <% if (user == null) { %>
+                    <!-- Khi chưa đăng nhập -->
+                    <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
+                    <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
+<% }else { %>
+    <!-- Khi đã đăng nhập -->
+    <a href="Profile" class="flex items-center gap-2 font-semibold text-primary hover:text-blue-700 transition-colors">
+        <img src="<%= user.getAvatar() %>" alt="Avatar" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid #1E88E5;">
+        <span class="hover:underline"><%= user.getFullName() %></span>
+    </a>
+
+    <%-- Kiểm tra nếu user là Admin (roleId == 3) thì mới hiển thị link Quản lý người dùng --%>
+    <% if (user.getRoleId() == 3) { %>
+        <a href="UserManager" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">
+            Quản lý người dùng
+        </a>
+    <% } %>
+
+    <form action="logout" method="post" style="display:inline;">
+        <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+    </form>
+<% } %>
+
+            </div>
+        </div>
+    </header>
+
+
         <!-- Hero Section -->
        <!-- Hero Section -->
 <section class="hero-section py-16 relative bg-cover bg-center bg-no-repeat" style="background-image: url('assets/img/hero-bg.jpg');">

@@ -7,20 +7,23 @@ public class Users {
     private int userId;
     private String fullName;
     private String email;
-    private String phone;      // Thêm trường này
+    private String phone;      
     private String password;
     private String googleId;
-    private int roleId;
+    private int roleId;  // Mã vai trò
     private String gender;
     private Date dateOfBirth;
     private String location;
     private Timestamp createdAt;
-
+    private String avatar;
+    private Timestamp lastLoginTime;  // Thay Date thành Timestamp
+    private String status;
     public Users() {}
+    
 
-    // Constructor đầy đủ
+  // Constructor đầy đủ
     public Users(int userId, String fullName, String email, String phone, String password, String googleId,
-                 int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
+                int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt, String avatar) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -32,11 +35,12 @@ public class Users {
         this.dateOfBirth = dateOfBirth;
         this.location = location;
         this.createdAt = createdAt;
+        this.avatar = avatar;
     }
 
-    // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
+    // Constructor khi đăng ký
     public Users(String fullName, String email, String phone, String password, int roleId,
-                 String gender, Date dateOfBirth, String location) {
+                 String gender, Date dateOfBirth, String location, String avatar) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -45,6 +49,7 @@ public class Users {
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.location = location;
+        this.avatar = avatar;
         this.googleId = null;
         this.createdAt = null;
     }
@@ -82,6 +87,36 @@ public class Users {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public Timestamp getLastLoginTime() {
+    return lastLoginTime;
+}
+
+public void setLastLoginTime(Timestamp lastLoginTime) {
+    this.lastLoginTime = lastLoginTime;
+}
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public String getStatus() {
+        return status;
+    }
+    // Phương thức mới để lấy vai trò người dùng theo roleId
+    public String getRole() {
+        switch (this.roleId) {
+            case 1:
+                return "User"; // Ví dụ, roleId 1 là user
+            case 2:
+                return "FishOwner"; // Ví dụ, roleId 2 là admin
+            case 3:
+                return "Admin"; // Ví dụ, roleId 3 là Fish Owner
+            default:
+                return "Unknown"; // Mặc định nếu không có vai trò
+        }
+    }
 
     @Override
     public String toString() {
@@ -99,4 +134,6 @@ public class Users {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    
 }

@@ -1,0 +1,14 @@
+body {font-family: 'Roboto', sans-serif;background:#f9fafb;}
+header.admin-header {background:#fff;padding:15px 20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
+nav.admin-nav a {margin-right:15px;color:#333;font-weight:500;text-decoration:none;}
+nav.admin-nav a:hover {color:#1E88E5;}
+.table-container {background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+.table {width:100%;border-collapse:collapse;}
+.table th, .table td {padding:12px;border-bottom:1px solid #e0e0e0;text-align:left;}
+.table th {background:#ffe8e8;color:#444;}
+.action-btn {padding:6px 14px;border-radius:20px;border:none;color:white;cursor:pointer;}
+.edit-btn {background:#FF3B3B;}
+.delete-btn {background:#888;}
+.status-active {color:#4CAF50;font-weight:bold;}
+.status-inactive {color:#F44336;font-weight:bold;}
+.status-pending {color:#FF9800;font-weight:bold;}

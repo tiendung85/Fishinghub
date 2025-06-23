@@ -11,7 +11,7 @@ public class DBConnect {
     protected Connection connection;
 
     private String serverName = "localhost";
-    private String dbName = "FishingHub";
+    private String dbName = "FishingHub1";
     private String portNumber = "1433";
     private String instance = "SQLEXPRESS";
     private String userID = "lam";
@@ -19,7 +19,7 @@ public class DBConnect {
 
     public DBConnect() {
         try {
-            String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
+            String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub1;trustServerCertificate=true;";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, userID, password);
             System.out.println("✅ Kết nối thành công đến SQL Server");
@@ -36,7 +36,7 @@ public class DBConnect {
     // === Phương thức static lấy Connection để dùng ở các DAO ===
     public static Connection getConnection() {
         try {
-            String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
+            String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub1;trustServerCertificate=true;";
             String user = "lam";
             String pass = "lamdz123";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");

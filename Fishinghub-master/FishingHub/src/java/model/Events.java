@@ -5,127 +5,167 @@
 package model;
 
 import java.sql.Timestamp;
-
+import java.text.SimpleDateFormat;
 
 /**
  *
  * @author LENOVO
  */
 public class Events {
-    private int EventId;
-    private String Title;
-    private String Description;
-    private String Location;
-    private int HostId;
-    private Timestamp StartTime;
-    private Timestamp EndTime;
-    private String Status;
-    private Timestamp CreatedAt;
-    private Timestamp ApprovedAt;
-    private String PosterUrl;
-    private int MaxParticipants;
+
+    private int eventId;
+    private String title;
+    private String description;
+    private String location;
+    private String lakeName;
+    private int hostId;
+    private Timestamp startTime;
+    private Timestamp endTime;
+    private String status;
+    private Timestamp createdAt;
+    private Timestamp approvedAt;
+    private String posterUrl;
+    private int maxParticipants;
+    private String eventStatus;
+    private int currentParticipants;
 
     public Events() {
     }
 
     public int getEventId() {
-        return EventId;
+        return eventId;
     }
 
-    public void setEventId(int EventId) {
-        this.EventId = EventId;
+    public String getLakeName() {
+        return lakeName;
+    }
+
+    public void setLakeName(String lakeName) {
+        this.lakeName = lakeName;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
-    public void setTitle(String Title) {
-        this.Title = Title;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
-    public void setDescription(String Description) {
-        this.Description = Description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLocation() {
-        return Location;
+        return location;
     }
 
-    public void setLocation(String Location) {
-        this.Location = Location;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public int getHostId() {
-        return HostId;
+        return hostId;
     }
 
-    public void setHostId(int HostId) {
-        this.HostId = HostId;
+    public void setHostId(int hostId) {
+        this.hostId = hostId;
     }
 
     public Timestamp getStartTime() {
-        return StartTime;
+        return startTime;
     }
 
-    public void setStartTime(Timestamp StartTime) {
-        this.StartTime = StartTime;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
     public Timestamp getEndTime() {
-        return EndTime;
+        return endTime;
     }
 
-    public void setEndTime(Timestamp EndTime) {
-        this.EndTime = EndTime;
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Timestamp getCreatedAt() {
-        return CreatedAt;
+        return createdAt;
     }
 
-    public void setCreatedAt(Timestamp CreatedAt) {
-        this.CreatedAt = CreatedAt;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Timestamp getApprovedAt() {
-        return ApprovedAt;
+        return approvedAt;
     }
 
-    public void setApprovedAt(Timestamp ApprovedAt) {
-        this.ApprovedAt = ApprovedAt;
+    public void setApprovedAt(Timestamp approvedAt) {
+        this.approvedAt = approvedAt;
     }
 
     public String getPosterUrl() {
-        return PosterUrl;
+        return posterUrl;
     }
 
-    public void setPosterUrl(String PosterUrl) {
-        this.PosterUrl = PosterUrl;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     public int getMaxParticipants() {
-        return MaxParticipants;
+        return maxParticipants;
     }
 
-    public void setMaxParticipants(int MaxParticipants) {
-        this.MaxParticipants = MaxParticipants;
+    public void setMaxParticipants(int maxParticipants) {
+        this.maxParticipants = maxParticipants;
     }
 
+    public int getCurrentParticipants() {
+        return currentParticipants;
+    }
+
+    public void setCurrentParticipants(int currentParticipants) {
+        this.currentParticipants = currentParticipants;
+    }
     
-    
-    
-    
+
+    public String getFormattedStartDate() {
+        if (startTime != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(startTime);
+        }
+        return "";
+    }
+    public String getFormattedEndDate() {
+        if (startTime != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(endTime);
+        }
+        return "";
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
+    }
+
 }
