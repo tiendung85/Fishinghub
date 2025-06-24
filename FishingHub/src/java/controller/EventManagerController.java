@@ -114,7 +114,7 @@ public class EventManagerController extends HttpServlet {
                         e.setEventStatus("Đang diễn ra");
                     }
                 }
-
+                request.setAttribute("search", search);
                 request.setAttribute("listE", resultList);
                 request.getRequestDispatcher("dashboard_owner/EventManager.jsp").forward(request, response);
             } else if (action.equals("filter")) {
@@ -128,6 +128,14 @@ public class EventManagerController extends HttpServlet {
                     if ("upcoming".equals(statusFilter) && e.getStartTime().after(now) && e.getStatus().equals("approved")) {
                         filteredEvents.add(e);
                     } else if ("ended".equals(statusFilter) && e.getEndTime().before(now)&& e.getStatus().equals("approved")) {
+                        filteredEvents.add(e);
+                    } else if ("ongoing".equals(statusFilter) && e.getEndTime().equals(now)&& e.getStatus().equals("approved")) {
+                        filteredEvents.add(e);
+                    } else if ("pass".equals(statusFilter) && e.getStatus().equals("approved")) {
+                        filteredEvents.add(e);
+                    } else if ("reject".equals(statusFilter) &&  e.getStatus().equals("rejected")) {
+                        filteredEvents.add(e);
+                    } else if ("pending".equals(statusFilter) &&  e.getStatus().equals("pending")) {
                         filteredEvents.add(e);
                     } else if ("all".equals(statusFilter)) {
                         filteredEvents = allEvents;
@@ -144,7 +152,7 @@ public class EventManagerController extends HttpServlet {
                         e.setEventStatus("Đang diễn ra");
                     }
                 }
-
+                request.setAttribute("filter", statusFilter);
                 request.setAttribute("listE", filteredEvents);
                 request.getRequestDispatcher("dashboard_owner/EventManager.jsp").forward(request, response);
             } else if (action.equals("delete")) {

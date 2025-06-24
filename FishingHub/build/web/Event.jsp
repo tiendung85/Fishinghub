@@ -89,6 +89,7 @@
                     <div class="flex items-center justify-between gap-4">
                         <form action="SearchEvent" method="GET" class="flex items-center w-full max-w-lg">
                             <input type="text" name="query" placeholder="Search for events..."
+                                   value="${search}"
                                    class="w-full pl-4 pr-20 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
                             <button type="submit" class="bg-primary text-white px-4 py-2 hover:bg-blue-700 flex items-center justify-center">
                                 <i class="ri-search-line"></i>

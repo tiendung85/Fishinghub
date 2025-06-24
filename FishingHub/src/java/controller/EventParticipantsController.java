@@ -12,10 +12,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import model.EventParticipant;
-import model.Events;
+
 import model.Users;
 
 /**
@@ -93,14 +93,16 @@ public class EventParticipantsController extends HttpServlet {
                 if (search != null && !search.trim().isEmpty()) {
                     for (EventParticipant ep : allParticipants) {
                         if ((ep.getFullName() != null && ep.getFullName().toLowerCase().contains(search.toLowerCase()))
-                                || (ep.getEmail() != null && ep.getEmail().toLowerCase().contains(search.toLowerCase()))) {
+                                || (ep.getEmail() != null && ep.getEmail().toLowerCase().contains(search.toLowerCase())) 
+                                || (ep.getCccd() != null && ep.getCccd().toLowerCase().contains(search.toLowerCase()))
+                                || (ep.getNumberPhone() != null && ep.getNumberPhone().toLowerCase().contains(search.toLowerCase()))){
                             resultList.add(ep);
                         }
                     }
                 } else {
                     resultList = allParticipants;
                 }
-
+                request.setAttribute("search", search);
                 request.setAttribute("listEP", resultList);
                 request.setAttribute("eventId", eventId);
                 request.getRequestDispatcher("dashboard_owner/EventParticipants.jsp").forward(request, response);
@@ -114,7 +116,7 @@ public class EventParticipantsController extends HttpServlet {
                     boolean checkinStatus = status.equals("1");
                     list = dao.filterParticipantsByCheckin(eventId, checkinStatus);
                 }
-
+                request.setAttribute("status", status);
                 request.setAttribute("listEP", list);
                 request.setAttribute("eventId", eventId);
                 request.getRequestDispatcher("dashboard_owner/EventParticipants.jsp").forward(request, response);

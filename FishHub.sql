@@ -668,13 +668,6 @@ VALUES
 (N'Câu cá gây quỹ từ thiện', N'Hồ Xuân Hương', N'Sự kiện thiện nguyện giúp đỡ trẻ em.', N'Đà Lạt', 4, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'approved', GETDATE(), 'download.jpg', 60, 18);
 
 -- 5 sự kiện đã kết thúc
-INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
-VALUES 
-(N'Cuộc thi câu cá đầu xuân', N'Hồ Gươm', N'Chào mừng năm mới.', N'Hà Nội', 4, DATEADD(DAY, -10, GETDATE()), DATEADD(DAY, -9, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 70, 50),
-(N'Thử thách 24h câu cá', N'Hồ Phú Ninh', N'Câu cá không nghỉ suốt 1 ngày.', N'Quảng Nam', 4, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 35, 28),
-(N'Giải đấu cuối năm', N'Hồ Tuyền Lâm', N'Tổng kết mùa giải.', N'Đà Lạt', 4, DATEADD(DAY, -20, GETDATE()), DATEADD(DAY, -19, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 80, 45),
-(N'Sự kiện giao lưu miền Trung', N'Hồ Khe Sanh', N'Câu cá và trao đổi kinh nghiệm.', N'Quảng Trị', 4, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 55, 37),
-(N'Hội thi câu cá sinh viên', N'Hồ Thủ Đức', N'Dành cho các bạn sinh viên.', N'TP.HCM', 4, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 60);
 
 CREATE TABLE EventNotification (
     NotificationId INT IDENTITY PRIMARY KEY,
@@ -686,19 +679,162 @@ CREATE TABLE EventNotification (
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (SenderId) REFERENCES Users(UserId)
 );
--- 5 sự kiện đang diễn ra
-INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
-VALUES
-(N'Câu cá Marathon', N'Hồ Tràm', N'Sự kiện kéo dài nhiều giờ liên tục.', N'Vũng Tàu', 4, DATEADD(HOUR, -3, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 45, 33),
-(N'Sự kiện giao lưu Bắc - Nam', N'Hồ Hàm Thuận', N'Kết nối anh em cần thủ.', N'Bình Thuận', 4, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 5, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 70, 25),
-(N'Thử thách tốc độ câu cá', N'Hồ An Dương', N'Ai bắt được cá nhanh nhất?', N'Hải Phòng', 4, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 60, 40),
-(N'Chinh phục hồ sâu', N'Hồ Tân Hiệp', N'Địa điểm khó câu nhất năm.', N'Long An', 4, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 50, 22),
-(N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', N'Tuyển chọn đội tuyển quốc gia.', N'Vĩnh Long', 4, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 80);
--- 5 sự kiện sắp diễn ra chỉ còn 1 chỗ trống
+INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES 
+(N'Khám Phá Kỹ Thuật Câu Cá Đêm – Hồ Tây', N'Hồ Tây', 
+ N'Sự kiện trải nghiệm câu cá ban đêm cho người mới bắt đầu. Bao gồm hướng dẫn kỹ thuật, cung cấp đèn pin và chòi nghỉ.',
+ N'Hà Nội', 4, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 
+ 'pending', 'a8b79dea354d260c1153164e32900a82.jpg', 50, 0),
+
+(N'Thử Thách Câu Cá Gia Đình – Hồ Trị An', N'Hồ Trị An', 
+ N'Sự kiện vui chơi cuối tuần dành cho gia đình với khu vực câu cá riêng cho trẻ nhỏ và giải thưởng hấp dẫn.',
+ N'Đồng Nai', 4, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 5, GETDATE()), 
+ 'pending', 'a8b79dea354d260c1153164e32900a82.jpg', 100, 0),
+
+(N'Workshop Câu Cá Lure – Hồ Dầu Tiếng', N'Hồ Dầu Tiếng', 
+ N'Lớp hướng dẫn kỹ thuật lure cá lóc dành cho người có kinh nghiệm cơ bản. Người tham gia tự mang dụng cụ.',
+ N'Bình Dương', 4, DATEADD(DAY, 1, GETDATE()), DATEADD(DAY, 2, GETDATE()), 
+ 'pending', 'a8b79dea354d260c1153164e32900a82.jpg', 30, 0),
+
+(N'Tour Câu Cá & Cắm Trại – Suối Vàng', N'Hồ Suối Vàng', 
+ N'Tour 2 ngày 1 đêm kết hợp câu cá, dã ngoại, tiệc nướng và đốt lửa trại dành cho các cặp đôi và nhóm bạn.', 
+ N'Đà Lạt', 4, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 
+ 'pending', 'a8b79dea354d260c1153164e32900a82.jpg', 40, 0),
+
+(N'Giải Câu Cá Nghiệp Dư – Hồ Núi Cốc', N'Hồ Núi Cốc', 
+ N'Sự kiện thi đấu nhẹ nhàng dành cho người mới, diễn ra trong buổi sáng, có quà lưu niệm cho tất cả người tham gia.',
+ N'Thái Nguyên', 4, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 
+ 'pending', 'a8b79dea354d260c1153164e32900a82.jpg', 60, 0);
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
-(N'Thi đấu bán chuyên mùa hè', N'Hồ Suối Vàng', N'Sân chơi cho các cần thủ bán chuyên.', N'Lâm Đồng', 4, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), N'images (1).jpg', 30, 29),
-(N'Cúp câu cá miền Tây', N'Hồ Tràm Chim', N'Sự kiện khu vực đồng bằng sông Cửu Long.', N'Đồng Tháp', 4, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), N'images (2).jpg', 50, 50),
-(N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 4, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
-(N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 4, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
-(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 4, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
+(N'Giải Câu Cá Truyền Thống Miền Bắc – Hồ Tây', N'Hồ Tây', 
+ N'Giải đấu thường niên quy tụ các cần thủ kinh nghiệm. Có trực tiếp trên mạng xã hội và giải thưởng giá trị cao.', 
+ N'Hà Nội', 4, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 120, 80),
+
+(N'Ngày Hội Câu Cá & Giao Lưu CLB – Hồ Trị An', N'Hồ Trị An', 
+ N'Sự kiện kết nối các hội câu cá khu vực miền Đông Nam Bộ với hoạt động chia sẻ kinh nghiệm và thi đấu thân mật.',
+ N'Đồng Nai', 4, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 90, 50),
+
+(N'Thử Thách Câu Lure Nhanh – Hồ Dầu Tiếng', N'Hồ Dầu Tiếng', 
+ N'Cuộc thi câu cá tốc độ trong 2 giờ, tính điểm theo số lượng cá. Có tổ chức ăn trưa và trao giải cuối chương trình.',
+ N'Bình Dương', 4, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 40),
+
+(N'Hội Trại Câu Cá & BBQ – Suối Vàng', N'Hồ Suối Vàng', 
+ N'Sự kiện kết hợp giữa câu cá và dã ngoại cuối tuần cho các nhóm bạn trẻ yêu thiên nhiên. Có khu cắm trại riêng.', 
+ N'Đà Lạt', 4, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 100, 70),
+
+(N'Chương Trình Câu Cá Mở Rộng – Hồ Núi Cốc', N'Hồ Núi Cốc', 
+ N'Sự kiện không phân biệt trình độ, người tham gia được hỗ trợ mồi câu và có trò chơi dân gian đi kèm.', 
+ N'Thái Nguyên', 4, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 150, 90);
+INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES 
+(N'Workshop Câu Cá Cho Người Mới – Hồ Tây', N'Hồ Tây',
+ N'Chương trình huấn luyện cơ bản về chọn cần, buộc dây và thả mồi. Có hỗ trợ dụng cụ miễn phí cho 20 người đầu tiên đăng ký.',
+ N'Hà Nội', 4, DATEADD(DAY, 1, GETDATE()), DATEADD(DAY, 1, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 50, 20),
+
+(N'Buổi Hướng Dẫn Kỹ Thuật Câu Đơn – Hồ Trị An', N'Hồ Trị An',
+ N'Lớp hướng dẫn chi tiết kỹ thuật câu đơn, kết hợp thực hành ngay tại bờ hồ cùng chuyên gia đến từ CLB Đồng Nai.',
+ N'Đồng Nai', 4, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 2, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 25),
+
+(N'Tour Câu Lure Trải Nghiệm – Hồ Dầu Tiếng', N'Hồ Dầu Tiếng',
+ N'Chuyến đi 1 ngày dành riêng cho người yêu lure. Hướng dẫn viên chuyên nghiệp, thi lure theo nhóm nhỏ và có phần thưởng.',
+ N'Bình Dương', 4, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 3, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 40, 18),
+
+(N'Chương Trình Câu Cá & Yoga – Suối Vàng', N'Hồ Suối Vàng',
+ N'Sự kiện độc đáo kết hợp giữa câu cá thư giãn và yoga sáng sớm trong không gian thiên nhiên trong lành.', 
+ N'Đà Lạt', 4, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 4, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 30, 10),
+
+(N'Ngày Hội Câu Cá Trẻ Em – Hồ Núi Cốc', N'Hồ Núi Cốc',
+ N'Sự kiện thân thiện dành cho trẻ em và phụ huynh. Có khu vực riêng cho trẻ, trò chơi và chứng nhận hoàn thành.',
+ N'Thái Nguyên', 4, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 5, GETDATE()), 
+ 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 80, 35);
+INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES 
+(N'Giải Câu Cá Mở Rộng Toàn Quốc 2024 – Hồ Tây', N'Hồ Tây',
+ N'Sự kiện quy mô toàn quốc với hơn 100 vận động viên tham gia, tổng giá trị giải thưởng hơn 100 triệu đồng.',
+ N'Hà Nội', 4, DATEADD(DAY, -3, GETDATE()), DATEADD(DAY, -2, GETDATE()), 
+ 'approved', DATEADD(DAY, -4, GETDATE()), 'a8b79dea354d260c1153164e32900a82.jpg', 150, 150),
+
+(N'Hội Câu Cá Miền Đông – Hồ Trị An', N'Hồ Trị An',
+ N'Sự kiện giao lưu và thi đấu giữa các câu lạc bộ tỉnh Đông Nam Bộ, có tài trợ từ các hãng thiết bị câu.', 
+ N'Đồng Nai', 4, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 
+ 'approved', DATEADD(DAY, -6, GETDATE()), 'a8b79dea354d260c1153164e32900a82.jpg', 100, 90),
+
+(N'Tour Câu Cá Trải Nghiệm – Hồ Dầu Tiếng', N'Hồ Dầu Tiếng',
+ N'Tour du lịch nghỉ dưỡng 2 ngày 1 đêm với hoạt động chính là câu cá, ăn uống và giao lưu cộng đồng.',
+ N'Bình Dương', 4, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 
+ 'approved', DATEADD(DAY, -8, GETDATE()), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 60),
+
+(N'Cuộc Thi Câu Cá Gia Đình – Suối Vàng', N'Hồ Suối Vàng',
+ N'Sự kiện dành riêng cho các hộ gia đình yêu thiên nhiên. Có các trò chơi phụ cho trẻ em và phần thưởng hấp dẫn.', 
+ N'Đà Lạt', 4, DATEADD(DAY, -9, GETDATE()), DATEADD(DAY, -8, GETDATE()), 
+ 'approved', DATEADD(DAY, -10, GETDATE()), 'a8b79dea354d260c1153164e32900a82.jpg', 70, 70),
+
+(N'Cúp Câu Cá Miền Bắc 2024 – Hồ Núi Cốc', N'Hồ Núi Cốc',
+ N'Sự kiện thi đấu chính thức có chấm điểm và trọng tài. Người chiến thắng được đại diện khu vực tham gia vòng quốc gia.',
+ N'Thái Nguyên', 4, DATEADD(DAY, -11, GETDATE()), DATEADD(DAY, -10, GETDATE()), 
+ 'approved', DATEADD(DAY, -12, GETDATE()), 'a8b79dea354d260c1153164e32900a82.jpg', 100, 98);
+INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES 
+(N'Sự Kiện Tự Phát Không Đăng Ký – Hồ Tây', N'Hồ Tây',
+ N'Ban tổ chức không cung cấp kế hoạch rõ ràng và không có đơn đăng ký chính thức nên không được phê duyệt.',
+ N'Hà Nội', 4, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 
+ 'rejected', 'a8b79dea354d260c1153164e32900a82.jpg', 50, 0),
+
+(N'Đề Xuất Không Đủ Hồ Sơ – Hồ Trị An', N'Hồ Trị An',
+ N'Hồ sơ thiếu giấy phép tổ chức từ chính quyền địa phương và không có hợp đồng bảo hiểm cho người tham gia.',
+ N'Đồng Nai', 4, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 
+ 'rejected', 'a8b79dea354d260c1153164e32900a82.jpg', 60, 0),
+
+(N'Sự Kiện Gây Ảnh Hưởng Môi Trường – Hồ Dầu Tiếng', N'Hồ Dầu Tiếng',
+ N'Nội dung sự kiện không phù hợp do tổ chức thi đấu đông người tại khu vực bảo tồn sinh thái.', 
+ N'Bình Dương', 4, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 5, GETDATE()), 
+ 'rejected', 'a8b79dea354d260c1153164e32900a82.jpg', 100, 0),
+
+(N'Sự Kiện Không Rõ Đơn Vị Tổ Chức – Suối Vàng', N'Hồ Suối Vàng',
+ N'Tên đơn vị tổ chức không rõ ràng, không có đại diện pháp lý chịu trách nhiệm trong trường hợp khẩn cấp.', 
+ N'Đà Lạt', 4, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 
+ 'rejected', 'a8b79dea354d260c1153164e32900a82.jpg', 70, 0),
+
+(N'Không Đáp Ứng Quy Định An Toàn – Hồ Núi Cốc', N'Hồ Núi Cốc',
+ N'Không có phương án xử lý y tế, phòng cháy chữa cháy và bảo hộ cho người tham gia. Bị từ chối theo quy định.', 
+ N'Thái Nguyên', 4, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 
+ 'rejected', 'a8b79dea354d260c1153164e32900a82.jpg', 90, 0);
+
+ INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(6, 1, '0933444555', 'charlie@eample.com', '012345678900'),
+(7, 2, '0933444555', 'tien.dungg2011@gmail.com', '012345678901'),
+(8, 3, '0933444555', 'haicv@gmail.com', '012345678902'),
+(11, 1, '0933444555', 'charlie@eample.com', '012345678903'),
+(12, 2, '0933444555', 'tien.dungg2011@gmail.com', '012345678904'),
+(13, 3, '0933444555', 'haicv@gmail.com', '012345678905');
+-- Người checkin
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD, Checkin, CheckinTime)
+VALUES
+(16, 1, '0933444555', 'charlie@eample.com', '012345678906', 1, DATEADD(DAY, -2, GETDATE())),
+(16, 2, '0933444555', 'tien.dungg2011@gmail.com', '012345678907', 1, DATEADD(DAY, -2, GETDATE()));
+
+-- Người không checkin
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(16, 3, '0933444555', 'haicv@gmail.com', '012345678908');
+-- Sự kiện 17
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD, Checkin, CheckinTime)
+VALUES
+(17, 1, '0933444555', 'charlie@eample.com', '012345678909', 1, DATEADD(DAY, -4, GETDATE())),
+(17, 2, '0933444555', 'tien.dungg2011@gmail.com', '012345678910', 1, DATEADD(DAY, -4, GETDATE()));
+
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(17, 3, '0933444555', 'haicv@gmail.com', '012345678911');
+

@@ -216,6 +216,7 @@
                                     <i class="ri-search-line text-gray-400"></i>
                                 </div>
                                 <input type="text" name="search"
+                                       value="${search}"
                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-sm placeholder-gray-400 focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary"
                                        placeholder="Tìm kiếm sự kiện..." />
                             </div>
@@ -232,60 +233,64 @@
                             <div class="relative w-full sm:w-48">
                                 <select id="event-status-filter" name="status"
                                         class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-button appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary bg-white text-sm">
-                                    <option value="all" >Tất cả sự kiện</option>
-                                    <option value="upcoming" >Sự kiện sắp diễn ra</option>
-                                    <option value="ended" >Sự kiện đã kết thúc</option>
+                                    <option value="all" <c:if test="${empty filter or filter == 'all'}">selected</c:if>>Tất cả sự kiện</option>
+                                    <option value="ongoing" <c:if test="${filter == 'ongoing'}">selected</c:if>>Sự kiện đang diễn ra</option>
+                                    <option value="upcoming" <c:if test="${filter == 'upcoming'}">selected</c:if>>Sự kiện sắp diễn ra</option>
+                                    <option value="ended" <c:if test="${filter == 'ended'}">selected</c:if>>Sự kiện đã kết thúc</option>                            
+                                    <option value="pass" <c:if test="${filter == 'pass'}">selected</c:if>>Sự kiện đã được duyệt</option>
+                                    <option value="pending" <c:if test="${filter == 'pending'}">selected</c:if>>Sự kiện chờ duyệt</option>
+                                    <option value="reject" <c:if test="${filter == 'reject'}">selected</c:if>>Sự kiện bị từ chối</option>
 
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <button type="submit"
-                                    class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
-                                <i class="ri-filter-line mr-2"></i> Lọc
-                            </button>
-                        </form>
-                    </div>
-                    <!-- ...existing code... -->
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
+                                    <i class="ri-filter-line mr-2"></i> Lọc
+                                </button>
+                            </form>
+                        </div>
+                        <!-- ...existing code... -->
 
-                    <!-- Events Table -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="event-table min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Tên sự kiện
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Thời gian
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Địa điểm
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái thời gian
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái duyệt
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Người tham gia
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Thao tác
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Events Table -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="event-table min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Tên sự kiện
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thời gian
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Địa điểm
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Trạng thái thời gian
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Trạng thái duyệt
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Người tham gia
+                                            </th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thao tác
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
                                     <c:forEach var="o" items="${listE}">
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -356,8 +361,8 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <div class="flex justify-end space-x-2">
-                                                    <button onclick="location.href='EventUpdate?action=event&eventId=${o.eventId}'"
-                                                        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                                                    <button onclick="location.href = 'EventUpdate?action=event&eventId=${o.eventId}'"
+                                                            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
                                                         <i class="ri-edit-line text-blue-600"></i>
                                                     </button>
                                                     <c:if test="${o.status == 'pending'}">

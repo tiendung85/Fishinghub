@@ -87,7 +87,7 @@ public class SearchEventController extends HttpServlet {
                 isRegisteredList.add(isRegistered);
             }
         }
-
+        request.setAttribute("search", search);
         request.setAttribute("listE", listS);
         request.setAttribute("isRegisteredList", isRegisteredList);
         request.getRequestDispatcher("Event.jsp").forward(request, response);

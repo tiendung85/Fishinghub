@@ -203,7 +203,7 @@
                             Theo dõi và quản lý người tham gia sự kiện của bạn
                         </p>
                     </div>
-
+                    
                     <form action="EventNotification" method="get" >
                         <input type="hidden" name="action" value="sendinfo">
                         <input type="hidden" name="eventId" value="${eventId}">
@@ -217,7 +217,7 @@
                             </button>
                         </div>
                     </form>
-
+                    
                     <div class="flex flex-col md:flex-row gap-4 mb-6">
 
                         <form method="get" action="EventParticipants"
@@ -229,6 +229,7 @@
                                     <i class="ri-search-line text-gray-400"></i>
                                 </div>
                                 <input type="text" name="keyword"
+                                       value="${search}"
                                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-sm placeholder-gray-400 focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary"
                                        placeholder="Tìm theo tên, email, SĐT..." />
                             </div>
@@ -246,50 +247,50 @@
                             <div class="relative w-full sm:w-48">
                                 <select name="status"
                                         class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-button appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary bg-white text-sm">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="1">Đã check-in</option>
-                                    <option value="0">Chưa check-in</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    <option value="" <c:if test="${empty status}">selected</c:if>>Tất cả trạng thái</option>
+                                    <option value="1" <c:if test="${status == '1'}">selected</c:if>>Đã check-in</option>
+                                    <option value="0" <c:if test="${status == '0'}">selected</c:if>>Chưa check-in</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <button type="submit"
-                                    class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
-                                <i class="ri-filter-line mr-2"></i> Lọc
-                            </button>
-                        </form>
-                    </div>
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
+                                    <i class="ri-filter-line mr-2"></i> Lọc
+                                </button>
+                            </form>
+                        </div>
 
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Họ và tên
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            CCCD
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Email
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Số điện thoại
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Thời gian check-in
-                                        </th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Thao tác
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Họ và tên
+                                            </th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                CCCD
+                                            </th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Email
+                                            </th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Số điện thoại
+                                            </th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Trạng thái
+                                            </th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thời gian check-in
+                                            </th>
+                                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thao tác
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
                                     <c:forEach var="o" items="${listEP}">
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4 whitespace-nowrap">
