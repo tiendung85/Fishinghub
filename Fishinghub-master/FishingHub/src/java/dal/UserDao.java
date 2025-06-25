@@ -333,5 +333,67 @@ public void updatePermissions(int userId, boolean canPost, boolean canComment, b
         }
         return userList;
     }
+        public boolean checkPassword(String email, String currentPassword) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getConnection();
+            String sql = "SELECT password FROM users WHERE email = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+                // So sánh mật khẩu hiện tại với mật khẩu trong cơ sở dữ liệu
+                return storedPassword.equals(currentPassword);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        return false;
+    }
+    public void updatePasswordByEmail(String email, String newPassword) {
+    String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, newPassword);
+        ps.setString(2, email);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+public Users getUserByEmail(String email) {
+    Users user = null;
+    try {
+        String sql = "SELECT * FROM Users WHERE Email = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            user = new Users();
+            user.setUserId(rs.getInt("UserId"));
+            user.setFullName(rs.getString("FullName"));
+            user.setEmail(rs.getString("Email"));
+            user.setPhone(rs.getString("Phone"));
+            user.setPassword(rs.getString("Password"));
+            user.setGoogleId(rs.getString("GoogleId"));
+            user.setRoleId(rs.getInt("RoleId"));
+            user.setGender(rs.getString("Gender"));
+            user.setDateOfBirth(rs.getDate("DateOfBirth"));
+            user.setLocation(rs.getString("Location"));
+            user.setCreatedAt(rs.getTimestamp("CreatedAt"));
+            user.setAvatar(rs.getString("Avatar"));
+            user.setLastLoginTime(rs.getTimestamp("lastLoginTime"));
+            user.setStatus(rs.getString("status"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return user;
+}
+
 }
 

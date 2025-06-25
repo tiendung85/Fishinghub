@@ -4,6 +4,7 @@ import dal.UserDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.Users;
 
 import java.io.IOException;
 
@@ -17,10 +18,11 @@ public class ResetPasswordController extends HttpServlet {
 
         String email = request.getParameter("email");
         String code = request.getParameter("code");
+        String currentPassword = request.getParameter("currentPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        // Kiểm tra xác nhận mật khẩu
+        // Kiểm tra xác nhận mật khẩu mới
         if (newPassword == null || !newPassword.equals(confirmPassword)) {
             request.setAttribute("error", "Mật khẩu xác nhận không khớp!");
             request.setAttribute("email", email);
@@ -29,24 +31,25 @@ public class ResetPasswordController extends HttpServlet {
             return;
         }
 
-        // Kiểm tra mã xác nhận còn hiệu lực, đúng user
-        boolean valid = userDao.checkResetToken(email, code);
-        if (valid) {
-            // Đổi mật khẩu mới cho user
-            userDao.updatePassword(email, newPassword);
-            // Đánh dấu mã đã sử dụng
-            userDao.markResetTokenUsed(email, code);
-
-            // Gửi alert và chuyển về login.jsp
-            response.setContentType("text/html;charset=UTF-8");
-            response.getWriter().println(
-                "<script>alert('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.'); window.location='login';</script>"
-            );
-        } else {
-            request.setAttribute("error", "Mã xác nhận không đúng hoặc đã hết hạn!");
+        // Kiểm tra mật khẩu hiện tại với mật khẩu trong cơ sở dữ liệu
+        Users user = userDao.getByEmail(email);
+        if (user == null || !userDao.checkPassword(email, currentPassword)) {
+            request.setAttribute("error", "Mật khẩu hiện tại không đúng!");
             request.setAttribute("email", email);
             request.setAttribute("code", code);
             request.getRequestDispatcher("ResetPassword.jsp").forward(request, response);
+            return;
         }
+
+        // Đổi mật khẩu mới cho user
+        userDao.updatePassword(email, newPassword);
+        // Đánh dấu mã đã sử dụng
+        userDao.markResetTokenUsed(email, code);
+
+        // Gửi alert và chuyển về login.jsp
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().println(
+            "<script>alert('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.'); window.location='login';</script>"
+        );
     }
 }

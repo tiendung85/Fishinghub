@@ -3,6 +3,7 @@ package controller;
 import dal.UserDao;
 import model.Users;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/Profile"})
+@MultipartConfig
 public class ProfileController extends HttpServlet {
     private UserDao userDB = new UserDao();
 

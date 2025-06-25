@@ -24,6 +24,11 @@
 <servlet>
     <servlet-name>UploadAvatar</servlet-name>
     <servlet-class>controller.UploadAvatar</servlet-class>
+    <multipart-config>
+        <max-file-size>5242880</max-file-size> <!-- 5MB -->
+        <max-request-size>20971520</max-request-size> <!-- 20MB -->
+        <file-size-threshold>1048576</file-size-threshold> <!-- 1MB -->
+    </multipart-config>
 </servlet>
 <servlet>
     <servlet-name>ViewUser</servlet-name>
