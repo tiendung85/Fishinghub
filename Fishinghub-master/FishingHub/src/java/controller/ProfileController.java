@@ -24,24 +24,6 @@ public class ProfileController extends HttpServlet {
             response.sendRedirect("Login.jsp");
             return;
         }
-
-        Part avatarPart = request.getPart("avatar");
-        String avatarPath = user.getAvatar(); // Giữ avatar cũ nếu không có ảnh mới
-
-        if (avatarPart != null && avatarPart.getSize() > 0) {
-            // Tạo tên file duy nhất cho avatar
-            String fileName = UUID.randomUUID().toString() + ".png";
-            String uploadDir = getServletContext().getRealPath("") + File.separator + "assets" + File.separator + "img" + File.separator;
-            File uploadFile = new File(uploadDir, fileName);
-            avatarPart.write(uploadFile.getAbsolutePath());
-
-            avatarPath = "assets/img/" + fileName;
-        }
-
-        // Cập nhật avatar trong cơ sở dữ liệu
-        user.setAvatar(avatarPath);
-        userDB.update(user);
-
         // Lưu lại trong session
         request.getSession().setAttribute("user", user);
 

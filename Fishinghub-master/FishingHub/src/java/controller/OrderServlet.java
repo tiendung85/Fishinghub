@@ -1,13 +1,20 @@
 package controller;
 
 import dal.OrderDAO;
+import dal.OrderDetailDAO;
+import dal.ProductDAO;
 import model.Order;
 import model.Status;
 import java.io.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import model.OrderDetail;
+import model.Users;
 
 @WebServlet(name = "OrderServlet", urlPatterns = {"/Order"})
 public class OrderServlet extends HttpServlet {
@@ -35,11 +42,17 @@ public class OrderServlet extends HttpServlet {
                 // Trạng thái
                 String statusClass = "bg-gray-100 text-gray-800";
                 int st = order.getStatus().getStatusID();
-                if (st == 4) statusClass = "bg-purple-100 text-purple-800";
-                else if (st == 2) statusClass = "bg-blue-100 text-blue-800";
-                else if (st == 1) statusClass = "bg-yellow-100 text-yellow-800";
-                else if (st == 3) statusClass = "bg-green-100 text-green-800";
-                else if (st == 5) statusClass = "bg-red-100 text-red-800";
+                if (st == 4) {
+                    statusClass = "bg-purple-100 text-purple-800";
+                } else if (st == 2) {
+                    statusClass = "bg-blue-100 text-blue-800";
+                } else if (st == 1) {
+                    statusClass = "bg-yellow-100 text-yellow-800";
+                } else if (st == 3) {
+                    statusClass = "bg-green-100 text-green-800";
+                } else if (st == 5) {
+                    statusClass = "bg-red-100 text-red-800";
+                }
                 tbody.append("<td class='px-6 py-4 whitespace-nowrap'><span class='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium " + statusClass + "'>").append(order.getStatus().getStatusName()).append("</span></td>");
                 // Thao tác
                 tbody.append("<td class='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'><div class='flex justify-end space-x-2'>");
@@ -87,10 +100,67 @@ public class OrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String orderIdStr = request.getParameter("orderId");
-        String statusIdStr = request.getParameter("statusId");
+        String action = request.getParameter("action");
         response.setContentType("application/json");
         try {
+            if ("delete".equals(action)) {
+                String orderIdStr = request.getParameter("orderId");
+                int orderId = Integer.parseInt(orderIdStr);
+                OrderDAO dao = new OrderDAO();
+                boolean ok = dao.deleteOrder(orderId);
+                response.getWriter().write("{\"success\": " + ok + "}");
+                return;
+            } else if ("createOrder".equals(action)) {
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                OrderDAO dao = new OrderDAO();
+                /*
+                TODO:
+                CHECK LOGIN OR NOT
+                 */
+                Users currentUser = (Users) session.getAttribute("user");
+                if (currentUser == null) {
+                    request.getRequestDispatcher("Login.jsp").forward(request, response);
+                }
+
+                dao.createOrder(currentUser.getUserId());
+
+                int orderId = dao.getLastInsertId();
+
+                OrderDetailDAO detailDAO = new OrderDetailDAO();
+                ProductDAO productDAO = new ProductDAO();
+
+                double total = 0;
+                List<OrderDetail> detailList = new ArrayList<>();
+                for (String cartItem : cart.keySet()) {
+                    OrderDetail detail = new OrderDetail();
+                    detail.setOrderId(orderId);
+
+                    int productId = Integer.parseInt(cartItem);
+
+                    detail.setProductId(productId);
+                    detail.setCartQuantity(cart.get(cartItem));
+                    detail.setPrice(productDAO.getProductById(productId).getPrice());
+                    total += detail.getCartQuantity() * detail.getPrice();
+                    detailDAO.createDetail(detail);
+                }
+                
+                detailList = detailDAO.getDetailByOrderId(orderId);
+
+                Order order = dao.getOrderById(orderId);
+                order.setTotal(total);
+                dao.updateOrder(order);
+
+                request.setAttribute("order", order);
+                if (!detailList.isEmpty()) {
+                    request.setAttribute("detailList", detailList);
+                }
+                request.setAttribute("currentUser", currentUser);
+                RequestDispatcher rd = request.getRequestDispatcher("Checkout.jsp");
+                rd.forward(request, response);
+            }
+            String orderIdStr = request.getParameter("orderId");
+            String statusIdStr = request.getParameter("statusId");
             int orderId = Integer.parseInt(orderIdStr);
             int statusId = Integer.parseInt(statusIdStr);
             OrderDAO dao = new OrderDAO();

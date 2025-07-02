@@ -80,11 +80,12 @@ public class AddUserController extends HttpServlet {
         if ("fish_owner".equals(role)) roleId = 2;
 
         // Tạo người dùng mới không có avatar
-        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location, null); // không có avatar
+        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location); // không có avatar
         userDB.insert(newUser);  // Thêm người dùng vào database
 
         // Chuyển hướng về trang UserManager sau khi thêm thành công
-        response.sendRedirect(request.getContextPath() + "/UserManager.jsp");
+        request.getSession().setAttribute("successMessage", "Thêm người dùng thành công!");
+        response.sendRedirect("UserManager");
     }
 
     @Override

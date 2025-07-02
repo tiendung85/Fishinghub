@@ -15,7 +15,6 @@ public class Users {
     private Date dateOfBirth;
     private String location;
     private Timestamp createdAt;
-    private String avatar;
     private Timestamp lastLoginTime;  // Thay Date thành Timestamp
     private String status;
     public Users() {}
@@ -23,7 +22,7 @@ public class Users {
 
   // Constructor đầy đủ
     public Users(int userId, String fullName, String email, String phone, String password, String googleId,
-                int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt, String avatar) {
+                int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -35,12 +34,11 @@ public class Users {
         this.dateOfBirth = dateOfBirth;
         this.location = location;
         this.createdAt = createdAt;
-        this.avatar = avatar;
     }
 
     // Constructor khi đăng ký
     public Users(String fullName, String email, String phone, String password, int roleId,
-                 String gender, Date dateOfBirth, String location, String avatar) {
+                 String gender, Date dateOfBirth, String location) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -49,7 +47,6 @@ public class Users {
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.location = location;
-        this.avatar = avatar;
         this.googleId = null;
         this.createdAt = null;
     }
@@ -88,8 +85,7 @@ public class Users {
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
+
     public Timestamp getLastLoginTime() {
     return lastLoginTime;
 }

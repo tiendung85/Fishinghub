@@ -56,7 +56,6 @@
 <% }else { %>
     <!-- Khi đã đăng nhập -->
     <a href="Profile" class="flex items-center gap-2 font-semibold text-primary hover:text-blue-700 transition-colors">
-        <img src="<%= user.getAvatar() %>" alt="Avatar" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid #1E88E5;">
         <span class="hover:underline"><%= user.getFullName() %></span>
     </a>
 

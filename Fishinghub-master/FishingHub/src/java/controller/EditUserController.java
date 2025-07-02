@@ -1,94 +1,72 @@
 package controller;
 
+import dal.UserPermissionDAO;
 import dal.UserDao;
 import model.Users;
+import model.Permission;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
-import java.sql.Date;
+import java.util.*;
 
-@WebServlet(name = "EditUserController", urlPatterns = {"/EditUserController"})
+@WebServlet(name = "EditUserController", urlPatterns = {"/EditUser"})
 public class EditUserController extends HttpServlet {
-
-    private UserDao userDao = new UserDao();
-
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy userId từ URL parameter
-        int userId = Integer.parseInt(request.getParameter("id"));
-        
-        // Lấy thông tin người dùng từ database
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        int userId = Integer.parseInt(req.getParameter("userId"));
+        UserDao userDao = new UserDao();
         Users user = userDao.getUserById(userId);
-        
-        if (user == null) {
-            request.setAttribute("error", "Không tìm thấy người dùng.");
-            request.getRequestDispatcher("/UserManager").forward(request, response);
-            return;
-        }
 
-        // Lưu user vào request để hiển thị trong form
-        request.setAttribute("user", user);
+        UserPermissionDAO permDao = new UserPermissionDAO();
+        List<Permission> allPermissions = permDao.getPermissionsByRole(user.getRoleId());
+        List<Integer> deniedPermissions = permDao.getDeniedPermissionsByUser(userId);
 
-        // Chuyển đến trang chỉnh sửa người dùng
-        request.getRequestDispatcher("/EditUser.jsp").forward(request, response);
+        req.setAttribute("user", user);
+        req.setAttribute("allPermissions", allPermissions);
+        req.setAttribute("deniedPermissions", deniedPermissions);
+
+        req.getRequestDispatcher("EditUser.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = Integer.parseInt(request.getParameter("id"));  // Sử dụng đúng tham số là "id"
-        
-        // Lấy dữ liệu từ form
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String password = request.getParameter("password");
-        String gender = request.getParameter("gender");
-        String dobStr = request.getParameter("dob");
-        String location = request.getParameter("location");
-        String role = request.getParameter("role");
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        int userId = Integer.parseInt(req.getParameter("userId"));
+        String fullName = req.getParameter("fullName");
+        String email = req.getParameter("email");
+        String phone = req.getParameter("phone");
+        String password = req.getParameter("password");
+        String gender = req.getParameter("gender");
+        String dob = req.getParameter("dob");
+        String location = req.getParameter("location");
+        int roleId = Integer.parseInt(req.getParameter("roleId"));
+        // Bạn có thể thêm phần avatar, lastLoginTime, status... nếu cần
 
-        int roleId = role.equals("fish_owner") ? 2 : (role.equals("admin") ? 3 : 1);  // Giải quyết các loại vai trò
+        Users user = new Users();
+        user.setUserId(userId);
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setPassword(password);
+        user.setGender(gender);
+        user.setDateOfBirth(java.sql.Date.valueOf(dob));
+        user.setLocation(location);
+        user.setRoleId(roleId);
 
-        // Kiểm tra và chuyển đổi ngày sinh
-        Date dob;
-        try {
-            dob = Date.valueOf(dobStr);  // Convert string to Date
-        } catch (IllegalArgumentException e) {
-            request.setAttribute("error", "Ngày sinh không hợp lệ.");
-            request.getRequestDispatcher("/EditUser.jsp").forward(request, response);
-            return;
+        UserDao userDao = new UserDao();
+        userDao.update(user);
+
+        // Cập nhật quyền bị cấm
+        String[] denied = req.getParameterValues("denyPermission");
+        List<Integer> deniedIds = new ArrayList<>();
+        if (denied != null) {
+            for (String s : denied) deniedIds.add(Integer.parseInt(s));
         }
+        UserPermissionDAO permDao = new UserPermissionDAO();
+        permDao.setDeniedPermissions(userId, deniedIds);
 
-        // Kiểm tra nếu người dùng tồn tại
-        Users existingUser = userDao.getUserById(userId);
-        if (existingUser == null) {
-            request.setAttribute("error", "Không tìm thấy người dùng.");
-            request.getRequestDispatcher("/UserManager").forward(request, response);
-            return;
-        }
-
-        // Cập nhật thông tin người dùng
-        Users updatedUser = new Users(
-                userId,
-                fullName,
-                email,
-                phone,
-                password,
-                existingUser.getGoogleId(),
-                roleId,
-                gender,
-                dob,
-                location,
-                existingUser.getCreatedAt(),
-                existingUser.getAvatar()
-        );
-
-        // Cập nhật thông tin vào database
-        userDao.update(updatedUser);
-
-        // Redirect về trang quản lý người dùng sau khi cập nhật thành công
-        response.sendRedirect(request.getContextPath() + "/UserManager");
+        resp.sendRedirect("UserManager");
     }
 }

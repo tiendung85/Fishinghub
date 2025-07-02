@@ -78,7 +78,7 @@ public class RegisterController extends HttpServlet {
         if ("fish_owner".equals(role)) roleId = 2;
 
         // Tạo người dùng mới không có avatar
-        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location, null); // không có avatar
+        Users newUser = new Users(fullName, email, phone, password, roleId, gender, dob, location); 
         userDB.insert(newUser);
 
         response.sendRedirect(request.getContextPath() + "/Login.jsp");

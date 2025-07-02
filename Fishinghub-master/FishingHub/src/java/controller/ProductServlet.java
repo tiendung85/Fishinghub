@@ -13,8 +13,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Category;
 import model.Product;
 
@@ -44,7 +48,7 @@ public class ProductServlet extends HttpServlet {
 
             ProductDAO productDAO = new ProductDAO();
             List<Product> productList = new ArrayList<>();
-
+            productList = productDAO.getProductsByPage(page, pageSize);
             // Lấy tham số trang nếu có
             String pageParam = request.getParameter("page");
             if (pageParam != null && !pageParam.isEmpty()) {
@@ -84,6 +88,47 @@ public class ProductServlet extends HttpServlet {
                     productList = productDAO.getProductsByPage(page, pageSize);
                     request.setAttribute("selectedBrands", new ArrayList<>());
                 }
+            } else if (btAction.equals("addToCart")) {
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                int quantity = 0;
+                String productId = request.getParameter("productId");
+                if (cart == null || cart.isEmpty()) {
+                    cart = new HashMap<>();
+                    cart.put(productId, quantity + 1);
+                } else {
+                    if (cart.containsKey(productId)) {
+                        quantity = cart.get(productId);
+                        cart.replace(productId, quantity + 1);
+                    } else {
+                        cart.put(productId, quantity + 1);
+                    }
+                }
+                for (String id : cart.keySet()) {
+                    System.out.println(id);
+                }
+                session.setAttribute("CART", cart);
+            } else if (btAction.equals("updateCart")) {
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                String productId = request.getParameter("productId");
+                cart.replace(productId, quantity);
+                session.setAttribute("CART", cart);
+                url = "ShopingCart.jsp";
+            } else if (btAction.equals("deleteCart")) {
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                String productId = request.getParameter("productId");
+                cart.remove(productId);
+                session.setAttribute("CART", cart);
+                url = "ShopingCart.jsp";
+            } else if (btAction.equals("goToCart")) {
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                session.setAttribute("CART", cart);
+                System.out.println(cart.size());
+                url = "ShopingCart.jsp";
             } else {
                 // Default: lấy tất cả sản phẩm
                 totalProducts = productDAO.getTotalProductCount();

@@ -50,6 +50,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            border: 2px solid #ddd;
         }
         .avatar-box img {
             width: 100%;
@@ -102,7 +103,7 @@
     <div class="user-profile">
         <div class="profile-functions">
             <button class="function-btn" onclick="window.location.href='ChangePassword.jsp'">Đổi mật khẩu</button>
-            <button class="function-btn" onclick="window.location.href='ShoppingCart.jsp'">Giỏ hàng</button>
+            <button class="function-btn" onclick="window.location.href='PendingOrder.jsp'">Giỏ hàng</button>
             <button class="function-btn" onclick="window.location.href='Feedback.jsp'">Góp ý</button>
         </div>
     </div>
@@ -111,14 +112,13 @@
 <div class="profile-container">
     <div class="profile-title">Hồ sơ cá nhân</div>
 
+    <!-- Avatar chọn từ máy, không lưu DB -->
     <div class="avatar-box" onclick="document.getElementById('avatarInput').click();">
-        <form id="avatarForm" action="Profile" method="post" enctype="multipart/form-data" style="display:inline;">
-            <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display:none;" onchange="this.form.submit()">
-            <img src="<%= (user.getAvatar() != null && !user.getAvatar().isEmpty()) ? user.getAvatar() : "assets/img/avatar-default.png" %>" alt="Avatar" id="mainAvatar">
-        </form>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="previewAvatar(this)">
+        <img src="assets/img/avatar-default.png" alt="Avatar" id="mainAvatar">
     </div>
     <div style="text-align:center; color:#888; font-size:13px; margin-bottom:14px;">
-        Nhấn vào avatar để thay đổi ảnh từ máy tính
+        Nhấn vào avatar để chọn ảnh từ máy (ảnh chỉ hiển thị tạm thời)
     </div>
 
     <form action="EditProfileController" method="post">
@@ -156,6 +156,18 @@
     <% } %>
 
 </div>
+
+<script>
+function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('mainAvatar').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 </body>
 </html>
