@@ -237,6 +237,29 @@ public class OrderDAO extends DBConnect {
             return false;
         }
     }
+    public List<Order> getOrdersByUserIdAndStatus(int userId, int statusId) {
+    List<Order> list = new ArrayList<>();
+    String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, statusId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Order o = new Order();
+            o.setId(rs.getInt("Id"));
+            o.setUserId(rs.getInt("UserId"));
+            o.setOrderDate(rs.getTimestamp("OrderDate"));
+            o.setSubtotal(rs.getDouble("Subtotal"));
+            o.setTotal(rs.getDouble("Total"));
+            o.setStatusId(rs.getInt("StatusID"));
+            // Nếu có thêm trường deliveryTime thì:
+            o.setDeliveryTime(rs.getTimestamp("DeliveryTime"));
+            list.add(o);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 
-    // Đã hoàn tác: xóa hàm deleteOrdersWithStatus
 }

@@ -24,6 +24,15 @@
     <div id="pending">
         <h3>Chờ xác nhận</h3>
         <%
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        if (errorMessage != null) {
+    %>
+        <div style="color: red; font-weight: bold; margin-bottom: 12px;"><%= errorMessage %></div>
+    <%
+            session.removeAttribute("errorMessage");
+        }
+    %>
+        <%
             // Lấy giỏ hàng từ session
             Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");
             ProductDAO productDAO = new ProductDAO();

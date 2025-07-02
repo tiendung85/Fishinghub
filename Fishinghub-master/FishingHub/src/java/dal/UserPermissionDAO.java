@@ -74,4 +74,17 @@ public class UserPermissionDAO extends DBConnect {
             ps.close();
         } catch (Exception e) { e.printStackTrace(); }
     }
+    public boolean isDeniedPermission(int userId, int permissionId) {
+    String sql = "SELECT 1 FROM UserDeniedPermission WHERE userId = ? AND permissionId = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, permissionId);
+        ResultSet rs = ps.executeQuery();
+        return rs.next();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 }

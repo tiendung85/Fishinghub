@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,29 +50,28 @@
                     <th>Quyền</th>
                     <th>Cấm quyền này?</th>
                 </tr>
-                <c:forEach var="perm" items="${allPermissions}">
-                    <tr>
-                        <td>${perm.permissionName}</td>
-                        <td>
-                            <input type="checkbox" name="denyPermission"
-                                   value="${perm.permissionId}"
-                                   <c:if test="${fn:contains(','+deniedPermissionsStr+',', ','+perm.permissionId+',')}">checked</c:if>
-                            />
-                        </td>
-                    </tr>
-                </c:forEach>
+               <c:forEach var="perm" items="${allPermissions}">
+    <tr>
+        <td>${perm.permissionName}</td>
+        <td>
+            <c:choose>
+                <c:when test="${deniedPermissionsSet.contains(perm.permissionId)}">
+                    <input type="checkbox" name="denyPermission"
+                           value="${perm.permissionId}" checked />
+                </c:when>
+                <c:otherwise>
+                    <input type="checkbox" name="denyPermission"
+                           value="${perm.permissionId}" />
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+</c:forEach>
+
             </table>
         </div>
-
         <button type="submit">Cập nhật</button>
     </form>
 </div>
-</body>
-</html>
-
-        </table>
-        <br>
-        <button type="submit">Lưu thay đổi</button>
-    </form>
 </body>
 </html>

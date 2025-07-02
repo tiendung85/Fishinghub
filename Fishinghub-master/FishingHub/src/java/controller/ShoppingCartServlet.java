@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import dal.UserPermissionDAO;       // THÊM
+import model.Users;                 // THÊM
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +21,19 @@ public class ShoppingCartServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
+
+        // --- KIỂM TRA QUYỀN MUA HÀNG BỊ CẤM ---
+        Users user = (Users) session.getAttribute("user");
+        if (user != null) {
+            int userId = user.getUserId();
+            UserPermissionDAO permDao = new UserPermissionDAO();
+            // 7 là permissionId của "Mua hàng" (check lại DB)
+            if (permDao.isDeniedPermission(userId, 7)) {
+                session.setAttribute("errorMessage", "Bạn không thể mua hàng do vi phạm nội quy.");
+                response.sendRedirect("PendingOrder.jsp");
+                return;
+            }
+        }
 
         // Lấy giỏ hàng từ session
         Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");

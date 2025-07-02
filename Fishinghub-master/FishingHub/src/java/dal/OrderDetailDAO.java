@@ -59,4 +59,30 @@ public class OrderDetailDAO extends DBConnect {
         }
         return orderDetails;
     }
+public List<OrderDetail> getDeliveredOrderDetailsByUserId(int userId) {
+    List<OrderDetail> list = new ArrayList<>();
+    String sql = "SELECT od.* FROM OrderDetail od "
+               + "JOIN Orders o ON od.OrderId = o.Id "
+               + "WHERE o.UserId = ? AND o.StatusID = 3"; 
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            OrderDetail od = new OrderDetail();
+            od.setId(rs.getInt("Id"));
+            od.setOrderId(rs.getInt("OrderId"));
+            od.setProductId(rs.getInt("ProductId"));
+            od.setCartQuantity(rs.getInt("CartQuantity"));
+            od.setPrice(rs.getDouble("Price"));
+            // Thêm các thuộc tính khác nếu có
+            list.add(od);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
+
 }

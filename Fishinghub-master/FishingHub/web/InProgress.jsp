@@ -1,86 +1,83 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Map, java.util.HashMap" %>
 <%@ page import="model.Product" %>
 <%@ page import="dal.ProductDAO" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="model.Category" %>
-<%@ page import="model.Users" %>
+
+<%
+    Map<String, Integer> orderedItems = (Map<String, Integer>) session.getAttribute("OrderedItems");
+    Map<String, Long> deliveryTimes = (Map<String, Long>) session.getAttribute("DeliveryTimes");
+    Map<String, Integer> deliveredItems = (Map<String, Integer>) session.getAttribute("DeliveredItems");
+    Map<String, String> cancelledItems = (Map<String, String>) session.getAttribute("CancelledItems");
+    if (orderedItems == null) orderedItems = new HashMap<>();
+    if (deliveryTimes == null) deliveryTimes = new HashMap<>();
+    if (deliveredItems == null) deliveredItems = new HashMap<>();
+    if (cancelledItems == null) cancelledItems = new HashMap<>();
+
+    // Xử lý tự chuyển khi hết thời gian giao
+    long now = System.currentTimeMillis();
+    Map<String, Integer> tempOrdered = new HashMap<>(orderedItems);
+    for (String id : tempOrdered.keySet()) {
+        long deliveryTime = deliveryTimes.get(id);
+        if (now >= deliveryTime) {
+            deliveredItems.put(id, orderedItems.get(id));
+            orderedItems.remove(id);
+            deliveryTimes.remove(id);
+        }
+    }
+
+    // Xử lý huỷ
+    String cancelId = request.getParameter("cancelNow");
+    if (cancelId != null && orderedItems.containsKey(cancelId)) {
+        long timeLeft = deliveryTimes.get(cancelId) - now;
+        if (timeLeft > 60000) {
+            String reason = request.getParameter("reason_" + cancelId);
+            cancelledItems.put(cancelId, reason);
+            orderedItems.remove(cancelId);
+            deliveryTimes.remove(cancelId);
+            session.setAttribute("CancelledItems", cancelledItems);
+            out.println("<script>alert('Huỷ giao hàng thành công');location='InProgress.jsp';</script>");
+        } else {
+            out.println("<script>alert('Đã quá thời gian được phép huỷ');</script>");
+        }
+    }
+
+    session.setAttribute("OrderedItems", orderedItems);
+    session.setAttribute("DeliveryTimes", deliveryTimes);
+    session.setAttribute("DeliveredItems", deliveredItems);
+%>
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Đang giao</title>
-</head>
+<head><title>Đang giao</title></head>
 <body>
-    <!-- Header với 3 mục -->
-    <div class="tabs">
-        <button class="function-btn" onclick="window.location.href='PendingOrder.jsp'">Chờ xác nhận</button>
-        <button class="function-btn" onclick="window.location.href='InProgress.jsp'">Đang giao</button>
-        <button class="function-btn" onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
-    </div>
+<div class="tabs">
+    <button onclick="window.location.href='PendingOrder.jsp'">Chờ xác nhận</button>
+    <button onclick="window.location.href='InProgress.jsp'">Đang giao</button>
+    <button onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
+</div>
 
-    <!-- Nội dung Đang giao -->
-    <div id="inProgress">
-        <h3>Đang giao</h3>
-        <%
-            Map<String, Integer> orderedItems = (Map<String, Integer>) session.getAttribute("OrderedItems");
-            Map<String, Long> deliveryTimes = (Map<String, Long>) session.getAttribute("DeliveryTimes");
-            ProductDAO productDAO = new ProductDAO();
-            Map<String, Integer> deliveredItems = new HashMap<>();
+<h3>Đang giao</h3>
+<% if (!orderedItems.isEmpty()) {
+    ProductDAO productDAO = new ProductDAO();
+    for (String id : orderedItems.keySet()) {
+        long timeLeft = deliveryTimes.get(id) - now;
+        Product product = productDAO.getProductById(Integer.parseInt(id)); %>
+    <p><%= product.getName() %> - Giao trước: 
+    <%= new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(deliveryTimes.get(id))) %>
+    <% if (timeLeft > 60000) { %>
+        <form method="post" style="display:inline">
+            <textarea name="reason_<%= id %>" placeholder="Lý do huỷ..."></textarea>
+            <button type="submit" name="cancelNow" value="<%= id %>">Huỷ</button>
+        </form>
+    <% } %></p>
+<% }} else { %>Không có sản phẩm nào đang giao.<% } %>
 
-            if (orderedItems != null && !orderedItems.isEmpty()) {
-                for (String id : orderedItems.keySet()) {
-                    long currentTime = System.currentTimeMillis();
-                    long deliveryTime = deliveryTimes.get(id); // Lấy thời gian giao hàng
-
-                    // Kiểm tra xem thời gian giao hàng đã hết chưa
-                    if (currentTime >= deliveryTime) {
-                        Product product = productDAO.getProductById(Integer.parseInt(id));
-                        deliveredItems.put(id, orderedItems.get(id)); // Thêm vào danh sách Đã nhận
-                        orderedItems.remove(id); // Xóa khỏi Đang giao
-                    }
-                }
-
-                // Cập nhật lại session
-                session.setAttribute("OrderedItems", orderedItems);
-                session.setAttribute("DeliveredItems", deliveredItems);
-            }
-        %>
-        <div id="inProgressItems">
-            <%
-                if (!orderedItems.isEmpty()) {
-                    for (String id : orderedItems.keySet()) {
-                        Product product = productDAO.getProductById(Integer.parseInt(id));
-            %>
-            <p><%= product.getName() %> - Thời gian giao: <%= new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(deliveryTimes.get(id))) %></p>
-            <%
-                    }
-                } else {
-                    out.println("Không có sản phẩm nào đang giao.");
-                }
-            %>
-        </div>
-    </div>
-
-    <!-- Màn hình Đã nhận -->
-    <div id="delivered">
-        <h3>Đã nhận</h3>
-        <div id="deliveredItems">
-            <%
-                if (!deliveredItems.isEmpty()) {
-                    for (String id : deliveredItems.keySet()) {
-                        Product product = productDAO.getProductById(Integer.parseInt(id));
-            %>
-            <p><%= product.getName() %> - Đã giao thành công</p>
-            <%
-                    }
-                } else {
-                    out.println("Không có sản phẩm nào đã nhận.");
-                }
-            %>
-        </div>
-    </div>
-
+<h3>Đã huỷ</h3>
+<% if (!cancelledItems.isEmpty()) {
+    ProductDAO productDAO = new ProductDAO();
+    for (String id : cancelledItems.keySet()) {
+        Product product = productDAO.getProductById(Integer.parseInt(id)); %>
+    <p><%= product.getName() %> - Lý do: <%= cancelledItems.get(id) %></p>
+<% }} else { %>Không có sản phẩm nào đã huỷ.<% } %>
 </body>
 </html>

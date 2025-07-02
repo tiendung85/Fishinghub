@@ -1,42 +1,39 @@
+<%@ page import="model.Users" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Users"%>
 <%
     Users user = (Users) session.getAttribute("user");
-    if (user == null) {
-        response.sendRedirect("Login.jsp");
-        return;
-    }
-    String productId = request.getParameter("productId");
+    int productId = Integer.parseInt(request.getParameter("productId"));
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Đánh giá sản phẩm</title>
 </head>
 <body>
+    <h2>Đánh giá sản phẩm</h2>
     <form action="RatingServlet" method="post" enctype="multipart/form-data">
         <input type="hidden" name="productId" value="<%= productId %>">
 
-        <label for="rating">Chọn số sao:</label>
-        <select name="rating" id="rating">
-            <option value="5">5 sao</option>
-            <option value="4">4 sao</option>
-            <option value="3">3 sao</option>
-            <option value="2">2 sao</option>
-            <option value="1">1 sao</option>
-        </select><br/>
+        <label>Đánh giá (1-5 sao):</label>
+        <input type="number" name="rating" min="1" max="5" required> <br>
 
-        <label for="reviewText">Mô tả đánh giá:</label><br/>
-        <textarea name="reviewText" id="reviewText" rows="4" cols="50"></textarea><br/>
+        <label>Nội dung đánh giá (tối đa 500 ký tự):</label><br>
+        <textarea name="reviewText" maxlength="500" required style="width:300px;height:80px"></textarea><br>
 
-        <label for="image">Ảnh đánh giá:</label>
-        <input type="file" name="image"><br/>
+        <label>Chọn ảnh (jpg/png, ≤ 2MB):</label>
+        <input type="file" name="image" accept="image/*"><br>
 
-        <label for="video">Video đánh giá:</label>
-        <input type="file" name="video"><br/>
+        <label>Chọn video (mp4, ≤ 10MB):</label>
+        <input type="file" name="video" accept="video/mp4,video/*"><br>
 
         <button type="submit">Gửi đánh giá</button>
     </form>
+    <%
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            out.println("<div style='color:red;'>" + message + "</div>");
+            session.removeAttribute("message");
+        }
+    %>
 </body>
 </html>
