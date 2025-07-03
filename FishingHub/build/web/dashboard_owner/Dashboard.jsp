@@ -173,24 +173,25 @@
                                 </div>
                                 Dashboard
                             </a>
-
-
                             <div
                                 class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
                                 >
                                 Quản lý sự kiện
                             </div>
-                            <a
-                                href="#"
-                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
-                                >
-                                <div
-                                    class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
-                                    >
+                            <a href="#"
+                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md ">
+                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-calendar-event-line"></i>
                                 </div>
                                 Sự kiện
                             </a>
+                            <div class=" mt-1 mb-2 flex flex-col gap-2">
+                                <button onclick="location.href = 'EventManager'"
+                                   class=" py-1 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition text-sm">
+                                    <i class="ri-list-unordered mr-2"></i>Danh sách sự kiện
+                                </button>
+                                
+                            </div>
 
 
                             <div
@@ -224,30 +225,30 @@
                         </div>
                     </div>
                     <div class="flex items-center p-4 border-t border-gray-200">
-                    <div class="flex-shrink-0">
-                        <img class="w-10 h-10 rounded-full"
-                            src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
-                            alt="Admin" />
+                        <div class="flex-shrink-0">
+                            <img class="w-10 h-10 rounded-full"
+                                 src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
+                                 alt="Admin" />
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-700">
+                                <%= currentUser != null ? currentUser.getFullName() : "Khách" %>
+                            </p>
+                            <p class="text-xs font-medium text-gray-500">
+                                <% if(currentUser != null && currentUser.getRoleId() == 2) { %>
+                                Chủ Hồ Câu
+                                <% } else { %>
+                                Quản trị viên
+                                <% } %>
+                            </p>
+                        </div>
                     </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-700">
-                            <%= currentUser != null ? currentUser.getFullName() : "Khách" %>
-                        </p>
-                        <p class="text-xs font-medium text-gray-500">
-                            <% if(currentUser != null && currentUser.getRoleId() == 2) { %>
-                            Chủ Hồ Câu
-                            <% } else { %>
-                            Quản trị viên
-                            <% } %>
-                        </p>
+                    <!-- Nút quay lại Home -->
+                    <div class="p-4">
+                        <a href="./Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                            <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
+                        </a>
                     </div>
-                </div>
-               <!-- Nút quay lại Home -->
-                <div class="p-4">
-                    <a href="../Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
-                        <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
-                    </a>
-                </div>
                 </div>
             </div>
             <!-- Main content -->
@@ -1156,16 +1157,16 @@
                         borderColor: "#e5e7eb",
                         borderWidth: 1,
                         textStyle: {
-                            color: "#1f2937",
-                        },
+                            color: "#1f2937"
+                        };
                     },
                     legend: {
                         orient: "vertical",
                         right: 10,
                         top: "center",
                         textStyle: {
-                            color: "#1f2937",
-                        },
+                            color: "#1f2937"
+                        }
                     },
                     series: [
                         {
@@ -1177,7 +1178,7 @@
                             itemStyle: {
                                 borderRadius: 8,
                                 borderColor: "#fff",
-                                borderWidth: 2,
+                                borderWidth: 2
                             },
                             label: {
                                 show: false,

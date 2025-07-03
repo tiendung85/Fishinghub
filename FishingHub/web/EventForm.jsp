@@ -42,7 +42,7 @@
                     <!-- Header navigation links -->
                     <nav class="hidden md:flex ml-10">
                         <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                        <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
                         <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
                         <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
                         <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
@@ -74,7 +74,7 @@
                         <div class="flex items-center space-x-3">
                             <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
                             <% if(currentUser.getRoleId() == 2) { %>
-                                <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                                <a href="EventDashboard" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
                             <% } %>
                             <form action="logout" method="post" style="display:inline;">
                                 <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
@@ -89,34 +89,34 @@
             <form action="Event" method="post" id="createEventForm" enctype="multipart/form-data" 
                   class="w-full max-w-4xl bg-white p-10 rounded-lg shadow-md space-y-2">
 
-                <!-- Hiển thị thông báo thành công -->
+                
                 <% if (request.getAttribute("success") !=null) { %>
-                <div class="success" style="color: green;">
+                <div class="success bg-green-100 text-green-700 p-4 rounded mb-4" style="color: green;">
                     <%= request.getAttribute("success") %>
                 </div>
                 <% } %>
 
-                <!-- Hiển thị thông báo lỗi -->
+                
                 <% if (request.getAttribute("error") !=null) { %>
-                <div class="error" style="color: red;">
+                <div class="error bg-red-100 text-red-700 p-4 rounded mb-4" style="color: red;">
                     <%= request.getAttribute("error") %>
                 </div>
                 <% } %>
 
-                <!-- Trường ẩn dùng để xác định hành động là thêm sự kiện -->
+                
                 <input type="hidden" name="action" value="add">
 
-                <!-- Tiêu đề chính của form -->
+                
                 <h1 class="text-3xl font-bold text-center text-primary">Tạo Sự Kiện</h1>
 
-                <!-- Tiêu đề sự kiện -->
+                
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700">Tiêu đề sự kiện:</label>
                     <input type="text" id="title" name="title" placeholder=" Nhập tiêu đề sự kiện" required
                            class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
-                <!-- Mô tả sự kiện -->
+                
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700">Mô tả:</label>
                     <textarea id="description" name="description" placeholder=" Nhập mô tả sự kiện"
@@ -130,7 +130,7 @@
                            class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
-                <!-- Địa điểm tổ chức sự kiện -->
+                
                 <div>
                     <label for="location" class="block text-sm font-medium text-gray-700">Địa điểm:</label>
                     <input type="text" id="location" name="location" placeholder=" Nhập địa điểm tổ chức"
@@ -138,21 +138,21 @@
                            class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
-                <!-- Thời gian bắt đầu sự kiện -->
+                
                 <div>
                     <label for="startTime" class="block text-sm font-medium text-gray-700">Thời gian bắt đầu:</label>
                     <input type="datetime-local" id="startTime" name="startTime" required
                            class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
-                <!-- Thời gian kết thúc sự kiện -->
+                
                 <div>
                     <label for="endTime" class="block text-sm font-medium text-gray-700">Thời gian kết thúc:</label>
                     <input type="datetime-local" id="endTime" name="endTime" required
                            class="mt-1 block w-full h-12 rounded-md border-2 shadow-sm focus:border-primary focus:ring-primary ">
                 </div>
 
-                <!-- Số lượng người tham gia tối đa -->
+                
                 <div>
                     <label for="maxParticipants" class="block text-sm font-medium text-gray-700">Số người tham gia tối đa:</label>
                     <input type="number" id="maxParticipants" name="maxParticipants" min="1"
@@ -160,14 +160,14 @@
                            class="mt-1 block w-full h-12 rounded-md border-2  shadow-sm focus:border-primary focus:ring-primary">
                 </div>
 
-                <!-- Tải ảnh poster sự kiện -->
+                
                 <div>
                     <label for="posterFile" class="block text-sm font-medium text-gray-700">Ảnh Poster:</label>
                     <input type="file" id="posterFile" name="posterFile" accept="image/*"
                            class="mt-1 block w-full h-12 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-medium file:bg-gray-50 file:text-primary hover:file:bg-gray-100">
                 </div>
 
-                <!-- Nút gửi biểu mẫu -->
+                
                 <div class="flex justify-end">
                     <button type="submit"
                             class="bg-primary text-white px-6 py-3 rounded-button hover:bg-blue-600">
@@ -208,7 +208,7 @@
         <footer class="bg-gray-800 text-white pt-12 pb-6">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                    <!-- About section -->
+                    
                     <div>
                         <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
                         <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
@@ -227,7 +227,7 @@
                             </a>
                         </div>
                     </div>
-                    <!-- Quick Links -->
+                    
                     <div>
                         <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
@@ -239,7 +239,7 @@
                             <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
                         </ul>
                     </div>
-                    <!-- Support -->
+                    
                     <div>
                         <h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
                         <ul class="space-y-2">

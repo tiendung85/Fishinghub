@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Users {
+
     private int userId;
     private String fullName;
     private String email;
@@ -16,27 +17,14 @@ public class Users {
     private String location;
     private Timestamp createdAt;
 
-    public Users() {}
-
-    // Constructor đầy đủ
-    public Users(int userId, String fullName, String email, String phone, String password, String googleId,
-                 int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.googleId = googleId;
-        this.roleId = roleId;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.location = location;
-        this.createdAt = createdAt;
+    public Users() {
     }
 
+    // Constructor đầy đủ
     // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
     public Users(String fullName, String email, String phone, String password, int roleId,
-                 String gender, Date dateOfBirth, String location) {
+            String gender, Date dateOfBirth, String location) {
+
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -50,53 +38,109 @@ public class Users {
     }
 
     // Getter và Setter
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public int getUserId() {
+        return userId;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getGoogleId() { return googleId; }
-    public void setGoogleId(String googleId) { this.googleId = googleId; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public int getRoleId() { return roleId; }
-    public void setRoleId(int roleId) { this.roleId = roleId; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public Date getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(Date dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {
-        return "Users{" +
-                "userId=" + userId +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
-                ", googleId='" + googleId + '\'' +
-                ", roleId=" + roleId +
-                ", gender='" + gender + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", location='" + location + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
+
+        return "Users{"
+                + "userId=" + userId
+                + ", fullName='" + fullName + '\''
+                + ", email='" + email + '\''
+                + ", phone='" + phone + '\''
+                + ", password='" + password + '\''
+                + ", googleId='" + googleId + '\''
+                + ", roleId=" + roleId
+                + ", gender='" + gender + '\''
+                + ", dateOfBirth=" + dateOfBirth
+                + ", location='" + location + '\''
+                + ", createdAt=" + createdAt
+                + '}';
     }
 }

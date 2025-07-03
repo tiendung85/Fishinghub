@@ -33,7 +33,7 @@ public class EventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Forward to the event form page
+      
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
@@ -65,7 +65,7 @@ public class EventController extends HttpServlet {
                 return;
             }
 
-            // Retrieve form parameters
+            
             String title = request.getParameter("title");
             String lakeName = request.getParameter("lakeName");
             String description = request.getParameter("description");
@@ -74,16 +74,16 @@ public class EventController extends HttpServlet {
             String endTimeStr = request.getParameter("endTime");
             String maxParticipantsStr = request.getParameter("maxParticipants");
 
-            // Validate required fields
+            
             if (title == null || description == null || location == null
                     || startTimeStr == null || endTimeStr == null || maxParticipantsStr == null
                     || title.trim().isEmpty() || description.trim().isEmpty() || location.trim().isEmpty()) {
-                request.setAttribute("error", "All fields except poster image are required.");
+                request.setAttribute("error", "Vui lòng điền đầy đủ tất cả các trường thông tin.");
                 request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                 return;
             }
 
-            // Parse and validate dates and max participants
+            
             Timestamp startTime = null;
             Timestamp endTime = null;
             int maxParticipants;
@@ -102,7 +102,7 @@ public class EventController extends HttpServlet {
                     request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                     return;
                 }
-                // Validate end time is after start time
+               
                 if (endTime.before(startTime)) {
                     request.setAttribute("error", "End time must be after start time.");
                     request.getRequestDispatcher("EventForm.jsp").forward(request, response);
@@ -121,13 +121,13 @@ public class EventController extends HttpServlet {
                 return;
             }
 
-            // Handle file upload
+           
             String posterUrl = null;
             Part filePart = request.getPart("posterFile");
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 if (!fileName.isEmpty()) {
-                    // Validate file type (image only)
+                   
                     String contentType = filePart.getContentType();
                     if (!contentType.startsWith("image/")) {
                         request.setAttribute("error", "Only image files are allowed.");
@@ -135,21 +135,21 @@ public class EventController extends HttpServlet {
                         return;
                     }
 
-                    // Create upload directory
+                    
                     String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
                     File uploadDir = new File(uploadPath);
                     if (!uploadDir.exists()) {
                         uploadDir.mkdirs();
                     }
 
-                    // Save file
+                   
                     String filePath = uploadPath + File.separator + fileName;
                     filePart.write(filePath);
                     posterUrl = fileName;
                 }
             }
 
-            // Create event object
+            
             Events event = new Events();
             event.setTitle(title);
             event.setLakeName(lakeName);
@@ -163,7 +163,7 @@ public class EventController extends HttpServlet {
             event.setMaxParticipants(maxParticipants);
             event.setCurrentParticipants(0);
 
-            // Save event to database
+            
             EventDAO dao = new EventDAO();
             Events result = dao.addEvent(event);
             if (result != null) {
@@ -172,7 +172,7 @@ public class EventController extends HttpServlet {
                 request.setAttribute("error", "Failed to create event.");
             }
 
-            // Forward back to form with message
+           
             request.getRequestDispatcher("EventForm.jsp").forward(request, response);
         }
     }

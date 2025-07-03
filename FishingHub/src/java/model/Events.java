@@ -143,7 +143,6 @@ public class Events {
     public void setCurrentParticipants(int currentParticipants) {
         this.currentParticipants = currentParticipants;
     }
-    
 
     public String getFormattedStartDate() {
         if (startTime != null) {
@@ -152,9 +151,26 @@ public class Events {
         }
         return "";
     }
+
     public String getFormattedEndDate() {
         if (startTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(endTime);
+        }
+        return "";
+    }
+
+    public String getFormattedStartTime() {
+        if (startTime != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            return sdf.format(startTime);
+        }
+        return "";
+    }
+
+    public String getFormattedEndTime() {
+        if (endTime != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             return sdf.format(endTime);
         }
         return "";
@@ -167,5 +183,4 @@ public class Events {
     public void setEventStatus(String eventStatus) {
         this.eventStatus = eventStatus;
     }
-
 }

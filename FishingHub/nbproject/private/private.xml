@@ -3,12 +3,31 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/Fishinghub/FishingHub/web/dashboard_admin/FishManage.jsp</file>
-            <file>file:/E:/Fishinghub/FishingHub/src/java/controller/OrderServlet.java</file>
-            <file>file:/E:/Fishinghub/FishingHub/src/java/controller/FishManageServlet.java</file>
-            <file>file:/E:/Fishinghub/FishingHub/src/java/dal/FishSpeciesDAO.java</file>
-            <file>file:/E:/Fishinghub/FishingHub/web/dashboard_owner/Order.jsp</file>
-            <file>file:/E:/Fishinghub/FishingHub/web/dashboard_admin/Dashboard.jsp</file>
+
+
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/dal/EventDAO.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/RegisterEventController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventNotificationController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventUpdateController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/Event.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventManagerController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/Home.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/dashboard_owner/EventUpdate.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/model/Events.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventParticipantsController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventDashboardController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventListController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/SearchEventController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/model/EventParticipant.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/EventForm.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/dashboard_owner/EventManager.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/dashboard_owner/EventParticipants.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/model/EventNotification.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/dashboard_owner/Dashboard.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/src/java/controller/EventDetailsController.java</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/EventDetails.jsp</file>
+            <file>file:/G:/SWP/FishingHub/Fishinghub/FishingHub/web/dashboard_owner/EventNotification.jsp</file>
         </group>
     </open-files>
 </project-private>

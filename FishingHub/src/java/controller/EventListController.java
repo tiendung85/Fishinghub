@@ -64,29 +64,28 @@ public class EventListController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
-
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
         String action = request.getParameter("action");
         EventDAO dao = new EventDAO();
-        ArrayList<Events> list = new ArrayList<>();
 
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-
-        if (action == null || action.equals("all")) {
-            list = dao.getEvents(user.getUserId());
+        
+        ArrayList<Events> list;
+        if (action == null) {
+            list = dao.getEvents();
         } else if (action.equals("upcoming")) {
-            list = dao.upComingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
-         else if (action.equals("ongoing")) {
-            list = dao.getOngoingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
+            list = dao.upComingEvents();
+        } else if (action.equals("ongoing")) {
+            list = dao.getOngoingEvents();
+        } else if(action.equals("saved")){
+            list = dao.getSavedEvents(user.getUserId());
+        }
+        else {
+            list = new ArrayList<>();
+        }
 
-        // Xác định trạng thái và đăng ký của user cho từng event
+        
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
+
         for (Events e : list) {
             if (now.before(e.getStartTime())) {
                 e.setEventStatus("Sắp diễn ra");
@@ -96,7 +95,11 @@ public class EventListController extends HttpServlet {
                 e.setEventStatus("Đang diễn ra");
             }
 
-            boolean isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
+           
+            boolean isRegistered = false;
+            if (user != null) {
+                isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
+            }
             isRegisteredList.add(isRegistered);
         }
 

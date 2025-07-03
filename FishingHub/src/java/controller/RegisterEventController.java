@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import model.EventParticipant;
 import model.Events;
 import model.Users;
@@ -73,15 +74,54 @@ public class RegisterEventController extends HttpServlet {
                 } else if (dao.isUserRegistered(eventId, user.getUserId())) {
                     request.setAttribute("error", "Bạn đã đăng ký tham gia sự kiện này rồi.");
                 } else {
+                    String phoneNumber = request.getParameter("phoneNumber");
+                    String email = request.getParameter("email");
+                    String cccd = request.getParameter("cccd"); // Lấy CCCD nếu có
+
+                    if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+                        request.setAttribute("error", "Số điện thoại không được để trống.");
+                        loadEventList(request, user, dao);
+                        request.getRequestDispatcher("Event.jsp").forward(request, response);
+                        return;
+                    }
+
+                    if (email == null || email.trim().isEmpty()) {
+                        request.setAttribute("error", "Email không được để trống.");
+                        loadEventList(request, user, dao);
+                        request.getRequestDispatcher("Event.jsp").forward(request, response);
+                        return;
+                    }
+
+                    Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
+                    if (!phonePattern.matcher(phoneNumber).matches()) {
+                        request.setAttribute("error", "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10 chữ số bắt đầu bằng 0.");
+                        loadEventList(request, user, dao);
+                        request.getRequestDispatcher("Event.jsp").forward(request, response);
+                        return;
+                    }
+
+                    Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+                    if (!emailPattern.matcher(email).matches()) {
+                        request.setAttribute("error", "Email không hợp lệ.");
+                        loadEventList(request, user, dao);
+                        request.getRequestDispatcher("Event.jsp").forward(request, response);
+                        return;
+                    }
+
                     EventParticipant ep = new EventParticipant();
                     ep.setEventId(eventId);
                     ep.setUserId(user.getUserId());
+                    ep.setNumberPhone(phoneNumber);
+                    ep.setEmail(email);
+                    ep.setCccd(cccd);
+
                     if (dao.register(ep) != null) {
                         request.setAttribute("success", "Đăng ký sự kiện thành công!");
                     } else {
                         request.setAttribute("error", "Đăng ký sự kiện thất bại.");
                     }
                 }
+
             } else if ("cancel".equals(action)) {
                 if (!dao.isUserRegistered(eventId, user.getUserId())) {
                     request.setAttribute("error", "Bạn chưa đăng ký sự kiện này.");
@@ -92,7 +132,7 @@ public class RegisterEventController extends HttpServlet {
                 }
             }
         } catch (NumberFormatException nfe) {
-            request.setAttribute("error", "ID sự kiện không hợp lệ.");
+            request.setAttribute("error", "ID sự kiện hoặc số điện thoại không hợp lệ.");
         } catch (Exception ex) {
             request.setAttribute("error", "Đã xảy ra lỗi: " + ex.getMessage());
         }
@@ -102,7 +142,7 @@ public class RegisterEventController extends HttpServlet {
     }
 
     private void loadEventList(HttpServletRequest request, Users user, EventDAO dao) {
-        ArrayList<Events> list = dao.getEvents(user.getUserId());
+        ArrayList<Events> list = dao.getEvents();
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
