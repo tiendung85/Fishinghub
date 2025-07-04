@@ -3,6 +3,7 @@
 <head>
     <title>Quên mật khẩu</title>
     <style>
+<<<<<<< HEAD
         body {
             background: linear-gradient(135deg, #6b73ff 0%, #00ddeb 100%);
             min-height: 100vh;
@@ -103,6 +104,43 @@
             from { opacity: 0; transform: translateX(-10px); }
             to { opacity: 1; transform: translateX(0); }
         }
+=======
+        body { background: #f6f7fb; font-family: 'Segoe UI', Arial, sans-serif; }
+        .center-box {
+            width: 350px;
+            margin: 100px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 24px 0 rgba(44,62,80,.12);
+            padding: 32px 28px;
+            text-align: center;
+        }
+        .center-box h2 { margin-bottom: 20px; color: #2d4fa0; }
+        .center-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 16px 0;
+            border-radius: 6px;
+            border: 1px solid #dbe2ef;
+            background: #f7fafc;
+            font-size: 15px;
+        }
+        .center-box button {
+            width: 100%;
+            padding: 12px;
+            background: #3468f7;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        .center-box a { color: #2d4fa0; font-size: 14px; text-decoration: none;}
+        .error { color: #dc3545; font-size: 14px; margin-bottom: 8px; }
+        .msg { color: #119750; font-size: 14px; margin-bottom: 8px;}
+>>>>>>> lam
     </style>
 </head>
 <body>
@@ -123,4 +161,8 @@
     </div>
 </div>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> lam

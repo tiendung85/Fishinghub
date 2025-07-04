@@ -59,4 +59,8 @@ public class ForgotPasswordController extends HttpServlet {
         // Trường hợp lỗi, giữ lại trang ForgotPassword.jsp và hiển thị thông báo
         request.getRequestDispatcher("ForgotPassword.jsp").forward(request, response);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> lam

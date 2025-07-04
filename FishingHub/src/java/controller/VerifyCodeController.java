@@ -31,4 +31,8 @@ public class VerifyCodeController extends HttpServlet {
             request.getRequestDispatcher("VerifyCode.jsp").forward(request, response);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> lam

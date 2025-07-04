@@ -11,4 +11,8 @@ public class TokenUtil {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         return sb.toString();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> lam

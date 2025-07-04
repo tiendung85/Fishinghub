@@ -52,4 +52,8 @@ public class GoogleLoginController extends HttpServlet {
 
         response.sendRedirect("Home.jsp"); // chuyển đến trang chính
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> lam

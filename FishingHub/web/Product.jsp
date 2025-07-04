@@ -1,7 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="model.Product" %>
+
+<%@ page import="dal.ProductDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page import="model.Category" %>
 <%@ page import="model.Users" %>
 <%
@@ -48,6 +52,18 @@
                     },
                 },
             };
+
+            function toggle() {
+                const sidebar = document.getElementById("hello");
+//                const isVisible = window.getComputedStyle(sidebar).display !== 'none';
+//
+//                if (isVisible) {
+//                    sidebar.style.display = 'none';
+//                } else {
+//                    sidebar.style.display = 'block';
+//                }
+            }
+
         </script>
         <style>
             :where([class^="ri-"])::before {
@@ -198,15 +214,38 @@
 
                 <div class="flex items-center space-x-4">
                     <!-- Cart -->
+
+                    <%
+                        Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                        int totalQuantity = 0;
+                        if (cart == null || cart.isEmpty()) {
+                            // Cart is empty or not initialized
+                            cart = new HashMap<>();
+                        } else {
+                            for (int quantity : cart.values()) {
+                                totalQuantity += quantity;
+                            }
+                        }
+                    %>
+
                     <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
+                        <form action="ProductServlet" method="get">
+                            <input type="hidden" name="btAction" value="goToCart" />
+                            <button class="text-gray-700 hover:text-primary">
+
+                                <i class="ri-shopping-cart-2-line text-xl"></i>
+
+                            </button>
+                        </form>
                         <span
                             class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                            >3</span
+                            ><%=totalQuantity%></span
                         >
+
                     </div>
+
+
+
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
                             <i class="ri-notification-3-line text-gray-600"></i>
@@ -214,19 +253,21 @@
                         <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
 
-                      <% if (currentUser == null) { %>
-                        <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
-                        <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
+
+                    <% if (currentUser == null) { %>
+                    <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
+                    <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
                     <% } else { %>
-                        <div class="flex items-center space-x-3">
-                            <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
-                            <% if(currentUser.getRoleId() == 2) { %>
-                                <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
-                            <% } %>
-                            <form action="logout" method="post" style="display:inline;">
-                                <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
-                            </form>
-                        </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
+                        <% if(currentUser.getRoleId() == 2) { %>
+                        <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                        <% } %>
+                        <form action="logout" method="post" style="display:inline;">
+                            <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                        </form>
+                    </div>
+
                     <% } %>
                 </div>
             </div>
@@ -306,70 +347,72 @@
                     </div>
 
 
-<!--                     Rating Filter 
-                    <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="font-bold text-gray-800 mb-3">Ratings</h3>
-                        <ul class="space-y-2">
-                            <li class="flex items-center">
-                                <div class="custom-checkbox checked" id="rating5"></div>
-                                <label
-                                    for="rating5"
-                                    class="ml-2 flex items-center cursor-pointer"
-                                    >
-                                    <div class="flex text-yellow-400">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                    </div>
-                                    <span class="ml-1 text-gray-700">5 stars</span>
-                                </label>
-                                <span class="ml-auto text-gray-500 text-sm">(142)</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="custom-checkbox" id="rating4"></div>
-                                <label
-                                    for="rating4"
-                                    class="ml-2 flex items-center cursor-pointer"
-                                    >
-                                    <div class="flex text-yellow-400">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-gray-700">4 stars</span>
-                                </label>
-                                <span class="ml-auto text-gray-500 text-sm">(287)</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="custom-checkbox" id="rating3"></div>
-                                <label
-                                    for="rating3"
-                                    class="ml-2 flex items-center cursor-pointer"
-                                    >
-                                    <div class="flex text-yellow-400">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-line"></i>
-                                        <i class="ri-star-line"></i>
-                                    </div>
-                                    <span class="ml-1 text-gray-700">3 stars</span>
-                                </label>
-                                <span class="ml-auto text-gray-500 text-sm">(412)</span>
-                            </li>
-                        </ul>
-                    </div>
 
-                     Reset Filters 
-                    <button
-                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
-                        >
-                        <i class="ri-refresh-line mr-2"></i>Reset Filters
-                    </button>-->
+                    <!--                     Rating Filter 
+                                        <div class="bg-white rounded-lg shadow-sm p-4">
+                                            <h3 class="font-bold text-gray-800 mb-3">Ratings</h3>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-center">
+                                                    <div class="custom-checkbox checked" id="rating5"></div>
+                                                    <label
+                                                        for="rating5"
+                                                        class="ml-2 flex items-center cursor-pointer"
+                                                        >
+                                                        <div class="flex text-yellow-400">
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-gray-700">5 stars</span>
+                                                    </label>
+                                                    <span class="ml-auto text-gray-500 text-sm">(142)</span>
+                                                </li>
+                                                <li class="flex items-center">
+                                                    <div class="custom-checkbox" id="rating4"></div>
+                                                    <label
+                                                        for="rating4"
+                                                        class="ml-2 flex items-center cursor-pointer"
+                                                        >
+                                                        <div class="flex text-yellow-400">
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-gray-700">4 stars</span>
+                                                    </label>
+                                                    <span class="ml-auto text-gray-500 text-sm">(287)</span>
+                                                </li>
+                                                <li class="flex items-center">
+                                                    <div class="custom-checkbox" id="rating3"></div>
+                                                    <label
+                                                        for="rating3"
+                                                        class="ml-2 flex items-center cursor-pointer"
+                                                        >
+                                                        <div class="flex text-yellow-400">
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-fill"></i>
+                                                            <i class="ri-star-line"></i>
+                                                            <i class="ri-star-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-gray-700">3 stars</span>
+                                                    </label>
+                                                    <span class="ml-auto text-gray-500 text-sm">(412)</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                    
+                                         Reset Filters 
+                                        <button
+                                            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
+                                            >
+                                            <i class="ri-refresh-line mr-2"></i>Reset Filters
+                                        </button>-->
+
                 </div>
 
                 <!-- Product Content -->
@@ -448,60 +491,81 @@
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
                         >
                         <%
+
+                        if(request.getAttribute("productList") == null){
+                            List<Product> productList = new ArrayList<>();
+                            int totalProducts = 0;
+                            ProductDAO productDAO = new ProductDAO();
+                            int pages = 1;
+                            int pageSize = 8;
+                            totalProducts = productDAO.getTotalProductCount();
+                            productList = productDAO.getProductsByPage(pages, pageSize);
+                            request.setAttribute("productList", productList);
+                        }
+
                         if(request.getAttribute("productList") != null){
                             List<Product> productList=  (List<Product>) request.getAttribute("productList");
                             for(Product product : productList){
                         %>
                         <!-- Product 1 -->
-                        <div
-                            class="bg-white rounded-lg shadow-sm overflow-hidden product-card transition duration-300"
-                            >
-                            <div class="relative">
-                                <div class="h-48 overflow-hidden">
-                                    <img
-                                        src="<%=product.getImage()%>"
-                                        alt="Fishing Rod"
-                                        class="w-full h-full object-cover object-top"
-                                        />
-                                </div>
-                            </div>
-                            <div class="p-4">
-                                <h3 class="text-lg font-medium mb-1 text-gray-800">
-                                    <!--Shimano Stradic Fishing Rod-->
-                                    <%=product.getName()%>
-                                </h3>
-                                <div class="flex items-center mb-2">
-                                    <div class="flex text-yellow-400">
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
+
+                        <form action="ProductServlet" method="POST">
+                            <input type="hidden" name="productId" value="<%=product.getProductId()%>" />
+                            <div
+                                class="bg-white rounded-lg shadow-sm overflow-hidden product-card transition duration-300"
+                                >
+                                <div class="relative">
+                                    <div class="h-48 overflow-hidden">
+                                        <img
+                                            src="<%=product.getImage()%>"
+                                            alt="Fishing Rod"
+                                            class="w-full h-full object-cover object-top"
+                                            />
+
                                     </div>
-                                    <span class="text-xs text-gray-500 ml-1">(126)</span>
                                 </div>
-                                <div class="flex items-center justify-between mb-3">
-                                    <div>
-                                        <span class="text-lg font-bold text-gray-800">
-                                            <!--                                            2,850,000₫-->
-                                            <%= product.getPrice()%>
-                                        </span
+
+                                <div class="p-4">
+                                    <h3 class="text-lg font-medium mb-1 text-gray-800">
+                                        <!--Shimano Stradic Fishing Rod-->
+                                        <%=product.getName()%>
+                                    </h3>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400">
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                            <i class="ri-star-fill"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-1">(126)</span>
+                                    </div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <span class="text-lg font-bold text-gray-800">
+                                                <!--                                            2,850,000₫-->
+                                                <%= product.getPrice()%>
+                                            </span
+                                            >
+                                        </div>
+                                        <span class="text-sm text-gray-500">
+                                            Sold <%= product.getSoldQuantity()%>
+                                        </span>
+                                    </div>
+                                    <button
+                                        class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap",
+                                        name="btAction",
+                                        value="addToCart"
                                         >
-                                    </div>
-                                    <span class="text-sm text-gray-500">
-                                        Sold <%= product.getSoldQuantity()%>
-                                    </span>
+                                        <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
+                                    </button>
                                 </div>
-                                <button
-                                    class="w-full bg-primary hover:bg-blue-600 text-white py-2 rounded-button font-medium transition duration-300 whitespace-nowrap"
-                                    >
-                                    <i class="ri-shopping-cart-add-line mr-2"></i>Add to Cart
-                                </button>
                             </div>
-                        </div>
+                        </form>
                         <%
-                     }
-                 }
+                            }
+                        }
+
                         %>         
                     </div>
 
@@ -552,6 +616,7 @@
                     </div>
 
                 </div>
+
             </div>
         </div>
 

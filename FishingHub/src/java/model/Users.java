@@ -8,7 +8,7 @@ public class Users {
     private int userId;
     private String fullName;
     private String email;
-    private String phone;      // Thêm trường này
+    private String phone;
     private String password;
     private String googleId;
     private int roleId;
@@ -16,12 +16,27 @@ public class Users {
     private Date dateOfBirth;
     private String location;
     private Timestamp createdAt;
+    private Timestamp lastLoginTime;
+    private String status;
 
     public Users() {
     }
 
-    // Constructor đầy đủ
-    // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
+    public Users(int userId, String fullName, String email, String phone, String password, String googleId,
+            int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.googleId = googleId;
+        this.roleId = roleId;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.location = location;
+        this.createdAt = createdAt;
+    }
+
     public Users(String fullName, String email, String phone, String password, int roleId,
             String gender, Date dateOfBirth, String location) {
 
@@ -37,7 +52,6 @@ public class Users {
         this.createdAt = null;
     }
 
-    // Getter và Setter
     public int getUserId() {
         return userId;
     }
@@ -126,21 +140,54 @@ public class Users {
         this.createdAt = createdAt;
     }
 
+    public Timestamp getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Timestamp lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    // Phương thức mới để lấy vai trò người dùng theo roleId
+    public String getRole() {
+        switch (this.roleId) {
+            case 1:
+                return "User"; // Ví dụ, roleId 1 là user
+            case 2:
+                return "FishOwner"; // Ví dụ, roleId 2 là admin
+            case 3:
+                return "Admin"; // Ví dụ, roleId 3 là Fish Owner
+            default:
+                return "Unknown"; // Mặc định nếu không có vai trò
+        }
+
+    }
+
     @Override
     public String toString() {
 
-        return "Users{"
-                + "userId=" + userId
-                + ", fullName='" + fullName + '\''
-                + ", email='" + email + '\''
-                + ", phone='" + phone + '\''
-                + ", password='" + password + '\''
-                + ", googleId='" + googleId + '\''
-                + ", roleId=" + roleId
-                + ", gender='" + gender + '\''
-                + ", dateOfBirth=" + dateOfBirth
-                + ", location='" + location + '\''
-                + ", createdAt=" + createdAt
-                + '}';
+        return "Users{" +
+                "userId=" + userId +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", googleId='" + googleId + '\'' +
+                ", roleId=" + roleId +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", location='" + location + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
+
 }

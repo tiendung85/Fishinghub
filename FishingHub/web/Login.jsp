@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+<<<<<<< HEAD
     <title>Đăng nhập - Fishing Hub</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -61,12 +62,112 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+=======
+    <title>Login - Fishing Hub</title>
+    <link rel="stylesheet" href="assets/css/register.css" />
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            /* Gradient gồm 2 lớp: trên xanh biển, dưới vàng cam */
+            background: 
+                linear-gradient(to bottom, #e3f0fd 0px, #e3f0fd 220px, #ffd580 250px, #ffa07a 100%);
+        }
+
+        .login-box {
+            width: 380px;
+            margin: 100px auto;
+            padding: 36px 40px 30px 40px;
+            background: #f0f4ff;
+            border-radius: 15px;
+            box-shadow: 0 0 24px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+        }
+
+        .login-top-bar {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #007bff 0%, #00c6fb 100%);
+            border-radius: 12px 12px 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .login-box h2 {
+            margin-top: 28px;
+            margin-bottom: 22px;
+            letter-spacing: 2px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 11px;
+            margin: 10px 0;
+            border: 1.5px solid #cfd9ed;
+            border-radius: 7px;
+            font-size: 16px;
+            background: #fff;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 14px;
+            background: linear-gradient(90deg, #5b6bff 0%, #6bc6ff 100%);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .login-box button:hover {
+            background: linear-gradient(90deg, #007bff 0%, #00c6fb 100%);
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0 6px 0;
+            font-size: 15px;
+        }
+        .login-options a {
+            color: #4361ee;
+            text-decoration: none;
+            transition: text-decoration 0.2s;
+        }
+        .login-options a:hover {
+            text-decoration: underline;
+        }
+
+        .or-separator {
+            margin: 16px 0 12px 0;
+            position: relative;
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+        }
+        .or-separator:before,
+        .or-separator:after {
+            content: "";
+            display: inline-block;
+            width: 38%;
+            height: 1px;
+            background: #dde3ef;
+            vertical-align: middle;
+            margin: 0 8px;
+>>>>>>> lam
         }
 
         .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             gap: 0.5rem;
             background: white;
             border: 1px solid #ddd;
@@ -84,12 +185,31 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
+=======
+            gap: 10px;
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border: 1.3px solid #ccc;
+            background-color: #fff;
+            color: #444;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: box-shadow 0.2s;
+        }
+        .google-btn:hover {
+            box-shadow: 0 2px 8px rgba(0,123,255,0.10);
+        }
+>>>>>>> lam
         .google-logo {
             width: 20px;
             height: 20px;
         }
 
         .error {
+<<<<<<< HEAD
             color: #dc3545;
             font-size: 0.9rem;
             margin-bottom: 1rem;
@@ -139,19 +259,35 @@
             display: flex;
             justify-content: space-between;
             margin: 1rem 0;
+=======
+            color: #ff3b3b;
+            margin-bottom: 13px;
+            font-size: 15px;
+            font-weight: 500;
+>>>>>>> lam
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 <div class="login-box">
     <h2>Đăng nhập</h2>
 
     <!-- Display error if present -->
+=======
+
+<div class="login-box">
+    <div class="login-top-bar"></div>
+    <h2>Login</h2>
+
+    <!-- Hiển thị lỗi nếu có -->
+>>>>>>> lam
     <c:if test="${not empty error}">
         <p class="error">${error}</p>
     </c:if>
 
     <form action="login" method="post">
+<<<<<<< HEAD
         <div class="mb-3">
             <input type="text" name="email" class="form-control" placeholder="Email or Username" required />
         </div>
@@ -163,6 +299,16 @@
 
     <div class="links">
         <a href="forgot-password" class="forgot-link">Quên mật khẩu?</a>
+=======
+        <input type="text" name="email" placeholder="Email or Username" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Đăng nhập</button>
+    </form>
+
+    <div class="login-options">
+        <a href="forgot-password" class="forgot-link">Quên mật khẩu?</a>
+        <span>|</span>
+>>>>>>> lam
         <a href="Register" class="register-link">Đăng ký</a>
     </div>
 
@@ -176,7 +322,12 @@
     </a>
 </div>
 
+<<<<<<< HEAD
 <!-- Bootstrap JS and Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+=======
+</body>
+</html>
+>>>>>>> lam

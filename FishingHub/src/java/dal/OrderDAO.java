@@ -6,6 +6,7 @@ import model.Order;
 import model.Status;
 
 public class OrderDAO extends DBConnect {
+<<<<<<< HEAD
     public OrderDAO(){
         super();
     }
@@ -20,6 +21,92 @@ public class OrderDAO extends DBConnect {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()
         ) {
+=======
+
+    public OrderDAO() {
+        super();
+    }
+
+    public boolean createOrder(int userId) {
+        String sql = "insert into Orders ( UserId, Subtotal, Total, OrderDate, StatusID) "
+                + "VALUES (?, 0, 0, CURRENT_TIMESTAMP, 1)";
+        Order o = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            int rs = ps.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateOrder(Order order) {
+        String sql = "update Orders set Subtotal = ?, Total = ? "
+                + "where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setDouble(1, order.getSubtotal());
+            ps.setDouble(2, order.getTotal());
+            ps.setInt(3, order.getId());
+            int rs = ps.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int getLastInsertId() {
+        String sql = "select @@identity";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public Order getOrderById(int id) {
+        String sql = "select * from orders where Id = ?";
+        Order o = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                o = new Order();
+                o.setId(rs.getInt("Id"));
+                o.setOrderDate(rs.getTimestamp("OrderDate"));
+                o.setSubtotal(rs.getDouble("Subtotal"));
+                o.setTotal(rs.getDouble("Total"));
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return o;
+    }
+
+    public List<Order> getAllOrders() {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID, s.StatusName "
+                + "FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN OrderStatus s ON o.StatusID = s.StatusID "
+                + "ORDER BY o.OrderDate DESC";
+        try (
+                PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+>>>>>>> lam
             while (rs.next()) {
                 Order o = new Order();
                 o.setId(rs.getInt("Id"));
@@ -43,9 +130,13 @@ public class OrderDAO extends DBConnect {
         List<Status> list = new ArrayList<>();
         String sql = "SELECT StatusID, StatusName FROM OrderStatus ORDER BY StatusID";
         try (
+<<<<<<< HEAD
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()
         ) {
+=======
+                PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+>>>>>>> lam
             while (rs.next()) {
                 Status s = new Status();
                 s.setStatusID(rs.getInt("StatusID"));
@@ -76,11 +167,19 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> getOrdersByPage(int page, int pageSize) {
         List<Order> list = new ArrayList<>();
+<<<<<<< HEAD
         String sql = "SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID, s.StatusName " +
                 "FROM Orders o " +
                 "JOIN Users u ON o.UserId = u.UserId " +
                 "JOIN OrderStatus s ON o.StatusID = s.StatusID " +
                 "ORDER BY o.OrderDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+=======
+        String sql = "SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID, s.StatusName "
+                + "FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN OrderStatus s ON o.StatusID = s.StatusID "
+                + "ORDER BY o.OrderDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+>>>>>>> lam
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, (page - 1) * pageSize);
             ps.setInt(2, pageSize);
@@ -104,7 +203,11 @@ public class OrderDAO extends DBConnect {
         return list;
     }
 
+<<<<<<< HEAD
                public int getTotalOrderCount() {
+=======
+    public int getTotalOrderCount() {
+>>>>>>> lam
         String sql = "SELECT COUNT(*) FROM Orders";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -119,10 +222,17 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> searchOrders(String status, String keyword) {
         List<Order> list = new ArrayList<>();
+<<<<<<< HEAD
         StringBuilder sql = new StringBuilder("SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID, s.StatusName " +
                 "FROM Orders o " +
                 "JOIN Users u ON o.UserId = u.UserId " +
                 "JOIN OrderStatus s ON o.StatusID = s.StatusID WHERE 1=1");
+=======
+        StringBuilder sql = new StringBuilder("SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, o.StatusID, s.StatusName "
+                + "FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN OrderStatus s ON o.StatusID = s.StatusID WHERE 1=1");
+>>>>>>> lam
         List<Object> params = new ArrayList<>();
         if (status != null && !status.isEmpty()) {
             sql.append(" AND o.StatusID = ?");
@@ -169,6 +279,34 @@ public class OrderDAO extends DBConnect {
             return false;
         }
     }
+<<<<<<< HEAD
 
     // Đã hoàn tác: xóa hàm deleteOrdersWithStatus
+=======
+    public List<Order> getOrdersByUserIdAndStatus(int userId, int statusId) {
+    List<Order> list = new ArrayList<>();
+    String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, statusId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Order o = new Order();
+            o.setId(rs.getInt("Id"));
+            o.setUserId(rs.getInt("UserId"));
+            o.setOrderDate(rs.getTimestamp("OrderDate"));
+            o.setSubtotal(rs.getDouble("Subtotal"));
+            o.setTotal(rs.getDouble("Total"));
+            o.setStatusId(rs.getInt("StatusID"));
+            // Nếu có thêm trường deliveryTime thì:
+            o.setDeliveryTime(rs.getTimestamp("DeliveryTime"));
+            list.add(o);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
+>>>>>>> lam
 }

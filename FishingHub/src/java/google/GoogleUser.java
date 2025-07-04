@@ -20,4 +20,8 @@ public class GoogleUser {
     public String getPicture() { return picture; }
     public void setPicture(String picture) { this.picture = picture; }
     // Các getter/setter khác nếu cần
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> lam

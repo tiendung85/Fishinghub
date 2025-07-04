@@ -53,6 +53,7 @@ public class PostCommentDAO extends DBConnect {
         }
         return 0;
     }
+<<<<<<< HEAD
 
     public boolean deleteComment(int commentId) {
         String sql = "DELETE FROM PostComment WHERE CommentId = ?";
@@ -76,4 +77,6 @@ public class PostCommentDAO extends DBConnect {
             return false;
         }
     }
+=======
+>>>>>>> lam
 }

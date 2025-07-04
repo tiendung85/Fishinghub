@@ -87,21 +87,21 @@ public class EventDAO extends DBConnect {
         ArrayList<EventParticipant> participants = new ArrayList<>();
         try {
             String sql = """
-                       SELECT 
-                             u.FullName,
-                             ep.EventId,
-                             ep.UserId,
-                             ep.NumberPhone,
-                             ep.Email,
-                             ep.CCCD,
-                             ep.Checkin,
-                           ep.CheckinTime
-                         FROM 
-                             EventParticipant ep
-                         JOIN 
-                             Users u ON ep.UserId = u.UserId
-                         WHERE 
-                             ep.EventId = ?;""";
+                    SELECT
+                          u.FullName,
+                          ep.EventId,
+                          ep.UserId,
+                          ep.NumberPhone,
+                          ep.Email,
+                          ep.CCCD,
+                          ep.Checkin,
+                        ep.CheckinTime
+                      FROM
+                          EventParticipant ep
+                      JOIN
+                          Users u ON ep.UserId = u.UserId
+                      WHERE
+                          ep.EventId = ?;""";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, eventId);
             ResultSet rs = statement.executeQuery();
@@ -116,7 +116,7 @@ public class EventDAO extends DBConnect {
                 p.setEmail(rs.getString("Email"));
                 p.setCccd(rs.getString("CCCD"));
                 p.setCheckin(rs.getBoolean("Checkin"));
-                 p.setCheckinTime(rs.getTimestamp("CheckinTime"));
+                p.setCheckinTime(rs.getTimestamp("CheckinTime"));
                 participants.add(p);
             }
         } catch (Exception e) {
@@ -130,11 +130,11 @@ public class EventDAO extends DBConnect {
         ArrayList<EventParticipant> participants = new ArrayList<>();
         try {
             String sql = """
-            SELECT u.FullName, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin,ep.CheckinTime
-            FROM EventParticipant ep
-            JOIN Users u ON ep.UserId = u.UserId
-            WHERE ep.EventId = ? AND ep.Checkin = ?
-        """;
+                        SELECT u.FullName, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin,ep.CheckinTime
+                        FROM EventParticipant ep
+                        JOIN Users u ON ep.UserId = u.UserId
+                        WHERE ep.EventId = ? AND ep.Checkin = ?
+                    """;
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, eventId);
             statement.setBoolean(2, checkinStatus);
@@ -237,23 +237,23 @@ public class EventDAO extends DBConnect {
         ArrayList<Events> events = new ArrayList<>();
         try {
             String sql = """
-                         SELECT e.EventId,
-                                    e.Title,
-                                    e.Description,
-                                    e.LakeName,
-                                    e.Location,
-                                    e.HostId,
-                                    e.StartTime,
-                                    e.EndTime,
-                                    e.Status,
-                                    e.CreatedAt,
-                                    e.ApprovedAt,
-                                    e.PosterUrl,
-                                    e.CurrentParticipants,
-                                    e.MaxParticipants
-                             FROM Event e
-                             JOIN EventParticipant ep ON e.EventId = ep.EventId
-                             WHERE ep.UserId = ?""";
+                    SELECT e.EventId,
+                               e.Title,
+                               e.Description,
+                               e.LakeName,
+                               e.Location,
+                               e.HostId,
+                               e.StartTime,
+                               e.EndTime,
+                               e.Status,
+                               e.CreatedAt,
+                               e.ApprovedAt,
+                               e.PosterUrl,
+                               e.CurrentParticipants,
+                               e.MaxParticipants
+                        FROM Event e
+                        JOIN EventParticipant ep ON e.EventId = ep.EventId
+                        WHERE ep.UserId = ?""";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             ResultSet rs = statement.executeQuery();

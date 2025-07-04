@@ -25,7 +25,8 @@ public class FishSpeciesDAO extends DBConnect {
     }
 
     // Cập nhật một ảnh riêng lẻ dựa trên ImageUrl
-    public void updateSingleImage(int fishId, String oldImageUrl, String newImageUrl, boolean isMain) throws SQLException {
+    public void updateSingleImage(int fishId, String oldImageUrl, String newImageUrl, boolean isMain)
+            throws SQLException {
         if (oldImageUrl != null) {
             String sql = "UPDATE dbo.FishSpeciesImages SET ImageUrl = ?, IsMain = ? WHERE FishSpeciesId = ? AND ImageUrl = ?";
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -318,7 +319,8 @@ public class FishSpeciesDAO extends DBConnect {
     }
 
     // Lấy danh sách cá có phân trang, tìm kiếm theo tên thường gọi và lọc độ khó
-    public List<FishSpecies> getFishSpeciesByPageAndFilter(int page, int pageSize, String search, Integer difficulty) throws SQLException {
+    public List<FishSpecies> getFishSpeciesByPageAndFilter(int page, int pageSize, String search, Integer difficulty)
+            throws SQLException {
         List<FishSpecies> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM FishSpecies WHERE 1=1");
         List<Object> params = new ArrayList<>();
