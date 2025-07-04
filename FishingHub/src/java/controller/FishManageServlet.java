@@ -34,7 +34,7 @@ public class FishManageServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(FishManageServlet.class.getName());
     private static final String UPLOAD_DIR = "E:\\Fishinghub\\FishingHub\\web\\assets\\img\\FishKnowledge-images";
 
-    // Phương thức hỗ trợ để chuẩn bị dữ liệu phân trang
+    // Phương thức hỗ trợ để chuẩn bị dữ liệu phân trang, tìm kiếm, lọc độ khó
     private void preparePagination(HttpServletRequest request, FishSpeciesDAO dao, int pageSize) throws Exception {
         int page = 1;
         if (request.getParameter("page") != null) {
@@ -44,8 +44,11 @@ public class FishManageServlet extends HttpServlet {
                 page = 1;
             }
         }
-        List<FishSpecies> fishList = dao.getFishSpeciesByPage(page, pageSize);
-        int totalFish = dao.getTotalFishSpecies();
+        String search = request.getParameter("search");
+        String difficultyStr = request.getParameter("difficulty");
+        Integer difficulty = (difficultyStr != null && !difficultyStr.isEmpty()) ? Integer.parseInt(difficultyStr) : null;
+        List<FishSpecies> fishList = dao.getFishSpeciesByPageAndFilter(page, pageSize, search, difficulty);
+        int totalFish = dao.getTotalFishSpeciesByFilter(search, difficulty);
         int totalPages = (int) Math.ceil((double) totalFish / pageSize);
         int endItem = Math.min(page * pageSize, totalFish);
         request.setAttribute("currentPage", page);
@@ -54,6 +57,8 @@ public class FishManageServlet extends HttpServlet {
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("fishList", fishList);
         request.setAttribute("endItem", endItem);
+        request.setAttribute("search", search);
+        request.setAttribute("difficulty", difficultyStr);
     }
 
     @Override
@@ -108,7 +113,7 @@ public class FishManageServlet extends HttpServlet {
                     for (int i = 1; i <= 3; i++) {
                         Part filePart = request.getPart("image" + i);
                         if (filePart != null && filePart.getSize() > 0) {
-                            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();//
                             String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
                             File uploadDir = new File(UPLOAD_DIR);
                             if (!uploadDir.exists()) {
@@ -132,7 +137,7 @@ public class FishManageServlet extends HttpServlet {
                 }
                 case "edit": {
                     String idStr = request.getParameter("id");
-                    String commonName = request.getParameter("commonName");
+                    String commonName = request.getParameter("commonName");//
                     if (commonName == null && idStr != null) {
                         // Hiển thị form chỉnh sửa
                         try {
