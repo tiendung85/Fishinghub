@@ -22,15 +22,17 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import model.Users;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author pc
  */
 @WebServlet(name = "PostServlet", urlPatterns = { "/PostServlet" })
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1 MB
-        maxFileSize = 1024 * 1024 * 10, // 10 MB
-        maxRequestSize = 1024 * 1024 * 15 // 15 MB
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10 MB
+        maxFileSize = 1024 * 1024 * 100, // 100 MB
+        maxRequestSize = 1024 * 1024 * 150 // 150 MB
 )
 
 public class PostServlet extends HttpServlet {
@@ -61,37 +63,62 @@ public class PostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         try {
+            // Lấy user từ session
+            HttpSession session = request.getSession();
+            Users loggedInUser = (Users) session.getAttribute("user");
+
+            if (loggedInUser == null) {
+                // Nếu chưa đăng nhập, chuyển về trang login
+                response.sendRedirect("Login.jsp");
+                return;
+            }
+
             String topic = request.getParameter("topic");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
 
             Post post = new Post();
-            post.setUserId(1);
+            post.setUserId(loggedInUser.getUserId()); // Sử dụng ID của user đã đăng nhập
             post.setTopic(topic);
             post.setTitle(title);
             post.setContent(content);
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
-            // Handle multiple file uploads
+            // file uploads (both images and videos)
             for (Part part : request.getParts()) {
-                if (part.getName().equals("images") && part.getSize() > 0) {
+                if (part.getName().equals("images") || part.getName().equals("videos")) {
                     String fileName = part.getSubmittedFileName();
-                    String uploadPath = getServletContext().getRealPath("")
-                            + File.separator + "assets"
-                            + File.separator + "img"
-                            + File.separator + "post";
 
-                    File uploadDir = new File(uploadPath);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
+                    if (fileName != null && !fileName.isEmpty()) {
+                        String fileType = part.getName().equals("images") ? "img" : "video";
+
+                        // Tạo đường dẫn upload
+                        String uploadPath = request.getServletContext().getRealPath("")
+                                + "assets"
+                                + File.separator
+                                + fileType
+                                + File.separator
+                                + "post";
+
+                        // Tạo thư mục nếu chưa tồn tại
+                        File uploadDir = new File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdirs();
+                        }
+
+                        // Lưu file với tên duy nhất để tránh trùng lặp
+                        String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+                        part.write(uploadPath + File.separator + uniqueFileName);
+
+                        // Thêm tên file vào post
+                        if (fileType.equals("img")) {
+                            post.addImage(uniqueFileName);
+                        } else {
+                            post.addVideo(uniqueFileName);
+                        }
                     }
-
-                    // Save file to disk
-                    part.write(uploadPath + File.separator + fileName);
-
-                    // Add image name to post
-                    post.addImage(fileName);
                 }
             }
 

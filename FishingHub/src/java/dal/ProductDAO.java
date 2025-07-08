@@ -13,6 +13,88 @@ import model.Product;
  */
 public class ProductDAO extends DBConnect {
 
+    public Product getProductById(int id) {
+        Product product = new Product();
+        try {
+            String sql = "select * from Product where ProductId = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                product.setProductId(rs.getInt("ProductId"));
+                product.setName(rs.getString("Name"));
+                product.setPrice(rs.getDouble("Price"));
+                product.setImage(rs.getString("Image"));
+                product.setStockQuantity(rs.getInt("StockQuantity"));
+                product.setSoldQuantity(rs.getInt("SoldQuantity"));
+                product.setCategoryId(rs.getInt("CategoryId"));
+            }
+        } catch (Exception ex) {
+            System.out.println("Error at ProductDAO: " + ex.getMessage());
+        }
+        return product;
+    }
+
+    public boolean addProduct(Product p) {
+        Product product = new Product();
+        try {
+            String sql = "insert into Product(Name, Price, StockQuantity, SoldQuantity, CategoryId) "
+                    + "VALUES ( ?, ?, ?, 0, ? )";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, p.getName());
+            statement.setDouble(2, p.getPrice());
+            statement.setInt(3, p.getStockQuantity());
+            statement.setInt(4, p.getCategoryId());
+            int rs = statement.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (Exception ex) {
+            System.out.println("Error at ProductDAO: " + ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean updateProduct(Product p) {
+        Product product = new Product();
+        try {
+            String sql = "Update Product "
+                    + "set Name = ?, Price = ?, StockQuantity = ?, SoldQuantity = ?, CategoryId = ? "
+                    + "where ProductId = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, p.getName());
+            statement.setDouble(2, p.getPrice());
+            statement.setInt(3, p.getStockQuantity());
+            statement.setInt(4, p.getSoldQuantity());
+            statement.setInt(5, p.getCategoryId());
+            statement.setInt(6, p.getProductId());
+            int rs = statement.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (Exception ex) {
+            System.out.println("Error at ProductDAO: " + ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean deleteProduct(int p) {
+        try {
+            String sql = "Delete From Product "
+                    + "where ProductId = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, p);
+            int rs = statement.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (Exception ex) {
+            System.out.println("Error at ProductDAO: " + ex.getMessage());
+        }
+        return false;
+    }
+
     public List<Product> getAllProduct() {
         List<Product> productList = new ArrayList<>();
         try {

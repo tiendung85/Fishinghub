@@ -18,17 +18,18 @@ public class DBConnect {
 
     public DBConnect() {
  try {
-        String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub;trustServerCertificate=true;";
+        String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub1;trustServerCertificate=true;";
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         connection = DriverManager.getConnection(url, userID, password);
-        System.out.println("✅ Kết nối thành công đến SQL Server");
+        System.out.println("Kết nối thành công đến SQL Server");
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    // thêm phương thức test kết nối
+   
     public boolean isConnected() {
         return connection != null;
     }
+    
 }

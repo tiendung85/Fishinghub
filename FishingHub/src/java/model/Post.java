@@ -13,10 +13,14 @@ public class Post {
 
     private Timestamp createdAt;
     private List<String> images;
+    private List<String> videos;
 
     public Post() {
         this.images = new ArrayList<>();
+        this.videos = new ArrayList<>();
     }
+
+   
 
     public Post(int userId, String topic, String title, String content, Timestamp createdAt) {
         this.userId = userId;
@@ -98,6 +102,21 @@ public class Post {
             this.images = new ArrayList<>();
         }
         this.images.add(image);
+    }
+
+    public void addVideo(String videoPath) {
+        if (videos == null) {
+            videos = new ArrayList<>();
+        }
+        videos.add(videoPath);
+    }
+
+    public List<String> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<String> videos) {
+        this.videos = videos;
     }
 
     @Override
