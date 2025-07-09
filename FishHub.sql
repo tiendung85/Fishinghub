@@ -3,18 +3,31 @@ USE master;
 GO
 
 
+<<<<<<< HEAD
 ALTER DATABASE FishingHub1
+=======
+ALTER DATABASE FishingHub
+>>>>>>> origin/NgocDung
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
 
+<<<<<<< HEAD
 DROP DATABASE FishingHub1;
 GO
 
 CREATE DATABASE FishingHub1;
 GO
 USE FishingHub1;
+=======
+DROP DATABASE FishingHub;
+GO
+
+CREATE DATABASE FishingHub;
+GO
+USE FishingHub;
+>>>>>>> origin/NgocDung
 GO
 
 -- Roles
@@ -23,7 +36,10 @@ CREATE TABLE Role (
     RoleName NVARCHAR(50) NOT NULL
 );
 
+<<<<<<< HEAD
 INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
+=======
+>>>>>>> origin/NgocDung
 
 
 -- Users
@@ -42,6 +58,7 @@ CREATE TABLE Users (
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
 
+<<<<<<< HEAD
 ALTER TABLE Users ADD LastLoginTime datetime NULL;
 ALTER TABLE Users ADD Status nvarchar(20) NULL;
 
@@ -97,6 +114,8 @@ INSERT INTO RolePermission (roleId, permissionId) VALUES
 
 
 
+=======
+>>>>>>> origin/NgocDung
 -- Categories
 CREATE TABLE Category (
     CategoryId INT PRIMARY KEY IDENTITY,
@@ -115,6 +134,7 @@ CREATE TABLE Product (
     FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
 );
 
+<<<<<<< HEAD
 CREATE TABLE [dbo].[Review](
     [Id] INT IDENTITY(1,1) PRIMARY KEY,
     [ProductId] INT NOT NULL,
@@ -128,6 +148,8 @@ CREATE TABLE [dbo].[Review](
     CONSTRAINT FK_Review_User FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 
+=======
+>>>>>>> origin/NgocDung
 -- ShoppingCart
 CREATE TABLE ShoppingCart (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -139,6 +161,7 @@ CREATE TABLE ShoppingCart (
     FOREIGN KEY (ProductId) REFERENCES Product(ProductId) ON DELETE CASCADE
 );
 
+<<<<<<< HEAD
 CREATE TABLE OrderStatus (
     StatusID INT PRIMARY KEY,
     StatusName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL
@@ -227,6 +250,18 @@ CREATE TABLE Reviews (
     FOREIGN KEY (OrderID) REFERENCES Orders(ID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
+=======
+-- Orders
+CREATE TABLE Orders (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT,
+    Subtotal DECIMAL(10,2) NOT NULL,
+    Total DECIMAL(10,2) NOT NULL,
+    Status NVARCHAR(50) COLLATE Vietnamese_CI_AS DEFAULT N'Đang chờ duyệt',
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+>>>>>>> origin/NgocDung
 -- OrderDetails
 CREATE TABLE OrderDetail (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -244,14 +279,21 @@ CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(255) NOT NULL,
 	LakeName NVARCHAR(255), 
+<<<<<<< HEAD
     Description NVARCHAR(MAX),
+=======
+    Description TEXT,
+>>>>>>> origin/NgocDung
     Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/NgocDung
     ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
@@ -263,11 +305,14 @@ CREATE TABLE Event (
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
     UserId INT NOT NULL,
+<<<<<<< HEAD
 	NumberPhone VARCHAR(11) NOT NULL,
 	Email VARCHAR (255) NOT Null,
 	CCCD VARCHAR(20),
     Checkin BIT DEFAULT 0,
 	CheckinTime DATETIME, 
+=======
+>>>>>>> origin/NgocDung
     PRIMARY KEY (EventId, UserId),
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
@@ -277,6 +322,7 @@ CREATE TABLE EventParticipant (
 CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
+<<<<<<< HEAD
     Topic NVARCHAR(50),
     Title NVARCHAR(255),
     Content NVARCHAR(MAX),
@@ -286,18 +332,32 @@ CREATE TABLE Post (
 );
 
 
+=======
+	Topic NVARCHAR(50),
+    Title NVARCHAR(255),
+    Content TEXT,
+   
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+>>>>>>> origin/NgocDung
 CREATE TABLE Image (
     ImageId INT PRIMARY KEY IDENTITY,
     PostId INT,
     ImagePath VARCHAR(255),
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
+<<<<<<< HEAD
 CREATE TABLE Video (
     VideoId INT PRIMARY KEY IDENTITY,
     PostId INT,
     VideoPath VARCHAR(255),
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
+=======
+
+>>>>>>> origin/NgocDung
 
 
 -- PostComments
@@ -305,6 +365,7 @@ CREATE TABLE PostComment (
     CommentId INT PRIMARY KEY IDENTITY,
     PostId INT,
     UserId INT,
+<<<<<<< HEAD
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
@@ -359,6 +420,15 @@ CREATE TABLE SavedPost (
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
 
+=======
+    Content TEXT,
+    Likes INT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+>>>>>>> origin/NgocDung
 -- FishSpecies
 CREATE TABLE FishSpecies (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -675,7 +745,17 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
+<<<<<<< HEAD
 
+=======
+DELETE FROM FishSpecies;
+
+DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
+
+
+
+select * from FishSpecies
+>>>>>>> origin/NgocDung
 -- Fish
 CREATE TABLE Fish (
     FishId INT PRIMARY KEY IDENTITY,
@@ -685,6 +765,7 @@ CREATE TABLE Fish (
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
 
+<<<<<<< HEAD
 -- Fish
 CREATE TABLE DifficultyPoint (
     DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
@@ -717,6 +798,8 @@ CREATE TABLE LakeFish (
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
 
+=======
+>>>>>>> origin/NgocDung
 -- Achievements
 CREATE TABLE Achievement (
     AchievementId INT PRIMARY KEY IDENTITY,
@@ -738,6 +821,7 @@ CREATE TABLE Notification (
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 
+<<<<<<< HEAD
 CREATE TABLE password_reset (
     id INT IDENTITY(1,1) PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -816,3 +900,8 @@ VALUES
 (N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
 
 select * from Users
+=======
+
+
+
+>>>>>>> origin/NgocDung

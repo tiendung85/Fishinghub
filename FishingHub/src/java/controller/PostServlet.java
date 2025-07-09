@@ -20,17 +20,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+<<<<<<< HEAD
 import model.Users;
 import jakarta.servlet.http.HttpSession;
+=======
+import java.util.Collection;
+import java.util.stream.Collectors;
+>>>>>>> origin/NgocDung
 
 /**
  *
  * @author pc
  */
 @WebServlet(name = "PostServlet", urlPatterns = { "/PostServlet" })
+<<<<<<< HEAD
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10 MB
         maxFileSize = 1024 * 1024 * 100, // 100 MB
         maxRequestSize = 1024 * 1024 * 150 // 150 MB
+=======
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 15 // 15 MB
+>>>>>>> origin/NgocDung
 )
 
 public class PostServlet extends HttpServlet {
@@ -39,7 +50,11 @@ public class PostServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+<<<<<<< HEAD
 
+=======
+            /* TODO output your page here. You may use following sample code. */
+>>>>>>> origin/NgocDung
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -61,6 +76,7 @@ public class PostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+<<<<<<< HEAD
 
         try {
 
@@ -73,16 +89,24 @@ public class PostServlet extends HttpServlet {
                 return;
             }
 
+=======
+        try {
+>>>>>>> origin/NgocDung
             String topic = request.getParameter("topic");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
 
             Post post = new Post();
+<<<<<<< HEAD
             post.setUserId(loggedInUser.getUserId());
+=======
+            post.setUserId(1);
+>>>>>>> origin/NgocDung
             post.setTopic(topic);
             post.setTitle(title);
             post.setContent(content);
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+<<<<<<< HEAD
             post.setStatus("chờ duyệt");
 
             // uploads (images and videos)
@@ -118,6 +142,28 @@ public class PostServlet extends HttpServlet {
                             post.addVideo(uniqueFileName);
                         }
                     }
+=======
+
+            // Handle multiple file uploads
+            for (Part part : request.getParts()) {
+                if (part.getName().equals("images") && part.getSize() > 0) {
+                    String fileName = part.getSubmittedFileName();
+                    String uploadPath = getServletContext().getRealPath("")
+                            + File.separator + "assets"
+                            + File.separator + "img"
+                            + File.separator + "post";
+
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+
+                    // Save file to disk
+                    part.write(uploadPath + File.separator + fileName);
+
+                    // Add image name to post
+                    post.addImage(fileName);
+>>>>>>> origin/NgocDung
                 }
             }
 

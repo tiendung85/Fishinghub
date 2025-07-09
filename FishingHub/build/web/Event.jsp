@@ -1,9 +1,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<<<<<<< HEAD
 <%@ page import="model.Users" %>
 <%
     Users currentUser = (Users) session.getAttribute("user");
 %>
+=======
+>>>>>>> origin/NgocDung
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,7 +30,11 @@
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <nav class="hidden md:flex ml-10">
                         <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+<<<<<<< HEAD
                         <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+=======
+                        <a href="Event" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+>>>>>>> origin/NgocDung
                         <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
                         <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
                         <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
@@ -47,6 +54,7 @@
                         </div>
                         <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                     </div>
+<<<<<<< HEAD
                     <% if (currentUser == null) { %>
                     <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
                     <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
@@ -61,6 +69,10 @@
                         </form>
                     </div>
                     <% } %>
+=======
+                    <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
+                    <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
+>>>>>>> origin/NgocDung
                 </div>
             </div>
         </header>
@@ -73,7 +85,11 @@
                     <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
                         <i class="ri-arrow-right-s-line"></i>
                     </div>
+<<<<<<< HEAD
                     <span class="text-primary font-medium">Sự kiện</span>
+=======
+                    <span class="text-primary font-medium">Featured Events</span>
+>>>>>>> origin/NgocDung
                 </div>
             </div>
         </div>
@@ -89,7 +105,10 @@
                     <div class="flex items-center justify-between gap-4">
                         <form action="SearchEvent" method="GET" class="flex items-center w-full max-w-lg">
                             <input type="text" name="query" placeholder="Search for events..."
+<<<<<<< HEAD
                                    value="${search}"
+=======
+>>>>>>> origin/NgocDung
                                    class="w-full pl-4 pr-20 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
                             <button type="submit" class="bg-primary text-white px-4 py-2 hover:bg-blue-700 flex items-center justify-center">
                                 <i class="ri-search-line"></i>
@@ -109,9 +128,13 @@
                         <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList'"> All Events </button>
                         <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary cursor-pointer" onclick="location.href = 'EventList?action=upcoming'">Up Coming Events</button>
                         <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=ongoing'">Ongoing Events</button>
+<<<<<<< HEAD
                         <c:if test="${user!=null}">
                             <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=saved'">My Events</button>
                         </c:if>
+=======
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">My Events</button>
+>>>>>>> origin/NgocDung
                     </div>
                 </div>
 
@@ -125,6 +148,7 @@
                     <c:if test="${not empty error}">
                         <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
                             ${error}
+<<<<<<< HEAD
                         </div>
                     </c:if>
                     <c:choose>
@@ -189,6 +213,70 @@
                                                     <c:choose>
                                                         <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
                                                             
+=======
+                        </c:if>
+                        <c:choose>
+                            <c:when test="${empty listE}">
+                                <div class="bg-white rounded shadow-sm p-6 text-center">
+                                    <p class="text-gray-600 text-lg">Không có sự kiện nào.</p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                    <c:set var="index" value="0" />
+                                    <c:forEach items="${listE}" var="o">
+                                        <div class="bg-white rounded shadow-md overflow-hidden border border-gray-100">
+                                            <div class="h-48 overflow-hidden">
+                                                <img src="assets/img/eventPoster/${o.posterUrl}" alt="${o.title}" class="w-full h-full object-cover object-top">
+                                            </div>
+                                            <div class="p-5">
+                                                <div class="flex justify-between items-center mb-3">
+                                                    <c:choose>
+                                                        <c:when test="${o.eventStatus == 'Sắp diễn ra'}">
+                                                            <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đang diễn ra'}">
+                                                            <span class="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:when test="${o.eventStatus == 'Đã kết thúc'}">
+                                                            <span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="bg-yellow-100 text-yellow-600 text-xs px-3 py-1 rounded-full">${o.eventStatus}</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <span class="text-sm text-gray-500">
+                                                        <c:choose>
+                                                            <c:when test="${o.eventStatus == 'Sắp diễn ra'}">${o.formattedStartDate} - ${o.formattedEndDate}</c:when>
+                                                            <c:when test="${o.eventStatus == 'Đang diễn ra'}">${o.formattedEndDate}</c:when>
+                                                            <c:when test="${o.eventStatus == 'Đã kết thúc'}">${o.formattedStartDate}</c:when>
+                                                            <c:otherwise>${o.formattedStartDate}</c:otherwise>
+                                                        </c:choose>
+                                                    </span>
+                                                </div>
+                                                <h3 class="text-xl font-bold mb-2">${o.title}</h3>
+                                                <p class="text-gray-600 mb-4 line-clamp-2">${o.description}</p>
+                                                <div class="flex justify-between items-center">
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-map-pin-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500">${o.location}</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="w-5 h-5 flex items-center justify-center text-gray-500">
+                                                            <i class="ri-user-line"></i>
+                                                        </div>
+                                                        <span class="ml-1 text-sm text-gray-500 participant-count" data-event-id="${o.eventId}">
+                                                            ${o.currentParticipants}/${o.maxParticipants} people
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex gap-4 mt-4">
+                                                    <c:choose>
+                                                        <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
+                                                            <!-- User is registered and event is upcoming -->
+>>>>>>> origin/NgocDung
                                                             <button class="w-full bg-red-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-red-700 cancel-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showCancelModal('RegisterEvent?action=cancel&eventId=${o.eventId}', '${o.title}')">
@@ -196,7 +284,11 @@
                                                             </button>
                                                         </c:when>
                                                         <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
+<<<<<<< HEAD
                                                             
+=======
+                                                            <!-- User is registered, event is full, event has ended, or event is ongoing -->
+>>>>>>> origin/NgocDung
                                                             <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
                                                                 <c:choose>
                                                                     <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
@@ -207,7 +299,11 @@
                                                             </span>
                                                         </c:when>
                                                         <c:otherwise>
+<<<<<<< HEAD
                                                             
+=======
+                                                            <!-- User is not registered, event is not full, and event is upcoming -->
+>>>>>>> origin/NgocDung
                                                             <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
@@ -215,6 +311,7 @@
                                                             </button>
                                                         </c:otherwise>
                                                     </c:choose>
+<<<<<<< HEAD
                                                 </c:if>
                                                 <a href="EventDetails?action=details&eventId=${o.eventId}" 
                                                    class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
@@ -307,11 +404,82 @@
                             </select>
                             <div class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400 pointer-events-none">
                                 <i class="ri-arrow-down-s-line"></i>
+=======
+                                                    <a href="EventDetails?eventId=${o.eventId}" 
+                                                       class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
+                                                        View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <c:set var="index" value="${index + 1}" />
+                                    </c:forEach>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
+                    <!-- Registration Modal -->
+                    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                            <h2 class="text-xl font-bold mb-4">Confirm Registration</h2>
+                            <p class="text-gray-600 mb-6">Are you sure you want to register for <span id="eventTitle" class="font-semibold"></span>?</p>
+                            <div class="flex justify-end gap-4">
+                                <button id="cancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
+                                <button id="confirmButton" class="bg-blue-600 text-white px-4 py-2 rounded-button hover:bg-blue-700">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancel Registration Modal -->
+                    <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                            <h2 class="text-xl font-bold mb-4">Confirm Cancellation</h2>
+                            <p class="text-gray-600 mb-6">Are you sure you want to cancel your registration for <span id="cancelEventTitle" class="font-semibold"></span>?</p>
+                            <div class="flex justify-end gap-4">
+                                <button id="cancelCancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
+                                <button id="confirmCancelButton" class="bg-red-600 text-white px-4 py-2 rounded-button hover:bg-red-700">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">Showing 1-9 of 42 events</div>
+                        <div class="flex items-center gap-2">
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">1</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">2</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">3</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">4</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">5</button>
+                            <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-600">Show:</span>
+                            <div class="relative">
+                                <select class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                                    <option value="9">9</option>
+                                    <option value="18">18</option>
+                                    <option value="27">27</option>
+                                    <option value="36">36</option>
+                                </select>
+                                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400 pointer-events-none">
+                                    <i class="ri-arrow-down-s-line"></i>
+                                </div>
+>>>>>>> origin/NgocDung
                             </div>
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
             </div>
+=======
+>>>>>>> origin/NgocDung
         </main>
 
         <!-- Footer -->
@@ -384,11 +552,20 @@
         </footer>
 
         <script>
+<<<<<<< HEAD
             let cancelUrl = '';
 
             function showRegisterModal(url, eventTitle) {
                 document.getElementById('eventTitle').textContent = eventTitle;
                 document.getElementById('registerForm').action = url;
+=======
+            let registrationUrl = '';
+            let cancelUrl = '';
+
+            function showRegisterModal(url, eventTitle) {
+                registrationUrl = url;
+                document.getElementById('eventTitle').textContent = eventTitle;
+>>>>>>> origin/NgocDung
                 document.getElementById('registerModal').classList.remove('hidden');
             }
 
@@ -402,6 +579,14 @@
                 document.getElementById('registerModal').classList.add('hidden');
             });
 
+<<<<<<< HEAD
+=======
+            document.getElementById('confirmButton').addEventListener('click', () => {
+                window.location.href = registrationUrl;
+                document.getElementById('registerModal').classList.add('hidden');
+            });
+
+>>>>>>> origin/NgocDung
             document.getElementById('cancelCancelButton').addEventListener('click', () => {
                 document.getElementById('cancelModal').classList.add('hidden');
             });

@@ -1,7 +1,12 @@
 package model;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
+=======
+import java.sql.Timestamp;
+import java.util.ArrayList;
+>>>>>>> origin/NgocDung
 import java.util.List;
 
 public class Post {
@@ -11,6 +16,7 @@ public class Post {
     private String title;
     private String content;
 
+<<<<<<< HEAD
     private Date createdAt;
     private String status;
     private List<String> images;
@@ -22,16 +28,32 @@ public class Post {
     }
 
     public Post(int userId, String topic, String title, String content, Date createdAt) {
+=======
+    private Timestamp createdAt;
+    private List<String> images;
+
+    public Post() {
+        this.images = new ArrayList<>();
+    }
+
+    public Post(int userId, String topic, String title, String content, Timestamp createdAt) {
+>>>>>>> origin/NgocDung
         this.userId = userId;
         this.topic = topic;
         this.title = title;
         this.content = content;
 
         this.createdAt = createdAt;
+<<<<<<< HEAD
         this.status = status;
     }
 
     public Post(int postId, int userId, String topic, String title, String content, Date createdAt) {
+=======
+    }
+
+    public Post(int postId, int userId, String topic, String title, String content, Timestamp createdAt) {
+>>>>>>> origin/NgocDung
         this.postId = postId;
         this.userId = userId;
         this.topic = topic;
@@ -39,7 +61,10 @@ public class Post {
         this.content = content;
 
         this.createdAt = createdAt;
+<<<<<<< HEAD
         this.status = status;
+=======
+>>>>>>> origin/NgocDung
     }
 
     public int getPostId() {
@@ -82,11 +107,19 @@ public class Post {
         this.content = content;
     }
 
+<<<<<<< HEAD
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
+=======
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+>>>>>>> origin/NgocDung
         this.createdAt = createdAt;
     }
 
@@ -105,6 +138,7 @@ public class Post {
         this.images.add(image);
     }
 
+<<<<<<< HEAD
     public void addVideo(String videoPath) {
         if (videos == null) {
             videos = new ArrayList<>();
@@ -133,6 +167,12 @@ public class Post {
         return "Post{" + "postId=" + postId + ", userId=" + userId + ", topic=" + topic + ", title=" + title
                 + ", content=" + content + ", createdAt=" + createdAt + ", status=" + status + ", images=" + images
                 + ", videos=" + videos + '}';
+=======
+    @Override
+    public String toString() {
+        return "Post{" + "postId=" + postId + ", userId=" + userId + ", topic=" + topic + ", title=" + title
+                + ", content=" + content + ", createdAt=" + createdAt + '}';
+>>>>>>> origin/NgocDung
     }
 
 }

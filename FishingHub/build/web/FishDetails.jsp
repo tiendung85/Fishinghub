@@ -1,9 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<<<<<<< HEAD
 <%@ page import="model.Users" %>
 <%
     Users currentUser = (Users) session.getAttribute("user");
 %>
+=======
+>>>>>>> origin/NgocDung
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,6 +39,7 @@
 
     <body class="font-roboto bg-gray-100">
         <!-- Header -->
+<<<<<<< HEAD
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
@@ -79,6 +83,9 @@
                 </div>
             </div>
         </header>
+=======
+        <jsp:include page="Header.jsp" />
+>>>>>>> origin/NgocDung
 
         <!-- Breadcrumb with icons -->
         <div class="bg-white border-b">
@@ -147,7 +154,11 @@
                                 <li><strong>Địa Điểm Câu:</strong> ${fish.fishingSpots}</li>
                                 <li><strong>Kỹ Thuật Câu:</strong> ${fish.fishingTechniques}</li>
                                 <li><strong>Trọng Lượng Trung Bình (kg):</strong> ${fish.averageWeightKg}</li>
+<<<<<<< HEAD
                                 <li><strong>Chiều Dài (cm):</strong> ${fish.length}</li>
+=======
+                                <li><strong>Chiều Dài (m):</strong> ${fish.length}</li>
+>>>>>>> origin/NgocDung
                                 <li><strong>Môi Trường Sống:</strong> ${fish.habitat}</li>
                                 <li><strong>Tập Tính:</strong> ${fish.behavior}</li>
                             </ul>

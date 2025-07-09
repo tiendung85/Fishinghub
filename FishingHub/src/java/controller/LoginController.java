@@ -7,9 +7,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.sql.Timestamp;
 
 @WebServlet(name = "LoginController", urlPatterns = { "/login" })
+=======
+
+@WebServlet(name = "LoginController", urlPatterns = {"/login"})
+>>>>>>> origin/NgocDung
 public class LoginController extends HttpServlet {
     UserDao db = new UserDao();
 
@@ -23,6 +28,7 @@ public class LoginController extends HttpServlet {
         Users user = db.getByEmailAndPassword(email, password);
 
         if (user != null) {
+<<<<<<< HEAD
             // Lấy thời gian hiện tại
             long currentTime = System.currentTimeMillis();
 
@@ -57,11 +63,24 @@ public class LoginController extends HttpServlet {
             request.getRequestDispatcher("/Login.jsp").forward(request, response);
         }
 
+=======
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            response.sendRedirect("Home.jsp");  // Chuyển đến trang chính
+        } else {
+            request.setAttribute("error", "Invalid email or password");
+            request.getRequestDispatcher("Login.jsp").forward(request, response);
+        }
+>>>>>>> origin/NgocDung
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+<<<<<<< HEAD
         request.getRequestDispatcher("/Login.jsp").forward(request, response);
+=======
+        request.getRequestDispatcher("Login.jsp").forward(request, response);
+>>>>>>> origin/NgocDung
     }
 }

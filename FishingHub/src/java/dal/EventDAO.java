@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import model.Events;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+<<<<<<< HEAD
 import model.EventNotification;
+=======
+>>>>>>> origin/NgocDung
 import model.EventParticipant;
 
 /**
@@ -18,11 +21,20 @@ import model.EventParticipant;
  */
 public class EventDAO extends DBConnect {
 
+<<<<<<< HEAD
     public ArrayList<Events> getEvents() {
         ArrayList<Events> events = new ArrayList<>();
         try {
             String sql = "SELECT * FROM Event WHERE Status='approved' ORDER BY EventId DESC";
             PreparedStatement statement = connection.prepareStatement(sql);
+=======
+    public ArrayList<Events> getEvents(int hostID) {
+        ArrayList<Events> events = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Event WHERE Status='approved' AND HostId != ? ORDER BY EventId DESC";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, hostID);
+>>>>>>> origin/NgocDung
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -47,6 +59,7 @@ public class EventDAO extends DBConnect {
             System.err.println("Error while fetching events: " + e.getMessage());
             e.printStackTrace();
         }
+<<<<<<< HEAD
         return events;
     }
 
@@ -281,6 +294,9 @@ public class EventDAO extends DBConnect {
             e.printStackTrace();
         }
         return events;
+=======
+        return events; // Trả về danh sách rỗng thay vì null nếu không có sự kiện
+>>>>>>> origin/NgocDung
     }
 
     public Events addEvent(Events event) {
@@ -312,6 +328,7 @@ public class EventDAO extends DBConnect {
         return null;
     }
 
+<<<<<<< HEAD
     public Events updateEvent(Events event) {
         try {
             String sql = "UPDATE Event SET Title = ?, LakeName = ?, Description = ?, Location = ?, "
@@ -360,18 +377,43 @@ public class EventDAO extends DBConnect {
 
                 if (rowsAffected > 0) {
 
+=======
+    public EventParticipant register(EventParticipant ep) {
+        String insertParticipantSQL = "INSERT INTO EventParticipant (EventId, UserId) VALUES (?, ?)";
+        String updateEventSQL = "UPDATE Event SET CurrentParticipants = CurrentParticipants + 1 WHERE EventId = ?";
+
+        try {
+            connection.setAutoCommit(false); // Start transaction
+
+            // Insert into EventParticipant
+            try (PreparedStatement participantStmt = connection.prepareStatement(insertParticipantSQL)) {
+                participantStmt.setInt(1, ep.getEventId());
+                participantStmt.setInt(2, ep.getUserId());
+                int rowsAffected = participantStmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    // Update currentParticipants in Event table
+>>>>>>> origin/NgocDung
                     try (PreparedStatement eventStmt = connection.prepareStatement(updateEventSQL)) {
                         eventStmt.setInt(1, ep.getEventId());
                         eventStmt.executeUpdate();
                     }
 
+<<<<<<< HEAD
                     connection.commit();
+=======
+                    connection.commit(); // Commit transaction
+>>>>>>> origin/NgocDung
                     return ep;
                 }
             }
         } catch (Exception e) {
             try {
+<<<<<<< HEAD
                 connection.rollback();
+=======
+                connection.rollback(); // Rollback on error
+>>>>>>> origin/NgocDung
             } catch (Exception rollbackEx) {
                 System.err.println("Error during rollback: " + rollbackEx.getMessage());
                 rollbackEx.printStackTrace();
@@ -380,7 +422,11 @@ public class EventDAO extends DBConnect {
             e.printStackTrace();
         } finally {
             try {
+<<<<<<< HEAD
                 connection.setAutoCommit(true);
+=======
+                connection.setAutoCommit(true); // Reset auto-commit
+>>>>>>> origin/NgocDung
             } catch (Exception e) {
                 System.err.println("Error resetting auto-commit: " + e.getMessage());
             }
@@ -421,18 +467,31 @@ public class EventDAO extends DBConnect {
         return false;
     }
 
+<<<<<<< HEAD
     public ArrayList<Events> searchEvents(String keyword) {
         ArrayList<Events> events = new ArrayList<>();
         String sql = "SELECT * FROM Event WHERE Status = 'approved' "
+=======
+    public ArrayList<Events> searchEvents(String keyword, int hostID) {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE Status = 'approved' AND HostId != ? "
+>>>>>>> origin/NgocDung
                 + "AND (Title LIKE ? OR LakeName LIKE ? OR Location LIKE ?)"
                 + "ORDER BY EventId DESC";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             String kw = "%" + keyword + "%";
+<<<<<<< HEAD
 
             ps.setString(1, kw);
             ps.setString(2, kw);
             ps.setString(3, kw);
+=======
+            ps.setInt(1, hostID);
+            ps.setString(2, kw);
+            ps.setString(3, kw);
+            ps.setString(4, kw);
+>>>>>>> origin/NgocDung
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -461,6 +520,7 @@ public class EventDAO extends DBConnect {
         return events;
     }
 
+<<<<<<< HEAD
     public ArrayList<Events> upComingEvents() {
         ArrayList<Events> events = new ArrayList<>();
 
@@ -468,6 +528,15 @@ public class EventDAO extends DBConnect {
             String sql = "SELECT * FROM Event Where StartTime > GETDATE() and Status='approved' ORDER BY StartTime ASC";
             PreparedStatement statement = connection.prepareStatement(sql);
 
+=======
+    public ArrayList<Events> upComingEvents(int hostID) {
+        ArrayList<Events> events = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM Event Where StartTime > GETDATE() and Status='approved' and HostId != ? ORDER BY StartTime ASC";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, hostID);
+>>>>>>> origin/NgocDung
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -496,12 +565,21 @@ public class EventDAO extends DBConnect {
         return events;
     }
 
+<<<<<<< HEAD
     public ArrayList<Events> getOngoingEvents() {
         ArrayList<Events> events = new ArrayList<>();
         String sql = "SELECT * FROM Event WHERE Status = 'approved' AND StartTime <= GETDATE() AND EndTime >= GETDATE() ORDER BY StartTime ASC";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
+=======
+    public ArrayList<Events> getOngoingEvents(int userId) {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE Status = 'approved' AND HostId != ? AND StartTime <= GETDATE() AND EndTime >= GETDATE() ORDER BY StartTime ASC";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+>>>>>>> origin/NgocDung
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Events event = new Events();
@@ -566,6 +644,7 @@ public class EventDAO extends DBConnect {
         }
         return false;
     }
+<<<<<<< HEAD
 
     public boolean deleteEvent(int eventId) {
         try {
@@ -607,3 +686,6 @@ public class EventDAO extends DBConnect {
         return null;
     }
 }
+=======
+}
+>>>>>>> origin/NgocDung

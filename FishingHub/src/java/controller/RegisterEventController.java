@@ -9,7 +9,10 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.regex.Pattern;
+=======
+>>>>>>> origin/NgocDung
 import model.EventParticipant;
 import model.Events;
 import model.Users;
@@ -63,8 +66,12 @@ public class RegisterEventController extends HttpServlet {
         }
     }
 
+<<<<<<< HEAD
     private void handleEventAction(HttpServletRequest request, HttpServletResponse response, String action, Users user,
             EventDAO dao)
+=======
+    private void handleEventAction(HttpServletRequest request, HttpServletResponse response, String action, Users user, EventDAO dao)
+>>>>>>> origin/NgocDung
             throws ServletException, IOException {
         try {
             int eventId = Integer.parseInt(request.getParameter("eventId"));
@@ -75,6 +82,7 @@ public class RegisterEventController extends HttpServlet {
                 } else if (dao.isUserRegistered(eventId, user.getUserId())) {
                     request.setAttribute("error", "Bạn đã đăng ký tham gia sự kiện này rồi.");
                 } else {
+<<<<<<< HEAD
                     String phoneNumber = request.getParameter("phoneNumber");
                     String email = request.getParameter("email");
                     String cccd = request.getParameter("cccd"); // Lấy CCCD nếu có
@@ -117,13 +125,21 @@ public class RegisterEventController extends HttpServlet {
                     ep.setEmail(email);
                     ep.setCccd(cccd);
 
+=======
+                    EventParticipant ep = new EventParticipant();
+                    ep.setEventId(eventId);
+                    ep.setUserId(user.getUserId());
+>>>>>>> origin/NgocDung
                     if (dao.register(ep) != null) {
                         request.setAttribute("success", "Đăng ký sự kiện thành công!");
                     } else {
                         request.setAttribute("error", "Đăng ký sự kiện thất bại.");
                     }
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/NgocDung
             } else if ("cancel".equals(action)) {
                 if (!dao.isUserRegistered(eventId, user.getUserId())) {
                     request.setAttribute("error", "Bạn chưa đăng ký sự kiện này.");
@@ -134,7 +150,11 @@ public class RegisterEventController extends HttpServlet {
                 }
             }
         } catch (NumberFormatException nfe) {
+<<<<<<< HEAD
             request.setAttribute("error", "ID sự kiện hoặc số điện thoại không hợp lệ.");
+=======
+            request.setAttribute("error", "ID sự kiện không hợp lệ.");
+>>>>>>> origin/NgocDung
         } catch (Exception ex) {
             request.setAttribute("error", "Đã xảy ra lỗi: " + ex.getMessage());
         }
@@ -144,7 +164,11 @@ public class RegisterEventController extends HttpServlet {
     }
 
     private void loadEventList(HttpServletRequest request, Users user, EventDAO dao) {
+<<<<<<< HEAD
         ArrayList<Events> list = dao.getEvents();
+=======
+        ArrayList<Events> list = dao.getEvents(user.getUserId());
+>>>>>>> origin/NgocDung
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -169,4 +193,8 @@ public class RegisterEventController extends HttpServlet {
     public String getServletInfo() {
         return "Handles event registration and cancellation for the FishingHub application.";
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/NgocDung

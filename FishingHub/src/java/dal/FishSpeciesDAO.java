@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import model.FishSpecies;
 
 public class FishSpeciesDAO extends DBConnect {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/NgocDung
     public FishSpeciesDAO() {
         super();
     }
@@ -24,6 +27,7 @@ public class FishSpeciesDAO extends DBConnect {
         return null;
     }
 
+<<<<<<< HEAD
     // Cập nhật một ảnh riêng lẻ dựa trên ImageUrl
     public void updateSingleImage(int fishId, String oldImageUrl, String newImageUrl, boolean isMain)
             throws SQLException {
@@ -59,11 +63,22 @@ public class FishSpeciesDAO extends DBConnect {
                 while (rs.next()) {
                     images.add(rs.getString("ImageUrl"));
                 }
+=======
+    private List<String> getImagesByFishSpeciesId(int fishSpeciesId) throws SQLException {
+        List<String> images = new ArrayList<>();
+        String sql = "SELECT ImageUrl FROM FishSpeciesImages WHERE FishSpeciesId = ? ORDER BY IsMain DESC, Id ASC";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, fishSpeciesId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                images.add(rs.getString("ImageUrl"));
+>>>>>>> origin/NgocDung
             }
         }
         return images;
     }
 
+<<<<<<< HEAD
     // Cập nhật danh sách ảnh
     public void updateImagesForFish(int fishId, List<String> imageUrls, int mainImageIndex) throws SQLException {
         // Xóa ảnh cũ
@@ -78,6 +93,8 @@ public class FishSpeciesDAO extends DBConnect {
         }
     }
 
+=======
+>>>>>>> origin/NgocDung
     public List<FishSpecies> getFishSpeciesByPage(int page, int pageSize) throws SQLException {
         List<FishSpecies> list = new ArrayList<>();
         String sql = "SELECT * FROM FishSpecies ORDER BY Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -126,7 +143,11 @@ public class FishSpeciesDAO extends DBConnect {
     public FishSpecies getFishById(int id) {
         String sql = "SELECT * FROM FishSpecies WHERE Id = ?";
         try (
+<<<<<<< HEAD
                 PreparedStatement ps = connection.prepareStatement(sql)) {
+=======
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+>>>>>>> origin/NgocDung
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -158,6 +179,7 @@ public class FishSpeciesDAO extends DBConnect {
         }
         return null;
     }
+<<<<<<< HEAD
 
     // Lấy toàn bộ cá (không phân trang)
     public List<FishSpecies> getAllFishSpecies() throws SQLException {
@@ -391,3 +413,7 @@ public class FishSpeciesDAO extends DBConnect {
 
 }
 // Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...
+=======
+}
+// Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...
+>>>>>>> origin/NgocDung
