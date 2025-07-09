@@ -5,11 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-<<<<<<< HEAD
 import model.Achievement;
 import java.util.List;
-=======
->>>>>>> origin/NgocDung
 
 public class UserDao extends DBConnect {
 
@@ -19,19 +16,12 @@ public class UserDao extends DBConnect {
             String sql = "SELECT * FROM Users";
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/NgocDung
             while (rs.next()) {
                 Users user = new Users();
                 user.setUserId(rs.getInt("UserId"));
                 user.setFullName(rs.getString("FullName"));
                 user.setEmail(rs.getString("Email"));
-<<<<<<< HEAD
                 user.setPhone(rs.getString("Phone"));
-=======
->>>>>>> origin/NgocDung
                 user.setPassword(rs.getString("Password"));
                 user.setGoogleId(rs.getString("GoogleId"));
                 user.setRoleId(rs.getInt("RoleId"));
@@ -39,11 +29,8 @@ public class UserDao extends DBConnect {
                 user.setDateOfBirth(rs.getDate("DateOfBirth"));
                 user.setLocation(rs.getString("Location"));
                 user.setCreatedAt(rs.getTimestamp("CreatedAt"));
-<<<<<<< HEAD
                 user.setLastLoginTime(rs.getTimestamp("LastLoginTime"));
                 user.setStatus(rs.getString("Status"));
-=======
->>>>>>> origin/NgocDung
                 users.add(user);
             }
             rs.close();
@@ -56,12 +43,7 @@ public class UserDao extends DBConnect {
 
     public void insert(Users user) {
         try {
-<<<<<<< HEAD
             String sql = "INSERT INTO Users (FullName, Email, Phone, Password, RoleId, Gender, DateOfBirth, Location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-=======
-            String sql = "INSERT INTO Users (FullName, Email, Phone, Password, RoleId, Gender, DateOfBirth, Location) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
->>>>>>> origin/NgocDung
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getEmail());
@@ -71,13 +53,9 @@ public class UserDao extends DBConnect {
             ps.setString(6, user.getGender());
             ps.setDate(7, user.getDateOfBirth());
             ps.setString(8, user.getLocation());
-<<<<<<< HEAD
 
             ps.executeUpdate();
             ps.close();
-=======
-            ps.executeUpdate();
->>>>>>> origin/NgocDung
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +64,6 @@ public class UserDao extends DBConnect {
     public Users getByEmailAndPassword(String email, String password) {
         Users user = null;
         try {
-<<<<<<< HEAD
             String sql = "SELECT * FROM Users WHERE LTRIM(RTRIM(Email)) = LTRIM(RTRIM(?)) AND LTRIM(RTRIM(Password)) = LTRIM(RTRIM(?))";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, email);
@@ -95,23 +72,13 @@ public class UserDao extends DBConnect {
             System.out.println(">>> Login Query: " + sql);
             System.out.println(">>> Params: [" + email + ", " + password + "]");
 
-=======
-            String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, email);
-            ps.setString(2, password);
->>>>>>> origin/NgocDung
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 user = new Users();
                 user.setUserId(rs.getInt("UserId"));
                 user.setFullName(rs.getString("FullName"));
                 user.setEmail(rs.getString("Email"));
-<<<<<<< HEAD
                 user.setPhone(rs.getString("Phone"));
-=======
-                user.setPhone(rs.getString("Phone")); // Nếu có field Phone
->>>>>>> origin/NgocDung
                 user.setPassword(rs.getString("Password"));
                 user.setGoogleId(rs.getString("GoogleId"));
                 user.setRoleId(rs.getInt("RoleId"));
@@ -119,15 +86,12 @@ public class UserDao extends DBConnect {
                 user.setDateOfBirth(rs.getDate("DateOfBirth"));
                 user.setLocation(rs.getString("Location"));
                 user.setCreatedAt(rs.getTimestamp("CreatedAt"));
-<<<<<<< HEAD
                 user.setLastLoginTime(rs.getTimestamp("LastLoginTime"));
                 user.setStatus(rs.getString("Status"));
 
                 System.out.println(">>> Login SUCCESS for user: " + user.getEmail());
             } else {
                 System.out.println(">>> Login FAILED for: " + email);
-=======
->>>>>>> origin/NgocDung
             }
             rs.close();
             ps.close();
@@ -137,7 +101,6 @@ public class UserDao extends DBConnect {
         return user;
     }
 
-<<<<<<< HEAD
     public Users getByEmail(String email) {
         String sql = "SELECT * FROM Users WHERE Email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -449,6 +412,4 @@ public class UserDao extends DBConnect {
         }
     }
 
-=======
->>>>>>> origin/NgocDung
 }

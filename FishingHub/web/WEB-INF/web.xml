@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
@@ -9,18 +8,10 @@
         <servlet-class>controller.EventController</servlet-class>
     </servlet>
     
-=======
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-    <servlet>
-        <servlet-name>EventController</servlet-name>
-        <servlet-class>controller.EventController</servlet-class>
-    </servlet>
->>>>>>> origin/NgocDung
     <servlet>
         <servlet-name>EventListController</servlet-name>
         <servlet-class>controller.EventListController</servlet-class>
     </servlet>
-<<<<<<< HEAD
     
     <servlet>
           <servlet-name>ProfileController</servlet-name>
@@ -64,29 +55,20 @@
     </servlet-mapping>
     
 
-=======
->>>>>>> origin/NgocDung
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>controller.RegisterController</servlet-class>
     </servlet>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet>
         <servlet-name>RegisterEventController</servlet-name>
         <servlet-class>controller.RegisterEventController</servlet-class>
     </servlet>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet>
         <servlet-name>SearchEventController</servlet-name>
         <servlet-class>controller.SearchEventController</servlet-class>
     </servlet>
-<<<<<<< HEAD
 
     <servlet>
         <servlet-name>ProductServlet</servlet-name>
@@ -128,69 +110,40 @@
         <servlet-name>EventNotificationController</servlet-name>
         <servlet-class>controller.EventNotificationController</servlet-class>
     </servlet>
-=======
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/Register</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>EventController</servlet-name>
         <url-pattern>/Event</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>EventListController</servlet-name>
         <url-pattern>/EventList</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
-    <servlet>
-        <servlet-name>LoginController</servlet-name>
-        <servlet-class>controller.LoginController</servlet-class>
-    </servlet>
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
-    <servlet>
-        <servlet-name>LogoutController</servlet-name>
-        <servlet-class>controller.LogoutController</servlet-class>
-    </servlet>
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>LogoutController</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>RegisterEventController</servlet-name>
         <url-pattern>/RegisterEvent</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     <servlet-mapping>
         <servlet-name>SearchEventController</servlet-name>
         <url-pattern>/SearchEvent</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
 
     <servlet-mapping>
         <servlet-name>ProductServlet</servlet-name>
@@ -231,9 +184,3 @@
    
     
 </web-app>
-=======
-    <welcome-file-list>
-        <welcome-file>Home.jsp</welcome-file>
-    </welcome-file-list>
-</web-app>
->>>>>>> origin/NgocDung

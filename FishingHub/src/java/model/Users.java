@@ -4,18 +4,10 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Users {
-<<<<<<< HEAD
     private int userId;
     private String fullName;
     private String email;
     private String phone;
-=======
-
-    private int userId;
-    private String fullName;
-    private String email;
-    private String phone;      // Thêm trường này
->>>>>>> origin/NgocDung
     private String password;
     private String googleId;
     private int roleId;
@@ -24,19 +16,12 @@ public class Users {
     private String location;
     private Timestamp createdAt;
 
-<<<<<<< HEAD
     private Timestamp lastLoginTime;
     private String status;
 
     public Users() {
     }
 
-=======
-    public Users() {
-    }
-
-    // Constructor đầy đủ
->>>>>>> origin/NgocDung
     public Users(int userId, String fullName, String email, String phone, String password, String googleId,
             int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
         this.userId = userId;
@@ -50,15 +35,9 @@ public class Users {
         this.dateOfBirth = dateOfBirth;
         this.location = location;
         this.createdAt = createdAt;
-<<<<<<< HEAD
 
     }
 
-=======
-    }
-
-    // Constructor dùng khi đăng ký (không có userId, googleId, createdAt)
->>>>>>> origin/NgocDung
     public Users(String fullName, String email, String phone, String password, int roleId,
             String gender, Date dateOfBirth, String location) {
         this.fullName = fullName;
@@ -69,20 +48,13 @@ public class Users {
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.location = location;
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
         this.googleId = null;
         this.createdAt = null;
     }
 
-<<<<<<< HEAD
    
 
-=======
-    // Getter và Setter
->>>>>>> origin/NgocDung
     public int getUserId() {
         return userId;
     }
@@ -170,7 +142,6 @@ public class Users {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-<<<<<<< HEAD
     
 
     public Timestamp getLastLoginTime() {
@@ -221,23 +192,3 @@ public class Users {
     }
 
 }
-=======
-
-    @Override
-    public String toString() {
-        return "Users{"
-                + "userId=" + userId
-                + ", fullName='" + fullName + '\''
-                + ", email='" + email + '\''
-                + ", phone='" + phone + '\''
-                + ", password='" + password + '\''
-                + ", googleId='" + googleId + '\''
-                + ", roleId=" + roleId
-                + ", gender='" + gender + '\''
-                + ", dateOfBirth=" + dateOfBirth
-                + ", location='" + location + '\''
-                + ", createdAt=" + createdAt
-                + '}';
-    }
-}
->>>>>>> origin/NgocDung

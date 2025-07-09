@@ -27,17 +27,10 @@ public class EventListController extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-<<<<<<< HEAD
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
-=======
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
->>>>>>> origin/NgocDung
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,7 +49,6 @@ public class EventListController extends HttpServlet {
         }
     }
 
-<<<<<<< HEAD
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
     // + sign on the left to edit the code.">
     /**
@@ -66,16 +58,6 @@ public class EventListController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
-=======
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
->>>>>>> origin/NgocDung
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -83,7 +65,6 @@ public class EventListController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
-<<<<<<< HEAD
         String action = request.getParameter("action");
         EventDAO dao = new EventDAO();
 
@@ -103,31 +84,6 @@ public class EventListController extends HttpServlet {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
 
-=======
-
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        String action = request.getParameter("action");
-        EventDAO dao = new EventDAO();
-        ArrayList<Events> list = new ArrayList<>();
-
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-
-        if (action == null || action.equals("all")) {
-            list = dao.getEvents(user.getUserId());
-        } else if (action.equals("upcoming")) {
-            list = dao.upComingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
-         else if (action.equals("ongoing")) {
-            list = dao.getOngoingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
-
-        // Xác định trạng thái và đăng ký của user cho từng event
-        ArrayList<Boolean> isRegisteredList = new ArrayList<>();
->>>>>>> origin/NgocDung
         for (Events e : list) {
             if (now.before(e.getStartTime())) {
                 e.setEventStatus("Sắp diễn ra");
@@ -137,14 +93,10 @@ public class EventListController extends HttpServlet {
                 e.setEventStatus("Đang diễn ra");
             }
 
-<<<<<<< HEAD
             boolean isRegistered = false;
             if (user != null) {
                 isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
             }
-=======
-            boolean isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
->>>>>>> origin/NgocDung
             isRegisteredList.add(isRegistered);
         }
 
@@ -156,17 +108,10 @@ public class EventListController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-<<<<<<< HEAD
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
-=======
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
->>>>>>> origin/NgocDung
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -184,8 +129,4 @@ public class EventListController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/NgocDung

@@ -1,6 +1,5 @@
 package model;
 
-<<<<<<< HEAD
 import java.sql.Timestamp;
 
 public class EventParticipant {
@@ -13,20 +12,6 @@ public class EventParticipant {
     private String cccd;
     private String fullName;
     private Timestamp checkinTime;
-=======
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author LENOVO
- */
-public class EventParticipant {
-    private int eventId;
-    private int userId;
->>>>>>> origin/NgocDung
 
     public EventParticipant() {
     }
@@ -46,7 +31,6 @@ public class EventParticipant {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-<<<<<<< HEAD
 
     public String getNumberPhone() {
         return numberPhone;
@@ -96,8 +80,3 @@ public class EventParticipant {
         this.checkinTime = checkinTime;
     }
 }
-=======
-    
-    
-}
->>>>>>> origin/NgocDung

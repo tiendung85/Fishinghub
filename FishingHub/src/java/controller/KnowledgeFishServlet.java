@@ -18,7 +18,6 @@ public class KnowledgeFishServlet extends HttpServlet {
             throws ServletException, IOException {
         int page = 1;
         int pageSize = 8;
-<<<<<<< HEAD
         String difficulty = request.getParameter("difficulty");
 
         FishSpeciesDAO dao = new FishSpeciesDAO();
@@ -52,33 +51,10 @@ public class KnowledgeFishServlet extends HttpServlet {
                 request.setAttribute("totalPages", totalPages);
             }
             request.setAttribute("fishList", fishList);
-=======
-        if (request.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(request.getParameter("page"));
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-
-        FishSpeciesDAO dao = new FishSpeciesDAO();
-        try {
-            List<FishSpecies> fishList = dao.getFishSpeciesByPage(page, pageSize);
-            int totalFish = dao.getTotalFishSpecies();
-            int totalPages = (int) Math.ceil((double) totalFish / pageSize);
-
-            request.setAttribute("fishList", fishList);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", totalPages);
->>>>>>> origin/NgocDung
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         request.getRequestDispatcher("KnowledgeFish.jsp").forward(request, response);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/NgocDung

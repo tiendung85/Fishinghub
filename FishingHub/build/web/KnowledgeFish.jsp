@@ -1,12 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<<<<<<< HEAD
 <%@ page import="model.Users" %>
 <%
     Users currentUser = (Users) session.getAttribute("user");
 %>
-=======
->>>>>>> origin/NgocDung
 
 
 <!DOCTYPE html>
@@ -26,7 +23,6 @@
     </head>
     <body>
         <!-- Header -->
-<<<<<<< HEAD
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
@@ -70,9 +66,6 @@
                 </div>
             </div>
         </header>
-=======
-        <jsp:include page="Header.jsp" />
->>>>>>> origin/NgocDung
         <!-- Breadcrumb -->
         <div class="bg-white border-b">
             <div class="container mx-auto px-4 py-3">
@@ -85,7 +78,6 @@
         </div>
 
         <main class="container mx-auto px-4 py-8">
-<<<<<<< HEAD
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                 <!-- Sidebar trái: Độ khó -->
                 <aside class="hidden md:block md:col-span-2 bg-white rounded-lg shadow p-4 mb-6">
@@ -179,52 +171,6 @@
                         </ul>
                     </div>
                 </aside>
-=======
-            <div id="fishList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <c:choose>
-                    <c:when test="${not empty fishList}">
-                        <c:forEach var="fish" items="${fishList}">
-                            <div class="card-fish bg-white rounded-lg shadow overflow-hidden">
-                                <div class="relative aspect-square w-full">
-                                    <img src="${fish.images[0]}" alt="${fish.commonName}" class="w-full h-full object-cover object-center">
-
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-gray-800 text-lg mb-1">${fish.commonName}</h3>
-                                    <p class="text-sm text-gray-600 mb-2"><i class="ri-map-pin-line mr-1"></i> ${fish.fishingSpots}</p>
-                                    <div class="flex items-center space-x-2 mb-4">
-                                        <span class="text-xs text-gray-500">Độ Khó:</span>
-                                        <span class="text-xs font-semibold text-primary">${fish.difficultyLevel}</span>
-                                    </div>
-                                    <div class="flex justify-end">
-                                        <a href="FishDetails?id=${fish.id}"
-                                           class="inline-block px-4 py-1 border border-primary text-primary rounded-button text-sm hover:bg-primary hover:text-white transition-colors">
-                                            Chi Tiết
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="col-span-4 text-center text-gray-500">Không tìm thấy loài cá nào</div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="mt-10 flex justify-center">
-                <nav class="flex items-center space-x-1">
-                    <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == 1 ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage - 1}'">
-                        <i class="ri-arrow-left-s-line"></i>
-                    </button>
-                    <c:forEach var="i" begin="1" end="${totalPages}">
-                        <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm ${currentPage == i ? 'active bg-primary text-white' : ''}"
-                                onclick="window.location.href = 'KnowledgeFish?page=${i}'">${i}</button>
-                    </c:forEach>
-                    <button class="pagination-btn w-8 h-8 flex items-center justify-center rounded text-gray-600 text-sm" ${currentPage == totalPages ? 'disabled' : ''} onclick="window.location.href = 'KnowledgeFish?page=${currentPage + 1}'">
-                        <i class="ri-arrow-right-s-line"></i>
-                    </button>
-                </nav>
->>>>>>> origin/NgocDung
             </div>
         </main>
         <button id="backToTop" class="back-to-top fixed bottom-6 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center">
@@ -303,11 +249,8 @@
             </div>
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
-<<<<<<< HEAD
         <script>
             // Đã chuyển filter sang server, không cần JS filter nữa
         </script>
-=======
->>>>>>> origin/NgocDung
     </body>
 </html>

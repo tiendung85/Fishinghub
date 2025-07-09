@@ -143,10 +143,6 @@ public class Events {
     public void setCurrentParticipants(int currentParticipants) {
         this.currentParticipants = currentParticipants;
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/NgocDung
 
     public String getFormattedStartDate() {
         if (startTime != null) {
@@ -155,10 +151,7 @@ public class Events {
         }
         return "";
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
     public String getFormattedEndDate() {
         if (startTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -167,7 +160,6 @@ public class Events {
         return "";
     }
 
-<<<<<<< HEAD
     public String getFormattedStartTime() {
         if (startTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -184,8 +176,6 @@ public class Events {
         return "";
     }
 
-=======
->>>>>>> origin/NgocDung
     public String getEventStatus() {
         return eventStatus;
     }
@@ -193,9 +183,4 @@ public class Events {
     public void setEventStatus(String eventStatus) {
         this.eventStatus = eventStatus;
     }
-<<<<<<< HEAD
 }
-=======
-
-}
->>>>>>> origin/NgocDung

@@ -2,7 +2,6 @@
 <%@page import="java.util.List"%>
 <%@page import="model.Post"%>
 <%@page import="dal.PostDAO"%>
-<<<<<<< HEAD
 <%@page import="dal.UserDao"%>
 <%@page import="model.Users"%>
 <%@page import="model.PostComment"%>
@@ -36,12 +35,6 @@
         }
     }
 %>
-=======
-<%@ page import="java.text.SimpleDateFormat" %>
-
-
-
->>>>>>> origin/NgocDung
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -49,7 +42,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bảng Tin</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<<<<<<< HEAD
     <script>
         tailwind.config = {
             theme: {
@@ -74,36 +66,23 @@
             }
         }
     </script>
-=======
-    <script>tailwind.config = {theme: {extend: {colors: {primary: '#1E88E5', secondary: '#FFA726'}, borderRadius: {'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'}}}}</script>
->>>>>>> origin/NgocDung
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-<<<<<<< HEAD
     <link rel="stylesheet" href="assets/css/style.css">
  
 </head>
 <body>
    
 
-=======
-      <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
->>>>>>> origin/NgocDung
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center">
                 <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-<<<<<<< HEAD
 
-=======
-                <!-- Header navigation links -->
->>>>>>> origin/NgocDung
                  <nav class="hidden md:flex ml-10">
             <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
             <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
@@ -115,11 +94,7 @@
             </div>
 
             <div class="flex items-center space-x-4">
-<<<<<<< HEAD
 
-=======
-                <!-- Cart -->
->>>>>>> origin/NgocDung
                 <div class="relative w-10 h-10 flex items-center justify-center">
                     <button class="text-gray-700 hover:text-primary">
                         <i class="ri-shopping-cart-2-line text-xl"></i>
@@ -136,7 +111,6 @@
                     <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
                 </div>
 
-<<<<<<< HEAD
                 <% 
                 Users currentUser = (Users) session.getAttribute("user");
             if (currentUser == null) { %>
@@ -152,11 +126,6 @@
             </form>
         </div>
     <% } %>
-=======
-                <button class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</button>
-        <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</button>
-            </div>
->>>>>>> origin/NgocDung
         </div>
     </header>
 
@@ -183,7 +152,6 @@
                     <p class="text-gray-600 mt-2">Chia sẻ kinh nghiệm, tin tức và thảo luận về câu cá</p>
                 </div>
                 <div class="flex items-center gap-4">
-<<<<<<< HEAD
                     <!-- Search input -->
 <div class="relative">
     <input type="text" 
@@ -196,14 +164,6 @@
     </div>
 </div>
 
-=======
-                    <div class="relative">
-                        <input type="text" placeholder="Tìm kiếm bài viết..." class="w-full md:w-80 pl-10 pr-4 py-2 rounded-button border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
-                            <i class="ri-search-line"></i>
-                        </div>
-                    </div>
->>>>>>> origin/NgocDung
                     <button class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2" onclick="openCreatePostDialog()">
                         <i class="ri-add-line"></i>
                         <span>Tạo Bài Viết Mới</span>
@@ -211,7 +171,6 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
 
           
             <div class="bg-white rounded shadow-sm mb-8">
@@ -534,67 +493,10 @@ onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
                             <%= currentUser == null ? "disabled" : "" %>>Gửi</button>
                 </form>
             </div>
-=======
-            <!-- Filters and Tabs -->
-            <div class="bg-white rounded shadow-sm mb-8">
-                <div class="flex border-b border-gray-200">
-                    <button class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả Bài Viết</button>
-                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
-                    <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>
-                </div>
-            </div>
-
- <!-- Posts List -->
-                <div class="space-y-6">
-    <% 
-        PostDAO postDAO = new PostDAO();
-        List<Post> posts = postDAO.getAllPosts();
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
-        
-        for(Post post : posts) {
-    %>
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <!-- Post Header -->
-        <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-200"></div>
-                <div>
-                    <p class="font-medium">User <%= post.getUserId() %></p>
-                    <p class="text-sm text-gray-500"><%= sdf.format(post.getCreatedAt()) %></p>
-                </div>
-            </div>
-            <button class="text-gray-400 hover:text-gray-600">
-                <i class="ri-more-fill text-xl"></i>
-            </button>
-        </div>
-
-        <!-- Post Topic -->
-        <div class="mb-3">
-            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                <%= post.getTopic() %>
-            </span>
-        </div>
-
-        <!-- Post Content -->
-                 <p class="text-gray-800 mb-4"><%= post.getTitle() %></p>
-
-        <p class="text-gray-800 mb-4"><%= post.getContent() %></p>
-
-        <!-- Post Image -->
-
-<% if(post.getImages() != null && !post.getImages().isEmpty()) { %>
-<div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-    <% for(String image : post.getImages()) { %>
-        <div class="overflow-hidden">
-            <img src="assets/img/post/<%= image %>" 
-                 alt="Post image" 
-                 class="w-full h-[300px] object-cover rounded-lg">
->>>>>>> origin/NgocDung
         </div>
     <% } %>
 </div>
 <% } %>
-<<<<<<< HEAD
 <% 
         boolean isCommentOwner = currentUser != null && comment.getUserId() == currentUser.getUserId();
         if (isCommentOwner || isPostOwner) {
@@ -737,169 +639,6 @@ onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
     </button>
     <img id="modalImage" src="" alt="Full screen image" class="max-h-[90vh] max-w-[90vw] object-contain">
 </div>
-=======
-
-
-
-        <!-- Post Actions -->
-        <div class="flex items-center justify-between pt-4 border-t">
-            <div class="flex items-center gap-4">
-                <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
-                    <i class="ri-heart-line text-xl"></i>
-                    <span>Thích</span>
-                </button>
-                <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
-                    <i class="ri-chat-1-line text-xl"></i>
-                    <span>Bình Luận</span>
-                </button>
-               
-            </div>
-            <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
-                <i class="ri-bookmark-line text-xl"></i>
-            </button>
-        </div>
-    </div>
-    <% } %>
-</div>
-
-                
-                <!-- Load More & Pagination -->
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-                    <button class="bg-white text-primary border border-primary px-6 py-2 rounded-button whitespace-nowrap mb-4 md:mb-0 w-full md:w-auto">
-                        Xem Thêm Bài Viết
-                    </button>
-
-                    <div class="flex items-center gap-2">
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-left-s-line"></i>
-                        </button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">1</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">2</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">3</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">4</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">5</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Featured Members -->
-                <div class="bg-white rounded shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-bold mb-4">Thành Viên Tích Cực</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <!-- Member 1 -->
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
-                                <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520vietnamese%2520man%2520in%2520his%252040s%2520with%2520short%2520hair%2520and%2520glasses%252C%2520casual%2520outfit%252C%2520natural%2520lighting%252C%2520realistic%2520portrait&width=100&height=100&seq=member1&orientation=squarish" alt="Member" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-medium text-sm">Tran Quoc Bao</h4>
-                            <p class="text-xs text-gray-500">124 posts</p>
-                        </div>
-                        <!-- Member 2 -->
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
-                                <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520vietnamese%2520woman%2520in%2520her%252030s%2520with%2520long%2520hair%252C%2520casual%2520outdoor%2520clothing%252C%2520natural%2520lighting%252C%2520realistic%2520portrait&width=100&height=100&seq=member2&orientation=squarish" alt="Member" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-medium text-sm">Nguyen Thi Huong</h4>
-                            <p class="text-xs text-gray-500">98 posts</p>
-                        </div>
-                        <!-- Member 3 -->
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
-                                <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520vietnamese%2520man%2520in%2520his%252050s%2520with%2520gray%2520hair%252C%2520experienced%2520fisherman%2520look%252C%2520outdoor%2520setting%252C%2520natural%2520lighting%252C%2520realistic%2520portrait&width=100&height=100&seq=member3&orientation=squarish" alt="Member" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-medium text-sm">Le Van Tam</h4>
-                            <p class="text-xs text-gray-500">156 posts</p>
-                        </div>
-                        <!-- Member 4 -->
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
-                                <img src="https://readdy.ai/api/search-image?query=profile%2520picture%2520of%2520a%2520young%2520vietnamese%2520man%2520in%2520his%252020s%252C%2520modern%2520style%252C%2520casual%2520outfit%252C%2520natural%2520lighting%252C%2520realistic%2520portrait&width=100&height=100&seq=member4&orientation=squarish" alt="Member" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-medium text-sm">Pham Minh Tuan</h4>
-                            <p class="text-xs text-gray-500">203 posts</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Create Post Dialog -->
-        <div id="createPostDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-            <div class="bg-white rounded-lg w-full max-w-2xl mx-4">
-                <!-- Dialog Header -->
-                <div class="flex items-center justify-between p-4 border-b">
-                    <h3 class="text-xl font-semibold">Tạo Bài Viết Mới</h3>
-                    <button onclick="closeCreatePostDialog()" class="text-gray-500 hover:text-gray-700">
-                        <i class="ri-close-line text-2xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Dialog Content -->
-                <form action="PostServlet" method="POST" enctype="multipart/form-data" class="p-4">
-                     <!-- User Info -->
-     <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-full bg-gray-200"></div>
-        <div>
-            <p class="font-medium">Tên của bạn</p>
-            <input type="text" 
-                   name="topic"
-                   placeholder="Thêm chủ đề..." 
-                   class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                   maxlength="50">
-        </div>
-    </div>
-                    <!-- Post Content -->
-                    <div class="mb-4">
-                        <textarea name="title" 
-                                  placeholder="Tiêu đề bài viết là gì?" 
-                                  class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm mb-3"
-                                  rows="1"></textarea>
-                        <textarea name="content" 
-                                  placeholder="Bạn muốn chia sẻ điều gì?" 
-                                  class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                                  rows="4"></textarea>
-                    </div>
-
-                   
-                   <!-- Hidden file input and preview -->
-    <div class="mb-4">
-        <input type="file" 
-               id="imageInput" 
-               name="images" 
-               accept="image/*" 
-               multiple
-               class="hidden"
-               onchange="previewImages(event)">
-
-        <div id="imagePreviewContainer" class="grid grid-cols-2 gap-4 mb-4 hidden">
-            <!-- Image previews will be added here -->
-        </div>
-    </div>
-
-
-                    <!-- Post Actions -->
-                    <div class="flex items-center gap-3 border-t border-b py-3">
-                        <button type="button" 
-                                onclick="document.getElementById('imageInput').click()" 
-                                class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
-                            <i class="ri-image-line text-xl text-gray-600"></i>
-                            <span class="text-sm text-gray-600">Photo</span>
-                        </button>
-                      
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex justify-end mt-4">
-                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-primary/90">
-                            Đăng Bài
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
->>>>>>> origin/NgocDung
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white pt-12 pb-6">
@@ -970,7 +709,6 @@ onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
             </div>
         </footer>
 
-<<<<<<< HEAD
         <!-- Scripts -->
   <script>
 // Dialog control
@@ -1761,110 +1499,3 @@ document.getElementById('myPostsBtn').addEventListener('click', function() {
 // done
 
 
-=======
-        <script>
-          
-            const createPostBtn = document.querySelector('button:has(.ri-add-line)');
-            const createPostDialog = document.getElementById('createPostDialog');
-
-          
-            createPostBtn.addEventListener('click', () => {
-                createPostDialog.classList.remove('hidden');
-                createPostDialog.classList.add('flex');
-                document.body.style.overflow = 'hidden';
-            });
-
-            function closeCreatePostDialog() {
-                createPostDialog.classList.remove('flex');
-                createPostDialog.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-
-        
-            createPostDialog.addEventListener('click', (e) => {
-                if (e.target === createPostDialog) {
-                    closeCreatePostDialog();
-                }
-            });
-
-    
-        </script>
-        <script>
-            function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('imagePreview');
-            const img = preview.querySelector('img');
-            img.src = e.target.result;
-            preview.classList.remove('hidden');
-            preview.classList.add('flex');
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-function removeImage() {
-    const preview = document.getElementById('imagePreview');
-    const input = document.getElementById('imageInput');
-    preview.classList.add('hidden');
-    preview.classList.remove('flex');
-    preview.querySelector('img').src = '';
-    input.value = '';
-}
-
-
-document.getElementById('imageInput').addEventListener('change', previewImage);
-
-</script>
-        <script>
-    function previewImages(event) {
-        const container = document.getElementById('imagePreviewContainer');
-        container.innerHTML = ''; // Clear existing previews
-        container.classList.remove('hidden');
-
-        const files = event.target.files;
-        
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const previewDiv = document.createElement('div');
-                previewDiv.className = 'relative';
-                
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'w-full h-48 object-cover rounded-lg';
-                
-                const removeButton = document.createElement('button');
-                removeButton.type = 'button';
-                removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
-                removeButton.innerHTML = '<i class="ri-close-line"></i>';
-                removeButton.onclick = function() {
-                    previewDiv.remove();
-                    if (container.children.length === 0) {
-                        container.classList.add('hidden');
-                    }
-                };
-                
-                previewDiv.appendChild(img);
-                previewDiv.appendChild(removeButton);
-                container.appendChild(previewDiv);
-            }
-            
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function removeAllImages() {
-        const container = document.getElementById('imagePreviewContainer');
-        container.innerHTML = '';
-        container.classList.add('hidden');
-        document.getElementById('imageInput').value = '';
-    }
-</script>
-</body>
-</html>
->>>>>>> origin/NgocDung

@@ -1,20 +1,14 @@
 package dal;
 
-<<<<<<< HEAD
 import java.sql.Date;
-=======
->>>>>>> origin/NgocDung
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Post;
-<<<<<<< HEAD
 import java.sql.Timestamp;
 import java.sql.Statement;
-=======
->>>>>>> origin/NgocDung
 
 public class PostDAO extends DBConnect {
 
@@ -23,34 +17,20 @@ public class PostDAO extends DBConnect {
     }
 
     public boolean createPost(Post post) {
-<<<<<<< HEAD
         String postSql = "INSERT INTO Post (UserId, Topic, Title, Content, CreatedAt, Status) VALUES (?, ?, ?, ?, ?, ?)";
         String imageSql = "INSERT INTO Image (PostId, ImagePath) VALUES (?, ?)";
         String videoSql = "INSERT INTO Video (PostId, VideoPath) VALUES (?, ?)";
-=======
-        String postSql = "INSERT INTO Post (UserId, Topic, Title, Content, CreatedAt) VALUES (?, ?, ?, ?, ?)";
-        String imageSql = "INSERT INTO Image (PostId, ImagePath) VALUES (?, ?)";
->>>>>>> origin/NgocDung
 
         try {
 
             // Insert post
-<<<<<<< HEAD
             PreparedStatement postSt = connection.prepareStatement(postSql, Statement.RETURN_GENERATED_KEYS);
-=======
-            PreparedStatement postSt = connection.prepareStatement(postSql, PreparedStatement.RETURN_GENERATED_KEYS);
->>>>>>> origin/NgocDung
             postSt.setInt(1, post.getUserId());
             postSt.setString(2, post.getTopic());
             postSt.setString(3, post.getTitle());
             postSt.setString(4, post.getContent());
-<<<<<<< HEAD
             postSt.setTimestamp(5, (Timestamp) post.getCreatedAt());
             postSt.setString(6, post.getStatus());
-=======
-            postSt.setTimestamp(5, post.getCreatedAt());
-
->>>>>>> origin/NgocDung
             int postRows = postSt.executeUpdate();
 
             if (postRows > 0) {
@@ -67,7 +47,6 @@ public class PostDAO extends DBConnect {
                             imageSt.executeUpdate();
                         }
                     }
-<<<<<<< HEAD
 
                     // Insert videos
                     if (post.getVideos() != null && !post.getVideos().isEmpty()) {
@@ -78,8 +57,6 @@ public class PostDAO extends DBConnect {
                             videoSt.executeUpdate();
                         }
                     }
-=======
->>>>>>> origin/NgocDung
                 }
             }
 
@@ -93,7 +70,6 @@ public class PostDAO extends DBConnect {
 
     public List<Post> getAllPosts() {
         List<Post> posts = new ArrayList<>();
-<<<<<<< HEAD
         String postSql = "SELECT * FROM Post WHERE Status = N'đã duyệt' ORDER BY CreatedAt DESC";
         String imageSql = "SELECT ImagePath FROM Image WHERE PostId = ?";
         String videoSql = "SELECT VideoPath FROM Video WHERE PostId = ?";
@@ -101,14 +77,6 @@ public class PostDAO extends DBConnect {
             PreparedStatement postSt = connection.prepareStatement(postSql);
             PreparedStatement imageSt = connection.prepareStatement(imageSql);
             PreparedStatement videoSt = connection.prepareStatement(videoSql);
-=======
-        String postSql = "SELECT * FROM Post ORDER BY CreatedAt DESC";
-        String imageSql = "SELECT ImagePath FROM Image WHERE PostId = ?";
-
-        try {
-            PreparedStatement postSt = connection.prepareStatement(postSql);
-            PreparedStatement imageSt = connection.prepareStatement(imageSql);
->>>>>>> origin/NgocDung
             ResultSet rs = postSt.executeQuery();
 
             while (rs.next()) {
@@ -120,7 +88,6 @@ public class PostDAO extends DBConnect {
                 post.setTitle(rs.getString("Title"));
                 post.setContent(rs.getString("Content"));
                 post.setCreatedAt(rs.getTimestamp("CreatedAt"));
-<<<<<<< HEAD
                 post.setStatus(rs.getString("Status"));
                 // Get images for this post
                 imageSt.setInt(1, postId);
@@ -168,8 +135,6 @@ public class PostDAO extends DBConnect {
                 post.setContent(rs.getString("Content"));
                 post.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 post.setStatus(rs.getString("Status"));
-=======
->>>>>>> origin/NgocDung
 
                 // Get images for this post
                 imageSt.setInt(1, postId);
@@ -178,7 +143,6 @@ public class PostDAO extends DBConnect {
                     post.addImage(imageRs.getString("ImagePath"));
                 }
 
-<<<<<<< HEAD
                 // Get videos for this post
                 videoSt.setInt(1, postId);
                 ResultSet videoRs = videoSt.executeQuery();
@@ -189,18 +153,11 @@ public class PostDAO extends DBConnect {
                 posts.add(post);
             }
         } catch (SQLException e) {
-=======
-                posts.add(post);
-            }
-        } catch (SQLException e) {
-            
->>>>>>> origin/NgocDung
             e.printStackTrace();
         }
 
         return posts;
     }
-<<<<<<< HEAD
 
     public boolean updatePost(int postId, String topic, String title, String content) {
         String sql = "UPDATE Post SET Topic = ?, Title = ?, Content = ? WHERE PostId = ?";
@@ -409,6 +366,4 @@ public class PostDAO extends DBConnect {
         }
         return null;
     }
-=======
->>>>>>> origin/NgocDung
 }
