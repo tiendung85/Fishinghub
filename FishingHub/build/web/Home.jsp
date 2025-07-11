@@ -95,7 +95,7 @@
 
                                         <%-- Dashboard Links --%>
                                             <% if (currentUser.getRoleId() == 2) { %>
-                                                <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                                                <a href="EventDashboard" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
                                                 <a href="LakeServlet" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Hồ câu</a>
 
                                                 <% } %>

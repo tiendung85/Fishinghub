@@ -246,7 +246,7 @@
                 </div>
                <!-- Nút quay lại Home -->
                 <div class="p-4">
-                    <a href="../Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                    <a href="./Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
                         <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
                     </a>
                 </div>

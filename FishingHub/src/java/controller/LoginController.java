@@ -9,8 +9,9 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-@WebServlet(name = "LoginController", urlPatterns = { "/login" })
+@WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
+
     UserDao db = new UserDao();
 
     @Override
@@ -45,11 +46,14 @@ public class LoginController extends HttpServlet {
 
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-
-            if (user.getRoleId() == 3) {
-                response.sendRedirect("dashboard_admin/Dashboard.jsp");
+            if (user == null) {
+                response.sendRedirect("login");
             } else {
-                response.sendRedirect("Home.jsp");
+                if (user.getRoleId() == 3) {
+                    request.getRequestDispatcher("dashboard_admin/Dashboard.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("Home.jsp");
+                }
             }
         } else {
 

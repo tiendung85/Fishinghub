@@ -4,6 +4,7 @@
  */
 package dal;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import model.Events;
@@ -41,6 +42,51 @@ public class EventDAO extends DBConnect {
                 event.setPosterUrl(rs.getString("PosterUrl"));
                 event.setMaxParticipants(rs.getInt("MaxParticipants"));
                 event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                events.add(event);
+            }
+        } catch (Exception e) {
+            System.err.println("Error while fetching events: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return events;
+    }
+    public ArrayList<Events> getEventsList() {
+        ArrayList<Events> events = new ArrayList<>();
+        try {
+            String sql = """
+                         SELECT 
+                             e.*,
+                             u.FullName,
+                             u.Email,
+                             u.Phone  
+                         FROM 
+                             Event e
+                         JOIN 
+                             Users u ON e.HostId = u.UserId
+                         ORDER BY 
+                             e.EventId DESC;""";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                event.setFullName(rs.getString("FullName"));
+                event.setEmail(rs.getString("Email"));
+                event.setPhone(rs.getString("Phone"));
                 events.add(event);
             }
         } catch (Exception e) {
@@ -193,6 +239,50 @@ public class EventDAO extends DBConnect {
                 event.setPosterUrl(rs.getString("PosterUrl"));
                 event.setMaxParticipants(rs.getInt("MaxParticipants"));
                 event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error while fetching event details: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return event;
+    }
+    public Events getDetailsEvents2(int id) {
+        Events event = null;
+        try {
+            String sql = """
+                         SELECT 
+                             e.*,
+                             u.FullName,
+                             u.Email,
+                             u.Phone  
+                         FROM 
+                             Event e
+                         JOIN 
+                             Users u ON e.HostId = u.UserId
+                         Where e.EventId=?""";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                event.setFullName(rs.getString("FullName"));
+                event.setEmail(rs.getString("Email"));
+                event.setPhone(rs.getString("Phone"));
             }
         } catch (Exception e) {
             System.err.println("Error while fetching event details: " + e.getMessage());
@@ -605,5 +695,61 @@ public class EventDAO extends DBConnect {
         }
 
         return null;
+    }
+    
+    public boolean approveEvent(int eventId) {
+        String sql = "UPDATE Event SET status = ?, approvedAt = ? WHERE eventId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "approved");
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setInt(3, eventId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean rejectEvent(int eventId, String rejectReason) {
+        // Update event status
+        String updateSql = "UPDATE Event SET status = ? WHERE eventId = ?";
+        String insertSql = "INSERT INTO EventRejections (eventId, rejectReason, rejectedAt) VALUES (?, ?, ?)";
+        try {
+            connection.setAutoCommit(false);
+
+
+            try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+                updateStmt.setString(1, "rejected");
+                updateStmt.setInt(2, eventId);
+                updateStmt.executeUpdate();
+            }
+
+
+            try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
+                insertStmt.setInt(1, eventId);
+                insertStmt.setString(2, rejectReason);
+                insertStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                insertStmt.executeUpdate();
+            }
+
+            connection.commit(); 
+            return true;
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (Exception rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                connection.setAutoCommit(true); 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

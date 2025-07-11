@@ -28,6 +28,9 @@ public class Events {
     private int maxParticipants;
     private String eventStatus;
     private int currentParticipants;
+    private String fullName;
+    private String email;
+    private String phone;
 
     public Events() {
     }
@@ -152,6 +155,28 @@ public class Events {
         return "";
     }
 
+    public String getFormattedCreatedAt() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(createdAt);
+
+    }
+
+    public String getFormattedCreatedAtTime() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return sdf.format(createdAt);
+
+    }
+
+    public String getFormattedApprovedAtTime() {
+        if (approvedAt != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            return sdf.format(approvedAt);
+        }
+        return "";
+    }
+
     public String getFormattedEndDate() {
         if (startTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -183,4 +208,29 @@ public class Events {
     public void setEventStatus(String eventStatus) {
         this.eventStatus = eventStatus;
     }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 }
