@@ -50,6 +50,7 @@ public class EventDAO extends DBConnect {
         }
         return events;
     }
+
     public ArrayList<Events> getEventsList() {
         ArrayList<Events> events = new ArrayList<>();
         try {
@@ -246,6 +247,7 @@ public class EventDAO extends DBConnect {
         }
         return event;
     }
+
     public Events getDetailsEvents2(int id) {
         Events event = null;
         try {
@@ -696,7 +698,7 @@ public class EventDAO extends DBConnect {
 
         return null;
     }
-    
+
     public boolean approveEvent(int eventId) {
         String sql = "UPDATE Event SET status = ?, approvedAt = ? WHERE eventId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -711,7 +713,6 @@ public class EventDAO extends DBConnect {
         }
     }
 
-
     public boolean rejectEvent(int eventId, String rejectReason) {
         // Update event status
         String updateSql = "UPDATE Event SET status = ? WHERE eventId = ?";
@@ -719,13 +720,11 @@ public class EventDAO extends DBConnect {
         try {
             connection.setAutoCommit(false);
 
-
             try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
                 updateStmt.setString(1, "rejected");
                 updateStmt.setInt(2, eventId);
                 updateStmt.executeUpdate();
             }
-
 
             try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
                 insertStmt.setInt(1, eventId);
@@ -734,7 +733,7 @@ public class EventDAO extends DBConnect {
                 insertStmt.executeUpdate();
             }
 
-            connection.commit(); 
+            connection.commit();
             return true;
         } catch (Exception e) {
             try {
@@ -746,10 +745,758 @@ public class EventDAO extends DBConnect {
             return false;
         } finally {
             try {
-                connection.setAutoCommit(true); 
+                connection.setAutoCommit(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+    public ArrayList<Events> getEvents(int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT * FROM Event where Status='approved' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, (page - 1) * pageSize);
+            st.setInt(2, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+            System.out.println("getEvents: Page " + page + ", Size " + list.size());
+        } catch (Exception e) {
+            System.err.println("SQL Error in getEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalEvents() {
+        String sql = "SELECT COUNT(*) FROM Event";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                System.out.println("Total Events: " + total);
+                return total;
+            }
+        } catch (Exception e) {
+            System.err.println("SQL Error in getTotalEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Lấy danh sách sự kiện sắp diễn ra
+    public ArrayList<Events> upComingEvents(int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE StartTime > GETDATE() AND Status = 'approved' ORDER BY StartTime ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, (page - 1) * pageSize);
+            st.setInt(2, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalUpcomingEvents() {
+        String sql = "SELECT COUNT(*) FROM Event WHERE StartTime > GETDATE() AND Status = 'approved'";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Lấy danh sách sự kiện đang diễn ra
+    public ArrayList<Events> getOngoingEvents(int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE StartTime <= GETDATE() AND EndTime >= GETDATE() AND Status = 'approved' ORDER BY StartTime ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, (page - 1) * pageSize);
+            st.setInt(2, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalOngoingEvents() {
+        String sql = "SELECT COUNT(*) FROM Event WHERE StartTime <= GETDATE() AND EndTime >= GETDATE() AND Status = 'approved'";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Lấy danh sách sự kiện đã lưu (dựa trên EventParticipant)
+    public ArrayList<Events> getSavedEvents(int userId, int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT e.* FROM Event e INNER JOIN EventParticipant ep ON e.EventId = ep.EventId WHERE ep.UserId = ? ORDER BY e.CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, (page - 1) * pageSize);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalSavedEvents(int userId) {
+        String sql = "SELECT COUNT(*) FROM Event e INNER JOIN EventParticipant ep ON e.EventId = ep.EventId WHERE ep.UserId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public ArrayList<Events> getEvents(int userId, int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE HostId = ? ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, (page - 1) * pageSize);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+            System.out.println("getEvents: Page " + page + ", Size " + list.size());
+        } catch (Exception e) {
+            System.err.println("SQL Error in getEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Lấy tổng số sự kiện của người dùng
+    public int getTotalEvents(int userId) {
+        String sql = "SELECT COUNT(*) FROM Event WHERE HostId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                System.out.println("Total Events for user " + userId + ": " + total);
+                return total;
+            }
+        } catch (Exception e) {
+            System.err.println("SQL Error in getTotalEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Tìm kiếm sự kiện với phân trang
+    public ArrayList<Events> searchEvents(int userId, String search, int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "SELECT * FROM Event WHERE HostId = ? AND (Title LIKE ? OR Location LIKE ?) ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setString(2, "%" + search + "%");
+            st.setString(3, "%" + search + "%");
+            st.setInt(4, (page - 1) * pageSize);
+            st.setInt(5, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+            System.out.println("searchEvents: Search '" + search + "', Page " + page + ", Size " + list.size());
+        } catch (Exception e) {
+            System.err.println("SQL Error in searchEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalSearchEvents(int userId, String search) {
+        String sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND (Title LIKE ? OR Location LIKE ?)";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setString(2, "%" + search + "%");
+            st.setString(3, "%" + search + "%");
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                System.out.println("Total Search Events: " + total);
+                return total;
+            }
+        } catch (Exception e) {
+            System.err.println("SQL Error in getTotalSearchEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Lọc sự kiện với phân trang
+    public ArrayList<Events> filterEvents(int userId, String statusFilter, int page, int pageSize) {
+        ArrayList<Events> list = new ArrayList<>();
+        String sql = "";
+        if ("upcoming".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND StartTime > GETDATE() AND Status = 'approved' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else if ("ongoing".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND StartTime <= GETDATE() AND EndTime >= GETDATE() AND Status = 'approved' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else if ("ended".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND EndTime < GETDATE() AND Status = 'approved' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else if ("pass".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND Status = 'approved' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else if ("pending".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND Status = 'pending' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else if ("reject".equals(statusFilter)) {
+            sql = "SELECT * FROM Event WHERE HostId = ? AND Status = 'rejected' ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else {
+            sql = "SELECT * FROM Event WHERE HostId = ? ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, (page - 1) * pageSize);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLocation(rs.getString("Location"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                list.add(event);
+            }
+            System.out.println("filterEvents: Filter '" + statusFilter + "', Page " + page + ", Size " + list.size());
+        } catch (Exception e) {
+            System.err.println("SQL Error in filterEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalFilterEvents(int userId, String statusFilter) {
+        String sql = "";
+        if ("upcoming".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND StartTime > GETDATE() AND Status = 'approved'";
+        } else if ("ongoing".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND StartTime <= GETDATE() AND EndTime >= GETDATE() AND Status = 'approved'";
+        } else if ("ended".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND EndTime < GETDATE() AND Status = 'approved'";
+        } else if ("pass".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND Status = 'approved'";
+        } else if ("pending".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND Status = 'pending'";
+        } else if ("reject".equals(statusFilter)) {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ? AND Status = 'rejected'";
+        } else {
+            sql = "SELECT COUNT(*) FROM Event WHERE HostId = ?";
+        }
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                System.out.println("Total Filter Events (" + statusFilter + "): " + total);
+                return total;
+            }
+        } catch (Exception e) {
+            System.err.println("SQL Error in getTotalFilterEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public ArrayList<EventParticipant> getParticipantsByEventId(int eventId, int page, int pageSize) {
+        ArrayList<EventParticipant> participants = new ArrayList<>();
+        String sql = """
+                SELECT u.FullName, ep.EventId, ep.UserId, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin, ep.CheckinTime
+                FROM EventParticipant ep
+                JOIN Users u ON ep.UserId = u.UserId
+                WHERE ep.EventId = ?
+                ORDER BY ep.UserId
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, eventId);
+            statement.setInt(2, (page - 1) * pageSize);
+            statement.setInt(3, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                EventParticipant p = new EventParticipant();
+                p.setFullName(rs.getString("FullName"));
+                p.setEventId(rs.getInt("EventId"));
+                p.setUserId(rs.getInt("UserId"));
+                p.setNumberPhone(rs.getString("NumberPhone"));
+                p.setEmail(rs.getString("Email"));
+                p.setCccd(rs.getString("CCCD"));
+                p.setCheckin(rs.getBoolean("Checkin"));
+                p.setCheckinTime(rs.getTimestamp("CheckinTime"));
+                participants.add(p);
+            }
+        } catch (Exception e) {
+            System.err.println("Error while fetching paginated participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return participants;
+    }
+
+    // Get total number of participants for an event
+    public int getTotalParticipantsByEventId(int eventId) {
+        String sql = "SELECT COUNT(*) FROM EventParticipant WHERE EventId = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, eventId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.err.println("Error counting participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Search participants with pagination
+    public ArrayList<EventParticipant> searchParticipantsByEventId(int eventId, String keyword, int page, int pageSize) {
+        ArrayList<EventParticipant> participants = new ArrayList<>();
+        String sql = """
+                SELECT u.FullName, ep.EventId, ep.UserId, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin, ep.CheckinTime
+                FROM EventParticipant ep
+                JOIN Users u ON ep.UserId = u.UserId
+                WHERE ep.EventId = ? AND 
+                      (u.FullName LIKE ? OR ep.Email LIKE ? OR ep.CCCD LIKE ? OR ep.NumberPhone LIKE ?)
+                ORDER BY ep.UserId
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            String kw = "%" + keyword + "%";
+            statement.setInt(1, eventId);
+            statement.setString(2, kw);
+            statement.setString(3, kw);
+            statement.setString(4, kw);
+            statement.setString(5, kw);
+            statement.setInt(6, (page - 1) * pageSize);
+            statement.setInt(7, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                EventParticipant p = new EventParticipant();
+                p.setFullName(rs.getString("FullName"));
+                p.setEventId(rs.getInt("EventId"));
+                p.setUserId(rs.getInt("UserId"));
+                p.setNumberPhone(rs.getString("NumberPhone"));
+                p.setEmail(rs.getString("Email"));
+                p.setCccd(rs.getString("CCCD"));
+                p.setCheckin(rs.getBoolean("Checkin"));
+                p.setCheckinTime(rs.getTimestamp("CheckinTime"));
+                participants.add(p);
+            }
+        } catch (Exception e) {
+            System.err.println("Error while searching participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return participants;
+    }
+
+    // Get total number of searched participants
+    public int getTotalSearchParticipants(int eventId, String keyword) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM EventParticipant ep
+                JOIN Users u ON ep.UserId = u.UserId
+                WHERE ep.EventId = ? AND 
+                      (u.FullName LIKE ? OR ep.Email LIKE ? OR ep.CCCD LIKE ? OR ep.NumberPhone LIKE ?)""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            String kw = "%" + keyword + "%";
+            statement.setInt(1, eventId);
+            statement.setString(2, kw);
+            statement.setString(3, kw);
+            statement.setString(4, kw);
+            statement.setString(5, kw);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.err.println("Error counting searched participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Filter participants by check-in status with pagination
+    public ArrayList<EventParticipant> filterParticipantsByCheckin(int eventId, boolean checkinStatus, int page, int pageSize) {
+        ArrayList<EventParticipant> participants = new ArrayList<>();
+        String sql = """
+                SELECT u.FullName, ep.EventId, ep.UserId, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin, ep.CheckinTime
+                FROM EventParticipant ep
+                JOIN Users u ON ep.UserId = u.UserId
+                WHERE ep.EventId = ? AND ep.Checkin = ?
+                ORDER BY ep.UserId
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, eventId);
+            statement.setBoolean(2, checkinStatus);
+            statement.setInt(3, (page - 1) * pageSize);
+            statement.setInt(4, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                EventParticipant p = new EventParticipant();
+                p.setFullName(rs.getString("FullName"));
+                p.setEventId(rs.getInt("EventId"));
+                p.setUserId(rs.getInt("UserId"));
+                p.setNumberPhone(rs.getString("NumberPhone"));
+                p.setEmail(rs.getString("Email"));
+                p.setCccd(rs.getString("CCCD"));
+                p.setCheckin(rs.getBoolean("Checkin"));
+                p.setCheckinTime(rs.getTimestamp("CheckinTime"));
+                participants.add(p);
+            }
+        } catch (Exception e) {
+            System.err.println("Error filtering participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return participants;
+    }
+
+    // Get total number of filtered participants
+    public int getTotalFilterParticipants(int eventId, boolean checkinStatus) {
+        String sql = "SELECT COUNT(*) FROM EventParticipant WHERE EventId = ? AND Checkin = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, eventId);
+            statement.setBoolean(2, checkinStatus);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.err.println("Error counting filtered participants: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+//    -----
+    public ArrayList<Events> getEventsList(int page, int pageSize) {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = """
+                     SELECT e.*, u.FullName, u.Email, u.Phone
+                     FROM Event e
+                     JOIN Users u ON e.HostId = u.UserId
+                     ORDER BY e.EventId DESC
+                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, (page - 1) * pageSize);
+            statement.setInt(2, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                event.setFullName(rs.getString("FullName"));
+                event.setEmail(rs.getString("Email"));
+                event.setPhone(rs.getString("Phone"));
+                events.add(event);
+            }
+            System.out.println("getEventsList: Page " + page + ", Size " + events.size());
+        } catch (Exception e) {
+            System.err.println("Error in getEventsList: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+   
+    public ArrayList<Events> searchEvents(String keyword, int page, int pageSize) {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = """
+                     SELECT e.*, u.FullName, u.Email, u.Phone
+                     FROM Event e
+                     JOIN Users u ON e.HostId = u.UserId
+                     WHERE e.Title LIKE ? OR u.FullName LIKE ?
+                     ORDER BY e.EventId DESC
+                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            String kw = "%" + keyword + "%";
+            statement.setString(1, kw);
+            statement.setString(2, kw);
+            statement.setInt(3, (page - 1) * pageSize);
+            statement.setInt(4, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                event.setFullName(rs.getString("FullName"));
+                event.setEmail(rs.getString("Email"));
+                event.setPhone(rs.getString("Phone"));
+                events.add(event);
+            }
+            System.out.println("searchEvents: Keyword '" + keyword + "', Page " + page + ", Size " + events.size());
+        } catch (Exception e) {
+            System.err.println("Error in searchEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+    public int getTotalSearchEvents(String keyword) {
+        String sql = """
+                     SELECT COUNT(*)
+                     FROM Event e
+                     JOIN Users u ON e.HostId = u.UserId
+                     WHERE e.Title LIKE ? OR u.FullName LIKE ?""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            String kw = "%" + keyword + "%";
+            statement.setString(1, kw);
+            statement.setString(2, kw);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                System.out.println("Total Search Events for '" + keyword + "': " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getTotalSearchEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public ArrayList<Events> filterEvents(String statusFilter, int page, int pageSize) {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = """
+                     SELECT e.*, u.FullName, u.Email, u.Phone
+                     FROM Event e
+                     JOIN Users u ON e.HostId = u.UserId
+                     WHERE e.Status = ?
+                     ORDER BY e.EventId DESC
+                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, statusFilter);
+            statement.setInt(2, (page - 1) * pageSize);
+            statement.setInt(3, pageSize);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                event.setFullName(rs.getString("FullName"));
+                event.setEmail(rs.getString("Email"));
+                event.setPhone(rs.getString("Phone"));
+                events.add(event);
+            }
+            System.out.println("filterEvents: Status '" + statusFilter + "', Page " + page + ", Size " + events.size());
+        } catch (Exception e) {
+            System.err.println("Error in filterEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+    public int getTotalFilterEvents(String statusFilter) {
+        String sql = "SELECT COUNT(*) FROM Event WHERE Status = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, statusFilter);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                System.out.println("Total Filter Events for '" + statusFilter + "': " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getTotalFilterEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

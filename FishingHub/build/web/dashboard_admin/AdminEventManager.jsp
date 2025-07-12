@@ -242,55 +242,55 @@
                                     <select id="event-status-filter" name="status"
                                             class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 rounded-button appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary bg-white text-sm">
                                         <option value="all" <c:if test="${empty filter or filter == 'all'}">selected</c:if>>
-                                            Tất cả sự kiện</option>
-                                        <option value="pending" <c:if test="${empty filter or filter == 'pending'}">selected</c:if>>
-                                            Chờ duyệt </option>
-                                        <option value="approved" <c:if test="${empty filter or filter == 'approved'}">selected</c:if>>
-                                            Đã duyệt</option>
-                                        <option value="rejected" <c:if test="${empty filter or filter == 'rejected'}">selected</c:if>>
-                                            Từ chối</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                        <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                                Tất cả sự kiện</option>
+                                            <option value="pending" <c:if test="${empty filter or filter == 'pending'}">selected</c:if>>
+                                                Chờ duyệt </option>
+                                            <option value="approved" <c:if test="${empty filter or filter == 'approved'}">selected</c:if>>
+                                                Đã duyệt</option>
+                                            <option value="rejected" <c:if test="${empty filter or filter == 'rejected'}">selected</c:if>>
+                                                Từ chối</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                            <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <button type="submit"
-                                        class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
-                                    <i class="ri-filter-line mr-2"></i> Lọc
-                                </button>
-                            </form>
-                        </div>
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tên sự kiện</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Ngày tạo</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Người tổ chức</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Thời gian diễn ra</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Trạng thái</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <!-- Ví dụ 1 -->
+                                    <button type="submit"
+                                            class="inline-flex items-center justify-center px-4 py-2 bg-secondary text-white text-sm font-medium rounded-button hover:bg-secondary/90 transition">
+                                        <i class="ri-filter-line mr-2"></i> Lọc
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Tên sự kiện</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Ngày tạo</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Người tổ chức</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Thời gian diễn ra</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Trạng thái</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <!-- Ví dụ 1 -->
                                         <c:forEach items="${listE}" var="c">
                                             <tr>
-                                                
+
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="font-medium text-gray-900">${c.title}</div>
 
@@ -340,41 +340,56 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <!-- Pagination Section -->
                             <div class="px-6 py-4 border-t border-gray-200">
                                 <div class="flex items-center justify-between">
                                     <div class="text-sm text-gray-700">
-                                        Hiển thị <span class="font-medium">1</span> đến
-                                        <span class="font-medium">5</span> của
-                                        <span class="font-medium">247</span> kết quả
+                                        Hiển thị <span class="font-medium">${(currentPage - 1) * 5 + 1}</span> đến 
+                                        <span class="font-medium">${(currentPage * 5) > totalEvents ? totalEvents : (currentPage * 5)}</span> của 
+                                        <span class="font-medium">${totalEvents}</span> kết quả
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button
-                                            class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 !rounded-button"
-                                            disabled>
-                                            <div class="flex items-center space-x-1">
-                                                <div class="w-3 h-3 flex items-center justify-center">
-                                                    <i class="ri-arrow-left-s-line"></i>
+                                        <c:if test="${currentPage > 1}">
+                                            <c:url value="AdminEventManager" var="prevUrl">
+                                                <c:param name="action" value="${param.action}"/>
+                                                <c:param name="search" value="${search}"/>
+                                                <c:param name="status" value="${filter}"/>
+                                                <c:param name="page" value="${currentPage - 1}"/>
+                                            </c:url>
+                                            <a href="${prevUrl}" class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="w-3 h-3 flex items-center justify-center">
+                                                        <i class="ri-arrow-left-s-line"></i>
+                                                    </div>
+                                                    <span>Trước</span>
                                                 </div>
-                                                <span>Trước</span>
-                                            </div>
-                                        </button>
-                                        <button class="px-3 py-1 text-sm bg-primary text-white rounded-lg">1</button>
-                                        <button
-                                            class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">2</button>
-                                        <button
-                                            class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">3</button>
-                                        <span class="px-2 text-sm text-gray-500">...</span>
-                                        <button
-                                            class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">25</button>
-                                        <button
-                                            class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">
-                                            <div class="flex items-center space-x-1">
-                                                <span>Sau</span>
-                                                <div class="w-3 h-3 flex items-center justify-center">
-                                                    <i class="ri-arrow-right-s-line"></i>
+                                            </a>
+                                        </c:if>
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <c:url value="AdminEventManager" var="pageUrl">
+                                                <c:param name="action" value="${param.action}"/>
+                                                <c:param name="search" value="${search}"/>
+                                                <c:param name="status" value="${filter}"/>
+                                                <c:param name="page" value="${i}"/>
+                                            </c:url>
+                                            <a href="${pageUrl}" class="${i == currentPage ? 'px-3 py-1 text-sm bg-primary text-white rounded-lg' : 'px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button'}">${i}</a>
+                                        </c:forEach>
+                                        <c:if test="${currentPage < totalPages}">
+                                            <c:url value="AdminEventManager" var="nextUrl">
+                                                <c:param name="action" value="${param.action}"/>
+                                                <c:param name="search" value="${search}"/>
+                                                <c:param name="status" value="${filter}"/>
+                                                <c:param name="page" value="${currentPage + 1}"/>
+                                            </c:url>
+                                            <a href="${nextUrl}" class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 !rounded-button">
+                                                <div class="flex items-center space-x-1">
+                                                    <span>Sau</span>
+                                                    <div class="w-3 h-3 flex items-center justify-center">
+                                                        <i class="ri-arrow-right-s-line"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </button>
+                                            </a>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>

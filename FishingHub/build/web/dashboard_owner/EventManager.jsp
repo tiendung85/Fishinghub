@@ -389,52 +389,49 @@
                         <!-- Pagination -->
                         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                             <div class="flex-1 flex justify-between sm:hidden">
-                                <a href="#"
-                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-button text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap !rounded-button">
-                                    Trang trước
-                                </a>
-                                <a href="#"
-                                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-button text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap !rounded-button">
-                                    Trang sau
-                                </a>
+                                <c:if test="${currentPage > 1}">
+                                    <a href="EventManager?action=${action}&search=${search}&status=${filter}&page=${currentPage - 1}&pageSize=${pageSize}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-button text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap !rounded-button">
+                                        Trang trước
+                                    </a>
+                                </c:if>
+                                <c:if test="${currentPage < totalPages}">
+                                    <a href="EventManager?action=${action}&search=${search}&status=${filter}&page=${currentPage + 1}&pageSize=${pageSize}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-button text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap !rounded-button">
+                                        Trang sau
+                                    </a>
+                                </c:if>
                             </div>
                             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                 <div>
                                     <p class="text-sm text-gray-700">
-                                        Hiển thị <span class="font-medium">1</span> đến
-                                        <span class="font-medium">5</span> của
-                                        <span class="font-medium">12</span> sự kiện
+                                        Hiển thị <span class="font-medium">${(currentPage - 1) * pageSize + 1}</span> đến
+                                        <span class="font-medium">${totalItems < currentPage * pageSize ? totalItems : currentPage * pageSize}</span> của
+                                        <span class="font-medium">${totalItems}</span> sự kiện
                                     </p>
                                 </div>
                                 <div>
-                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                                         aria-label="Pagination">
-                                        <a href="#"
-                                           class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                            <span class="sr-only">Trang trước</span>
-                                            <i class="ri-arrow-left-s-line"></i>
-                                        </a>
-                                        <a href="#" aria-current="page"
-                                           class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            1
-                                        </a>
-                                        <a href="#"
-                                           class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            2
-                                        </a>
-                                        <a href="#"
-                                           class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            3
-                                        </a>
-                                        <span
-                                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                                            ...
-                                        </span>
-                                        <a href="#"
-                                           class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                            <span class="sr-only">Trang sau</span>
-                                            <i class="ri-arrow-right-s-line"></i>
-                                        </a>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <c:if test="${currentPage > 1}">
+                                            <a href="EventManager?action=${action}&search=${search}&status=${filter}&page=${currentPage - 1}&pageSize=${pageSize}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <span class="sr-only">Trang trước</span>
+                                                <i class="ri-arrow-left-s-line"></i>
+                                            </a>
+                                        </c:if>
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <c:choose>
+                                                <c:when test="${i == currentPage}">
+                                                    <span class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">${i}</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a href="EventManager?action=${action}&search=${search}&status=${filter}&page=${i}&pageSize=${pageSize}" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">${i}</a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                        <c:if test="${currentPage < totalPages}">
+                                            <a href="EventManager?action=${action}&search=${search}&status=${filter}&page=${currentPage + 1}&pageSize=${pageSize}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <span class="sr-only">Trang sau</span>
+                                                <i class="ri-arrow-right-s-line"></i>
+                                            </a>
+                                        </c:if>
                                     </nav>
                                 </div>
                             </div>

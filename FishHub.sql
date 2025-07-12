@@ -279,21 +279,20 @@ CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(255) NOT NULL,
 	LakeName NVARCHAR(255), 
-<<<<<<< HEAD
+
     Description NVARCHAR(MAX),
-=======
-    Description TEXT,
->>>>>>> origin/NgocDung
+
+
+
     Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NgocDung
+
+
     ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
@@ -305,14 +304,13 @@ CREATE TABLE Event (
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
     UserId INT NOT NULL,
-<<<<<<< HEAD
+
 	NumberPhone VARCHAR(11) NOT NULL,
 	Email VARCHAR (255) NOT Null,
 	CCCD VARCHAR(20),
     Checkin BIT DEFAULT 0,
 	CheckinTime DATETIME, 
-=======
->>>>>>> origin/NgocDung
+
     PRIMARY KEY (EventId, UserId),
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
@@ -905,3 +903,26 @@ select * from Users
 
 
 >>>>>>> origin/NgocDung
+INSERT INTO Users (UserId, FullName, Email, Phone, RoleId)
+VALUES 
+    (1, 'Nguyen Van A', 'a@example.com', '0901234567', 2),
+    (2, 'Tran Thi B', 'b@example.com', '0907654321', 2),
+    (3, 'Le Van C', 'c@example.com', '0912345678', 2),
+    (4, 'Pham Thi D', 'd@example.com', '0923456789', 2),
+    (5, 'Hoang Van E', 'e@example.com', '0934567890', 2),
+    (6, 'Nguyen Thi F', 'f@example.com', '0945678901', 2);
+
+-- Thêm sự kiện vào bảng Event
+INSERT INTO Event (EventId, Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, CreatedAt, MaxParticipants, CurrentParticipants)
+VALUES 
+    (1, 'Fishing Tournament 2025', 'Lake ABC', 'Annual fishing event', 'Hanoi', 1, '2025-07-15 08:00:00', '2025-07-15 17:00:00', 'approved', GETDATE(), 10, 6);
+
+-- Thêm người tham gia vào bảng EventParticipant
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD, CheckIn, CheckInTime)
+VALUES 
+    (1, 1, '0901234567', 'a@example.com', '123456789', 0, NULL),
+    (1, 2, '0907654321', 'b@example.com', '987654321', 1, GETDATE()),
+    (1, 3, '0912345678', 'c@example.com', '123123123', 0, NULL),
+    (1, 4, '0923456789', 'd@example.com', '456456456', 1, GETDATE()),
+    (1, 5, '0934567890', 'e@example.com', '789789789', 0, NULL),
+    (1, 6, '0945678901', 'f@example.com', '321321321', 0, NULL);

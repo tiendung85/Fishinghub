@@ -188,7 +188,7 @@
                                                 <c:if test="${user.getRoleId() != 2}">
                                                     <c:choose>
                                                         <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
-                                                            
+
                                                             <button class="w-full bg-red-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-red-700 cancel-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showCancelModal('RegisterEvent?action=cancel&eventId=${o.eventId}', '${o.title}')">
@@ -196,7 +196,7 @@
                                                             </button>
                                                         </c:when>
                                                         <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
-                                                            
+
                                                             <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
                                                                 <c:choose>
                                                                     <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
@@ -207,7 +207,7 @@
                                                             </span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            
+
                                                             <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
@@ -281,29 +281,56 @@
                 </div>
 
                 <!-- Pagination -->
+                <!-- Pagination -->
                 <div class="flex justify-between items-center">
-                    <div class="text-sm text-gray-600">Showing 1-9 of 42 events</div>
+                    <div class="text-sm text-gray-600">
+                        Showing ${(currentPage - 1) * pageSize + 1} - ${totalItems < currentPage * pageSize ? totalItems : currentPage * pageSize} of ${totalItems} events
+                    </div>
                     <div class="flex items-center gap-2">
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-left-s-line"></i>
-                        </button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">1</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">2</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">3</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">4</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">5</button>
-                        <button class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
+                        <!-- Previous Button -->
+                        <c:if test="${currentPage > 1}">
+                            <a href="EventList?action=${action}&page=${currentPage - 1}&pageSize=${pageSize}" class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </a>
+                        </c:if>
+                        <c:if test="${currentPage <= 1}">
+                            <button class="w-9 h-9 flex items-center justify-center bg-gray-200 text-gray-400 rounded shadow-sm cursor-not-allowed">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                        </c:if>
+
+                        <!-- Page Numbers -->
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <button class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded">${i}</button>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="EventList?action=${action}&page=${i}&pageSize=${pageSize}" class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">${i}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+
+                        <!-- Next Button -->
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="EventList?action=${action}&page=${currentPage + 1}&pageSize=${pageSize}" class="w-9 h-9 flex items-center justify-center bg-white text-gray-600 rounded shadow-sm">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </a>
+                        </c:if>
+                        <c:if test="${currentPage >= totalPages}">
+                            <button class="w-9 h-9 flex items-center justify-center bg-gray-200 text-gray-400 rounded shadow-sm cursor-not-allowed">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
+                        </c:if>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-sm text-gray-600">Show:</span>
                         <div class="relative">
-                            <select class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
-                                <option value="9">9</option>
-                                <option value="18">18</option>
-                                <option value="27">27</option>
-                                <option value="36">36</option>
+                            <select onchange="location.href = 'EventList?action=${action}&page=1&pageSize=' + this.value" class="pl-3 pr-8 py-1 rounded appearance-none bg-white border-none shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                                <option value="9" ${pageSize == 9 ? 'selected' : ''}>9</option>
+                                <option value="18" ${pageSize == 18 ? 'selected' : ''}>18</option>
+                                <option value="27" ${pageSize == 27 ? 'selected' : ''}>27</option>
+                                <option value="36" ${pageSize == 36 ? 'selected' : ''}>36</option>
                             </select>
                             <div class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400 pointer-events-none">
                                 <i class="ri-arrow-down-s-line"></i>
