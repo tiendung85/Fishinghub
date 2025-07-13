@@ -21,8 +21,7 @@ public class EventListController extends HttpServlet {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         String action = request.getParameter("action") != null ? request.getParameter("action") : "";
-
-        // Lấy tham số phân trang
+        
         int page = 1;
         int pageSize = 9;
         String pageStr = request.getParameter("page");

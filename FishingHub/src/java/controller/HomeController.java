@@ -5,6 +5,7 @@
 
 package controller;
 
+import dal.EventDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import model.Events;
+import model.Users;
 
 /**
  *
@@ -55,7 +61,43 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
+         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        String action = request.getParameter("action");
+        EventDAO dao = new EventDAO();
+
+        ArrayList<Events> list;
+        if (action == null) {
+            list = dao.getEventsOnTop();
+        } else {
+            list = new ArrayList<>();
+        }
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        ArrayList<Boolean> isRegisteredList = new ArrayList<>();
+
+        for (Events e : list) {
+            if (now.before(e.getStartTime())) {
+                e.setEventStatus("Sắp diễn ra");
+            } else if (now.after(e.getEndTime())) {
+                e.setEventStatus("Đã kết thúc");
+            } else {
+                e.setEventStatus("Đang diễn ra");
+            }
+
+            boolean isRegistered = false;
+            if (user != null) {
+                isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
+            }
+            isRegisteredList.add(isRegistered);
+        }
+
+        request.setAttribute("listE", list);
+        request.setAttribute("isRegisteredList", isRegisteredList);
+        request.getRequestDispatcher("Home.jsp").forward(request, response);
+        
     } 
 
     /** 

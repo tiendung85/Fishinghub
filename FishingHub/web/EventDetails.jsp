@@ -151,11 +151,21 @@
                             </div>
                         </div>
                         <div class="border-t p-6 flex justify-end space-x-3">
-                            <a href="EventList"
-                               class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 transition whitespace-nowrap">
-                                Quay lại
-                            </a>
-                            
+                            <c:choose>
+                                <c:when test="${redirectTo eq 'home'}">
+                                    <a href="Home"
+                                       class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 transition whitespace-nowrap">
+                                        Quay lại 
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="EventList"
+                                       class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 transition whitespace-nowrap">
+                                        Quay lại
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
+
                         </div>
                     </div>
                 </div>
@@ -187,8 +197,8 @@
                     <div>
                         <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="Home" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="EventList" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
                             <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
                             <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
                             <li><a href="KnowledgeFish" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
@@ -231,6 +241,6 @@
             </div>
         </footer>
 
-        
+
     </body>
 </html>

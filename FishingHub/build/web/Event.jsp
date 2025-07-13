@@ -24,9 +24,9 @@
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
-                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
+                    <a href="Home" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <nav class="hidden md:flex ml-10">
-                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                        <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
                         <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
                         <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
                         <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
@@ -69,7 +69,7 @@
         <div class="bg-gray-50 border-b border-gray-200">
             <div class="container mx-auto px-4 py-3">
                 <div class="flex items-center text-sm">
-                    <a href="Home.jsp" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
+                    <a href="Home" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
                     <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
                         <i class="ri-arrow-right-s-line"></i>
                     </div>

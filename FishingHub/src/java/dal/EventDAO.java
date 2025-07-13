@@ -698,7 +698,7 @@ public class EventDAO extends DBConnect {
 
         return null;
     }
-
+  
     public boolean approveEvent(int eventId) {
         String sql = "UPDATE Event SET status = ?, approvedAt = ? WHERE eventId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -1319,7 +1319,7 @@ public class EventDAO extends DBConnect {
         }
         return 0;
     }
-    
+
 //    -----
     public ArrayList<Events> getEventsList(int page, int pageSize) {
         ArrayList<Events> events = new ArrayList<>();
@@ -1364,7 +1364,6 @@ public class EventDAO extends DBConnect {
         return events;
     }
 
-   
     public ArrayList<Events> searchEvents(String keyword, int page, int pageSize) {
         ArrayList<Events> events = new ArrayList<>();
         String sql = """
@@ -1497,6 +1496,52 @@ public class EventDAO extends DBConnect {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public ArrayList<Events> getEventsOnTop() {
+        ArrayList<Events> events = new ArrayList<>();
+        String sql = """
+        SELECT TOP 3 *
+        FROM Event
+        WHERE 
+          Status = 'Approved'
+          AND StartTime > GETDATE()
+          AND CurrentParticipants < MaxParticipants
+        ORDER BY 
+          CurrentParticipants DESC, 
+          StartTime ASC;
+    """;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Events event = new Events();
+                event.setEventId(rs.getInt("EventId"));
+                event.setTitle(rs.getString("Title"));
+                event.setDescription(rs.getString("Description"));
+                event.setLakeName(rs.getString("LakeName"));
+                event.setLocation(rs.getString("Location"));
+                event.setHostId(rs.getInt("HostId"));
+                event.setStartTime(rs.getTimestamp("StartTime"));
+                event.setEndTime(rs.getTimestamp("EndTime"));
+                event.setStatus(rs.getString("Status"));
+                event.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                event.setApprovedAt(rs.getTimestamp("ApprovedAt"));
+                event.setPosterUrl(rs.getString("PosterUrl"));
+                event.setMaxParticipants(rs.getInt("MaxParticipants"));
+                event.setCurrentParticipants(rs.getInt("CurrentParticipants"));
+                events.add(event);
+            }
+
+            System.out.println("getEventsOnTop: Size " + events.size());
+        } catch (Exception e) {
+            System.err.println("Error in getEventsOnTop: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return events;
     }
 
 }

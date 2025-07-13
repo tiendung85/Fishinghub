@@ -68,6 +68,7 @@ public class EventDetailsController extends HttpServlet {
         String action = request.getParameter("action");
         EventDAO dao = new EventDAO();
         Events e = dao.getDetailsEvents(idevent);
+        String redirectTo = request.getParameter("redirectTo"); 
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -79,6 +80,7 @@ public class EventDetailsController extends HttpServlet {
             e.setEventStatus("Đã đóng đăng ký");
         }
         request.setAttribute("detail", e);
+        request.setAttribute("redirectTo", redirectTo);
         request.getRequestDispatcher("EventDetails.jsp").forward(request, response);
     }
 

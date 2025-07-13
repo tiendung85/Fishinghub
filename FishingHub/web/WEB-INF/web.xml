@@ -16,6 +16,10 @@
         <servlet-name>AdminEventManagerController</servlet-name>
         <servlet-class>controller.AdminEventManagerController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>controller.HomeController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProfileController</servlet-name>
         <url-pattern>/Profile</url-pattern>
@@ -159,6 +163,10 @@
     <servlet-mapping>
         <servlet-name>AdminEventManagerController</servlet-name>
         <url-pattern>/AdminEventManager</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/Home</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>Home.jsp</welcome-file>

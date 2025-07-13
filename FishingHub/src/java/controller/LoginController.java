@@ -52,7 +52,7 @@ public class LoginController extends HttpServlet {
                 if (user.getRoleId() == 3) {
                     request.getRequestDispatcher("dashboard_admin/Dashboard.jsp").forward(request, response);
                 } else {
-                    response.sendRedirect("Home.jsp");
+                    response.sendRedirect("Home");
                 }
             }
         } else {

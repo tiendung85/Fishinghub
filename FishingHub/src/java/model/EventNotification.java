@@ -11,12 +11,14 @@ import java.sql.Timestamp;
  * @author LENOVO
  */
 public class EventNotification {
+
     private int notificationId;
     private int eventId;
     private int senderId;
     private String title;
     private String message;
     private Timestamp createdAt;
+    private boolean isRead;
 
     public EventNotification(int notificationId, int eventId, int senderId, String message, Timestamp createdAt) {
         this.notificationId = notificationId;
@@ -75,6 +77,14 @@ public class EventNotification {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 
 }

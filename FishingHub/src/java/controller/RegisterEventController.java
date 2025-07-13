@@ -29,15 +29,12 @@ public class RegisterEventController extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
-
         String action = request.getParameter("action");
+        String redirectTo = request.getParameter("redirectTo");
         EventDAO dao = new EventDAO();
 
         if ("register".equals(action) || "cancel".equals(action)) {
-            handleEventAction(request, response, action, user, dao);
-        } else {
-            loadEventList(request, user, dao);
-            request.getRequestDispatcher("Event.jsp").forward(request, response);
+            handleEventAction(request, response, action, user, redirectTo, dao);
         }
     }
 
@@ -53,23 +50,26 @@ public class RegisterEventController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
+        String redirectTo = request.getParameter("redirectTo");
         EventDAO dao = new EventDAO();
 
         if ("register".equals(action) || "cancel".equals(action)) {
-            handleEventAction(request, response, action, user, dao);
-        } else {
-            loadEventList(request, user, dao);
-            request.getRequestDispatcher("Event.jsp").forward(request, response);
+            handleEventAction(request, response, action, user, redirectTo, dao);
         }
     }
 
-    private void handleEventAction(HttpServletRequest request, HttpServletResponse response, String action, Users user,
-            EventDAO dao)
+    private void handleEventAction(HttpServletRequest request, HttpServletResponse response, String action,
+            Users user, String redirectTo, EventDAO dao)
             throws ServletException, IOException {
+
+        String targetPage = "Event.jsp";
+        boolean topOnly = false;
+
         try {
             int eventId = Integer.parseInt(request.getParameter("eventId"));
 
             if ("register".equals(action)) {
+
                 if (dao.isEventFull(eventId)) {
                     request.setAttribute("error", "Sự kiện đã đạt số lượng người tham gia tối đa.");
                 } else if (dao.isUserRegistered(eventId, user.getUserId())) {
@@ -77,50 +77,33 @@ public class RegisterEventController extends HttpServlet {
                 } else {
                     String phoneNumber = request.getParameter("phoneNumber");
                     String email = request.getParameter("email");
-                    String cccd = request.getParameter("cccd"); // Lấy CCCD nếu có
+                    String cccd = request.getParameter("cccd");
+
+                    Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
+                    Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
                     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
                         request.setAttribute("error", "Số điện thoại không được để trống.");
-                        loadEventList(request, user, dao);
-                        request.getRequestDispatcher("Event.jsp").forward(request, response);
-                        return;
-                    }
-
-                    if (email == null || email.trim().isEmpty()) {
-                        request.setAttribute("error", "Email không được để trống.");
-                        loadEventList(request, user, dao);
-                        request.getRequestDispatcher("Event.jsp").forward(request, response);
-                        return;
-                    }
-
-                    Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
-                    if (!phonePattern.matcher(phoneNumber).matches()) {
+                    } else if (!phonePattern.matcher(phoneNumber).matches()) {
                         request.setAttribute("error",
                                 "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10 chữ số bắt đầu bằng 0.");
-                        loadEventList(request, user, dao);
-                        request.getRequestDispatcher("Event.jsp").forward(request, response);
-                        return;
-                    }
-
-                    Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-                    if (!emailPattern.matcher(email).matches()) {
+                    } else if (email == null || email.trim().isEmpty()) {
+                        request.setAttribute("error", "Email không được để trống.");
+                    } else if (!emailPattern.matcher(email).matches()) {
                         request.setAttribute("error", "Email không hợp lệ.");
-                        loadEventList(request, user, dao);
-                        request.getRequestDispatcher("Event.jsp").forward(request, response);
-                        return;
-                    }
-
-                    EventParticipant ep = new EventParticipant();
-                    ep.setEventId(eventId);
-                    ep.setUserId(user.getUserId());
-                    ep.setNumberPhone(phoneNumber);
-                    ep.setEmail(email);
-                    ep.setCccd(cccd);
-
-                    if (dao.register(ep) != null) {
-                        request.setAttribute("success", "Đăng ký sự kiện thành công!");
                     } else {
-                        request.setAttribute("error", "Đăng ký sự kiện thất bại.");
+                        EventParticipant ep = new EventParticipant();
+                        ep.setEventId(eventId);
+                        ep.setUserId(user.getUserId());
+                        ep.setNumberPhone(phoneNumber);
+                        ep.setEmail(email);
+                        ep.setCccd(cccd);
+
+                        if (dao.register(ep) != null) {
+                            request.setAttribute("success", "Đăng ký sự kiện thành công!");
+                        } else {
+                            request.setAttribute("error", "Đăng ký sự kiện thất bại.");
+                        }
                     }
                 }
 
@@ -133,18 +116,32 @@ public class RegisterEventController extends HttpServlet {
                     request.setAttribute("error", "Hủy đăng ký sự kiện thất bại.");
                 }
             }
+
         } catch (NumberFormatException nfe) {
-            request.setAttribute("error", "ID sự kiện hoặc số điện thoại không hợp lệ.");
+            request.setAttribute("error", "ID sự kiện không hợp lệ.");
         } catch (Exception ex) {
             request.setAttribute("error", "Đã xảy ra lỗi: " + ex.getMessage());
         }
 
-        loadEventList(request, user, dao);
-        request.getRequestDispatcher("Event.jsp").forward(request, response);
+        
+        if ("home".equalsIgnoreCase(redirectTo)) {
+            targetPage = "Home.jsp";
+            topOnly = true;
+        }
+
+       
+        loadEventList(request, user, dao, topOnly);
+        request.getRequestDispatcher(targetPage).forward(request, response);
     }
 
-    private void loadEventList(HttpServletRequest request, Users user, EventDAO dao) {
-        ArrayList<Events> list = dao.getEvents();
+    private void loadEventList(HttpServletRequest request, Users user, EventDAO dao, boolean topOnly) {
+        ArrayList<Events> list;
+        if (topOnly) {
+            list = dao.getEventsOnTop();  
+        } else {
+            list = dao.getEvents();      
+        }
+
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
