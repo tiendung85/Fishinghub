@@ -1,33 +1,20 @@
-﻿
+﻿﻿
 USE master;
 GO
 
 
-<<<<<<< HEAD
-ALTER DATABASE FishingHub1
-=======
 ALTER DATABASE FishingHub
->>>>>>> origin/NgocDung
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
 
-<<<<<<< HEAD
-DROP DATABASE FishingHub1;
-GO
-
-CREATE DATABASE FishingHub1;
-GO
-USE FishingHub1;
-=======
 DROP DATABASE FishingHub;
 GO
 
 CREATE DATABASE FishingHub;
 GO
 USE FishingHub;
->>>>>>> origin/NgocDung
 GO
 
 -- Roles
@@ -36,10 +23,6 @@ CREATE TABLE Role (
     RoleName NVARCHAR(50) NOT NULL
 );
 
-<<<<<<< HEAD
-INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
-=======
->>>>>>> origin/NgocDung
 
 
 -- Users
@@ -58,64 +41,6 @@ CREATE TABLE Users (
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
 
-<<<<<<< HEAD
-ALTER TABLE Users ADD LastLoginTime datetime NULL;
-ALTER TABLE Users ADD Status nvarchar(20) NULL;
-
-INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
-VALUES 
-(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
-(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
-
-CREATE TABLE Permission (
-    permissionId INT PRIMARY KEY IDENTITY(1,1),
-    permissionName NVARCHAR(100) NOT NULL
-);
-
--- Dữ liệu mẫu, chỉ tạo 1 lần
-INSERT INTO Permission (permissionName) VALUES
-    (N'Đăng bài'),
-    (N'Bình luận'),
-    (N'Tạo sự kiện'),
-    (N'Nhắn tin'),
-    (N'Thanh toán'),
-    (N'Đổi ảnh đại diện');
-INSERT INTO Permission (permissionName) VALUES (N'Mua hàng');
-
-CREATE TABLE RolePermission (
-    roleId INT,
-    permissionId INT,
-    PRIMARY KEY (roleId, permissionId),
-    FOREIGN KEY (roleId) REFERENCES Role(roleId),
-    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
-);
--- Ví dụ: User chỉ có đăng bài và bình luận, FishOwner có thêm tạo sự kiện, Quản trị viên có mọi quyền
-INSERT INTO RolePermission (roleId, permissionId) VALUES
-    (1, 1), (1, 2),         -- User: Đăng bài, Bình luận
-    (2, 1), (2, 2), (2, 3), -- FishOwner: Đăng bài, Bình luận, Tạo sự kiện
-    (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6); -- Admin: Tất cả
-
-CREATE TABLE UserDeniedPermission (
-    userId INT,
-    permissionId INT,
-    PRIMARY KEY (userId, permissionId),
-    FOREIGN KEY (userId) REFERENCES Users(userId),
-    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
-);
-
--- Bảng này chỉ lưu những quyền bị cấm
--- Nếu userId=6 bị cấm quyềnId=2,4: INSERT INTO UserDeniedPermission VALUES (6,2), (6,4)
-
--- User/FishOwner/Admin đều có quyền mua hàng mặc định
-INSERT INTO RolePermission (roleId, permissionId) VALUES
-    (1, 7), (2, 7), (3, 7);
-
-
-
-=======
->>>>>>> origin/NgocDung
 -- Categories
 CREATE TABLE Category (
     CategoryId INT PRIMARY KEY IDENTITY,
@@ -134,22 +59,6 @@ CREATE TABLE Product (
     FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
 );
 
-<<<<<<< HEAD
-CREATE TABLE [dbo].[Review](
-    [Id] INT IDENTITY(1,1) PRIMARY KEY,
-    [ProductId] INT NOT NULL,
-    [UserId] INT NOT NULL,
-    [Rating] INT NOT NULL,           -- Số sao: 1-5
-    [ReviewText] NVARCHAR(MAX) NULL, -- Nội dung đánh giá
-    [Image] VARCHAR(255) NULL,       -- Đường dẫn ảnh
-    [Video] VARCHAR(255) NULL,       -- Đường dẫn video
-    [CreatedAt] DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Review_Product FOREIGN KEY (ProductId) REFERENCES Product(ProductId),
-    CONSTRAINT FK_Review_User FOREIGN KEY (UserId) REFERENCES Users(UserId)
-);
-
-=======
->>>>>>> origin/NgocDung
 -- ShoppingCart
 CREATE TABLE ShoppingCart (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -161,7 +70,6 @@ CREATE TABLE ShoppingCart (
     FOREIGN KEY (ProductId) REFERENCES Product(ProductId) ON DELETE CASCADE
 );
 
-<<<<<<< HEAD
 CREATE TABLE OrderStatus (
     StatusID INT PRIMARY KEY,
     StatusName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL
@@ -186,7 +94,6 @@ CREATE TABLE Orders (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
     FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
-ALTER TABLE Orders ADD DeliveryTime DATETIME NULL;
 
 -- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
@@ -240,28 +147,6 @@ VALUES (2, 320000, 350000);
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
 VALUES (3, 150000, 180000, '2025-05-30 17:55:00', 1);
 
-
-CREATE TABLE Reviews (
-    ReviewID INT PRIMARY KEY IDENTITY,
-    OrderID INT,
-    ProductID INT,
-    Rating INT,
-    ReviewText TEXT,
-    FOREIGN KEY (OrderID) REFERENCES Orders(ID),
-    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
-);
-=======
--- Orders
-CREATE TABLE Orders (
-    Id INT PRIMARY KEY IDENTITY(1,1),
-    UserId INT,
-    Subtotal DECIMAL(10,2) NOT NULL,
-    Total DECIMAL(10,2) NOT NULL,
-    Status NVARCHAR(50) COLLATE Vietnamese_CI_AS DEFAULT N'Đang chờ duyệt',
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
-);
-
->>>>>>> origin/NgocDung
 -- OrderDetails
 CREATE TABLE OrderDetail (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -278,25 +163,19 @@ CREATE TABLE OrderDetail (
 CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(255) NOT NULL,
-	LakeName NVARCHAR(255), 
-
+    LakeName NVARCHAR(255), 
     Description NVARCHAR(MAX),
-
-
-
     Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
-
-
-
     ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
-	CurrentParticipants INT,
+    CurrentParticipants INT,
+    ContactInfo NVARCHAR(255),
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
 
@@ -304,23 +183,40 @@ CREATE TABLE Event (
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
     UserId INT NOT NULL,
-
-	NumberPhone VARCHAR(11) NOT NULL,
-	Email VARCHAR (255) NOT Null,
-	CCCD VARCHAR(20),
+    NumberPhone VARCHAR(11) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    CCCD VARCHAR(20) NOT Null,
     Checkin BIT DEFAULT 0,
-	CheckinTime DATETIME, 
-
+    CheckinTime DATETIME,
+    JoinDate DATE DEFAULT GETDATE(), 
     PRIMARY KEY (EventId, UserId),
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE EventNotification (
+    NotificationId INT IDENTITY PRIMARY KEY,
+    EventId INT NOT NULL,
+    SenderId INT NOT NULL, 
+	Title NVARCHAR(255),
+    Message NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+	IsRead BIT NOT NULL DEFAULT 0,
+    FOREIGN KEY (EventId) REFERENCES Event(EventId),
+    FOREIGN KEY (SenderId) REFERENCES Users(UserId)
+);
+CREATE TABLE EventRejections (
+    EventId INT PRIMARY KEY,
+    RejectReason NVARCHAR(MAX) NOT NULL,
+    RejectedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    
+    FOREIGN KEY (EventId) REFERENCES Event(EventId)
 );
 
 -- Posts
 CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
-<<<<<<< HEAD
     Topic NVARCHAR(50),
     Title NVARCHAR(255),
     Content NVARCHAR(MAX),
@@ -330,32 +226,18 @@ CREATE TABLE Post (
 );
 
 
-=======
-	Topic NVARCHAR(50),
-    Title NVARCHAR(255),
-    Content TEXT,
-   
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId)
-);
-
->>>>>>> origin/NgocDung
 CREATE TABLE Image (
     ImageId INT PRIMARY KEY IDENTITY,
     PostId INT,
     ImagePath VARCHAR(255),
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
-<<<<<<< HEAD
 CREATE TABLE Video (
     VideoId INT PRIMARY KEY IDENTITY,
     PostId INT,
     VideoPath VARCHAR(255),
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
-=======
-
->>>>>>> origin/NgocDung
 
 
 -- PostComments
@@ -363,7 +245,6 @@ CREATE TABLE PostComment (
     CommentId INT PRIMARY KEY IDENTITY,
     PostId INT,
     UserId INT,
-<<<<<<< HEAD
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
@@ -418,15 +299,6 @@ CREATE TABLE SavedPost (
     FOREIGN KEY (PostId) REFERENCES Post(PostId)
 );
 
-=======
-    Content TEXT,
-    Likes INT DEFAULT 0,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (PostId) REFERENCES Post(PostId),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId)
-);
-
->>>>>>> origin/NgocDung
 -- FishSpecies
 CREATE TABLE FishSpecies (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -743,17 +615,13 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
-<<<<<<< HEAD
-
-=======
 DELETE FROM FishSpecies;
 
 DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
 
 
 
-select * from FishSpecies
->>>>>>> origin/NgocDung
+
 -- Fish
 CREATE TABLE Fish (
     FishId INT PRIMARY KEY IDENTITY,
@@ -763,41 +631,6 @@ CREATE TABLE Fish (
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
 
-<<<<<<< HEAD
--- Fish
-CREATE TABLE DifficultyPoint (
-    DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
-    Point INT NOT NULL                -- Ví dụ: 20, 50, 100
-);
-
-INSERT INTO DifficultyPoint (DifficultyLevel, Point)
-VALUES 
-(1, 20),
-(2, 40),
-(3, 70),
-(4,100);
-
-
-
-CREATE TABLE FishingLake (
-    LakeId INT PRIMARY KEY IDENTITY,
-    Name NVARCHAR(100),
-    Location NVARCHAR(255),
-    OwnerId INT, -- FK đến Users(UserId)
-    FOREIGN KEY (OwnerId) REFERENCES Users(UserId)
-);
-
-CREATE TABLE LakeFish (
-    LakeId INT,
-    FishSpeciesId INT,
-	Price FLOAT NOT NULL, --giá loài cá
-    PRIMARY KEY (LakeId, FishSpeciesId),
-    FOREIGN KEY (LakeId) REFERENCES FishingLake(LakeId),
-    FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
-);
-
-=======
->>>>>>> origin/NgocDung
 -- Achievements
 CREATE TABLE Achievement (
     AchievementId INT PRIMARY KEY IDENTITY,
@@ -819,7 +652,6 @@ CREATE TABLE Notification (
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 
-<<<<<<< HEAD
 CREATE TABLE password_reset (
     id INT IDENTITY(1,1) PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -829,6 +661,30 @@ CREATE TABLE password_reset (
 );
 
 
+
+INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
+(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
+
+  
+select * from users
+
+
+
+select * from PostComment
+select * from Post
+select * from Image
+
+
+SELECT * FROM Post WHERE Status = N'đã duyệt'
+select * from PostLike
+
+select * from SavedPost
 
 INSERT INTO Category (Name) VALUES
 (N'Shimano'),     -- CategoryId = 1
@@ -868,17 +724,6 @@ VALUES
 (N'Sự kiện giao lưu miền Trung', N'Hồ Khe Sanh', N'Câu cá và trao đổi kinh nghiệm.', N'Quảng Trị', 3, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 55, 37),
 (N'Hội thi câu cá sinh viên', N'Hồ Thủ Đức', N'Dành cho các bạn sinh viên.', N'TP.HCM', 3, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 60);
 
-CREATE TABLE EventNotification (
-    NotificationId INT IDENTITY PRIMARY KEY,
-    EventId INT NOT NULL,
-    SenderId INT NOT NULL, 
-	Title NVARCHAR(255),
-    Message NVARCHAR(MAX),
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (EventId) REFERENCES Event(EventId),
-    FOREIGN KEY (SenderId) REFERENCES Users(UserId)
-);
-
 -- 5 sự kiện đang diễn ra
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES
@@ -894,35 +739,10 @@ VALUES
 (N'Cúp câu cá miền Tây', N'Hồ Tràm Chim', N'Sự kiện khu vực đồng bằng sông Cửu Long.', N'Đồng Tháp', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), N'images (2).jpg', 50, 50),
 (N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
 (N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 3, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
-(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59),
 (N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
 
-select * from Users
-=======
 
-
-
->>>>>>> origin/NgocDung
-INSERT INTO Users (UserId, FullName, Email, Phone, RoleId)
-VALUES 
-    (1, 'Nguyen Van A', 'a@example.com', '0901234567', 2),
-    (2, 'Tran Thi B', 'b@example.com', '0907654321', 2),
-    (3, 'Le Van C', 'c@example.com', '0912345678', 2),
-    (4, 'Pham Thi D', 'd@example.com', '0923456789', 2),
-    (5, 'Hoang Van E', 'e@example.com', '0934567890', 2),
-    (6, 'Nguyen Thi F', 'f@example.com', '0945678901', 2);
-
--- Thêm sự kiện vào bảng Event
-INSERT INTO Event (EventId, Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, CreatedAt, MaxParticipants, CurrentParticipants)
-VALUES 
-    (1, 'Fishing Tournament 2025', 'Lake ABC', 'Annual fishing event', 'Hanoi', 1, '2025-07-15 08:00:00', '2025-07-15 17:00:00', 'approved', GETDATE(), 10, 6);
-
--- Thêm người tham gia vào bảng EventParticipant
-INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD, CheckIn, CheckInTime)
-VALUES 
-    (1, 1, '0901234567', 'a@example.com', '123456789', 0, NULL),
-    (1, 2, '0907654321', 'b@example.com', '987654321', 1, GETDATE()),
-    (1, 3, '0912345678', 'c@example.com', '123123123', 0, NULL),
-    (1, 4, '0923456789', 'd@example.com', '456456456', 1, GETDATE()),
-    (1, 5, '0934567890', 'e@example.com', '789789789', 0, NULL),
-    (1, 6, '0945678901', 'f@example.com', '321321321', 0, NULL);
+SELECT COUNT(*) AS RejectedToday
+FROM Event
+WHERE Status = 'rejected'
+  AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE);

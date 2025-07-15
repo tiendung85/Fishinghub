@@ -79,8 +79,12 @@ public class RegisterEventController extends HttpServlet {
                     String email = request.getParameter("email");
                     String cccd = request.getParameter("cccd");
 
+                    // Biểu thức chính quy kiểm tra số điện thoại: 10 số, bắt đầu bằng 0
                     Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
+                    // Biểu thức chính quy kiểm tra email
                     Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+                    // Biểu thức chính quy kiểm tra CCCD: đúng 12 chữ số
+                    Pattern cccdPattern = Pattern.compile("^[0-9]{12}$");
 
                     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
                         request.setAttribute("error", "Số điện thoại không được để trống.");
@@ -91,13 +95,15 @@ public class RegisterEventController extends HttpServlet {
                         request.setAttribute("error", "Email không được để trống.");
                     } else if (!emailPattern.matcher(email).matches()) {
                         request.setAttribute("error", "Email không hợp lệ.");
+                    } else if (cccd != null && !cccd.trim().isEmpty() && !cccdPattern.matcher(cccd).matches()) {
+                        request.setAttribute("error", "CCCD không hợp lệ.");
                     } else {
                         EventParticipant ep = new EventParticipant();
                         ep.setEventId(eventId);
                         ep.setUserId(user.getUserId());
                         ep.setNumberPhone(phoneNumber);
                         ep.setEmail(email);
-                        ep.setCccd(cccd);
+                        ep.setCccd(cccd != null ? cccd.trim() : null); 
 
                         if (dao.register(ep) != null) {
                             request.setAttribute("success", "Đăng ký sự kiện thành công!");
@@ -123,13 +129,11 @@ public class RegisterEventController extends HttpServlet {
             request.setAttribute("error", "Đã xảy ra lỗi: " + ex.getMessage());
         }
 
-        
         if ("home".equalsIgnoreCase(redirectTo)) {
             targetPage = "Home.jsp";
             topOnly = true;
         }
 
-       
         loadEventList(request, user, dao, topOnly);
         request.getRequestDispatcher(targetPage).forward(request, response);
     }
@@ -137,9 +141,9 @@ public class RegisterEventController extends HttpServlet {
     private void loadEventList(HttpServletRequest request, Users user, EventDAO dao, boolean topOnly) {
         ArrayList<Events> list;
         if (topOnly) {
-            list = dao.getEventsOnTop();  
+            list = dao.getEventsOnTop();
         } else {
-            list = dao.getEvents();      
+            list = dao.getEvents();
         }
 
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();

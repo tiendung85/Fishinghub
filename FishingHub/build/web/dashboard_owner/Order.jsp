@@ -121,19 +121,26 @@
                         <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">
                             Quản lý sự kiện
                         </div>
-                        <a href="#"
-                            class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary">
-                            <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                <i class="ri-calendar-event-line"></i>
+                        <a 
+                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md ">
+                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
+                                    <i class="ri-calendar-event-line"></i>
+                                </div>
+                                Sự kiện
+                            </a>
+                            <div class="ml-10 mt-1 mb-2 flex flex-col gap-2">
+                                <a href="EventManager"
+                                   class=" py-1 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition text-sm">
+                                    <i class="ri-list-unordered mr-2"></i>Danh sách sự kiện
+                                </a>
+
                             </div>
-                            Sự kiện
-                        </a>
 
 
                         <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">
                             Quản lý sản phẩm
                         </div>
-                        <a href="#"
+                        <a href="${pageContext.request.contextPath}/ProductManage"
                             class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary">
                             <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                 <i class="ri-shopping-bag-line"></i>
@@ -171,7 +178,7 @@
                 </div>
                 <!-- Nút quay lại Home -->
                 <div class="p-4">
-                    <a href="Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                    <a href="Home" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
                         <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
                     </a>
                 </div>

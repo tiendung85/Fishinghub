@@ -698,7 +698,7 @@ public class EventDAO extends DBConnect {
 
         return null;
     }
-  
+
     public boolean approveEvent(int eventId) {
         String sql = "UPDATE Event SET status = ?, approvedAt = ? WHERE eventId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -714,15 +714,16 @@ public class EventDAO extends DBConnect {
     }
 
     public boolean rejectEvent(int eventId, String rejectReason) {
-        // Update event status
-        String updateSql = "UPDATE Event SET status = ? WHERE eventId = ?";
-        String insertSql = "INSERT INTO EventRejections (eventId, rejectReason, rejectedAt) VALUES (?, ?, ?)";
+        String updateSql = "UPDATE Event SET Status = ?, ApprovedAt = ? WHERE EventId = ?";
+        String insertSql = "INSERT INTO EventRejections (EventId, RejectReason, RejectedAt) VALUES (?, ?, ?)";
+
         try {
             connection.setAutoCommit(false);
 
             try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
                 updateStmt.setString(1, "rejected");
-                updateStmt.setInt(2, eventId);
+                updateStmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+                updateStmt.setInt(3, eventId);
                 updateStmt.executeUpdate();
             }
 
@@ -803,7 +804,6 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-    // Lấy danh sách sự kiện sắp diễn ra
     public ArrayList<Events> upComingEvents(int page, int pageSize) {
         ArrayList<Events> list = new ArrayList<>();
         String sql = "SELECT * FROM Event WHERE StartTime > GETDATE() AND Status = 'approved' ORDER BY StartTime ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -850,7 +850,6 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-    // Lấy danh sách sự kiện đang diễn ra
     public ArrayList<Events> getOngoingEvents(int page, int pageSize) {
         ArrayList<Events> list = new ArrayList<>();
         String sql = "SELECT * FROM Event WHERE StartTime <= GETDATE() AND EndTime >= GETDATE() AND Status = 'approved' ORDER BY StartTime ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -897,7 +896,6 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-    // Lấy danh sách sự kiện đã lưu (dựa trên EventParticipant)
     public ArrayList<Events> getSavedEvents(int userId, int page, int pageSize) {
         ArrayList<Events> list = new ArrayList<>();
         String sql = "SELECT e.* FROM Event e INNER JOIN EventParticipant ep ON e.EventId = ep.EventId WHERE ep.UserId = ? ORDER BY e.CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -981,7 +979,6 @@ public class EventDAO extends DBConnect {
         return list;
     }
 
-    // Lấy tổng số sự kiện của người dùng
     public int getTotalEvents(int userId) {
         String sql = "SELECT COUNT(*) FROM Event WHERE HostId = ?";
         try {
@@ -1000,7 +997,6 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-    // Tìm kiếm sự kiện với phân trang
     public ArrayList<Events> searchEvents(int userId, String search, int page, int pageSize) {
         ArrayList<Events> list = new ArrayList<>();
         String sql = "SELECT * FROM Event WHERE HostId = ? AND (Title LIKE ? OR Location LIKE ?) ORDER BY CreatedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -1058,7 +1054,6 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-    // Lọc sự kiện với phân trang
     public ArrayList<Events> filterEvents(int userId, String statusFilter, int page, int pageSize) {
         ArrayList<Events> list = new ArrayList<>();
         String sql = "";
@@ -1544,4 +1539,85 @@ public class EventDAO extends DBConnect {
         return events;
     }
 
+    public int getApprovedToday() {
+        String sql = """
+                     SELECT COUNT(*) AS ApprovedToday
+                     FROM Event
+                     WHERE Status = 'approved'
+                       AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("ApprovedToday");
+                System.out.println("Approved Today: " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getApprovedToday: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+   public int getRejectedToday() {
+        String sql = """
+                     SELECT COUNT(*) AS RejectedToday
+                     FROM Event
+                     WHERE Status = 'rejected'
+                       AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("RejectedToday");
+                System.out.println("Rejected Today: " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getRejectedToday: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getNewEventsToday() {
+        String sql = """
+                     SELECT COUNT(*) AS NewEvents
+                     FROM Event
+                     WHERE CAST(CreatedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("NewEvents");
+                System.out.println("New Events Today: " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getNewEventsToday: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getPendingEvents() {
+        String sql = """
+                     SELECT COUNT(*) AS PendingEvents
+                     FROM Event
+                     WHERE Status = 'pending'""";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("PendingEvents");
+                System.out.println("Pending Events: " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getPendingEvents: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

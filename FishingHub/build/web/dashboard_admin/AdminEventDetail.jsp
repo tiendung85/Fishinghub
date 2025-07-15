@@ -351,7 +351,7 @@
                 const rejectReason = document.getElementById('rejectReason');
                 const errorMessage = document.getElementById('errorMessage');
                 const successMessage = document.getElementById('successMessage');
-                const eventId = ${event.eventId}; // Assuming event object is available in JSP
+                const eventId = ${event.eventId}; 
 
                 if (approveBtn) {
                     approveBtn.addEventListener('click', function () {

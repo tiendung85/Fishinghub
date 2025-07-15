@@ -88,7 +88,7 @@
                                 Quản lý sản phẩm
                             </div>
                             <a
-                                href="#"
+                                href="${pageContext.request.contextPath}/ProductManage"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
@@ -99,7 +99,7 @@
                                 Danh sách sản phẩm
                             </a>
                             <a
-                                href="<c:url value='/Order'/>"
+                                href="Order"
                                 class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
                                 >
                                 <div
@@ -133,7 +133,7 @@
                     </div>
 
                     <div class="p-4">
-                        <a href="./Home.jsp" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
+                        <a href="Home" class="flex items-center justify-center w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-primary/90 transition">
                             <i class="ri-arrow-left-line mr-2"></i> Quay lại Trang Chủ
                         </a>
                     </div>

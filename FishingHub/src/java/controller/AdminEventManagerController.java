@@ -28,20 +28,26 @@ public class AdminEventManagerController extends HttpServlet {
         String action = request.getParameter("action") != null ? request.getParameter("action") : "";
         EventDAO dao = new EventDAO();
         ArrayList<Events> list = new ArrayList<>();
-        
-        // Pagination parameters
+
+       
         int page = 1;
         int pageSize = 5;
         try {
             String pageStr = request.getParameter("page");
             if (pageStr != null) {
                 page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1; // Prevent negative or zero pages
+                if (page < 1) page = 1;
             }
         } catch (NumberFormatException e) {
-            page = 1; // Fallback to page 1
+            page = 1; 
             System.err.println("Invalid page parameter: " + e.getMessage());
         }
+
+        
+        int pendingEvents = dao.getPendingEvents();
+        int newEventsToday = dao.getNewEventsToday();
+        int approvedToday = dao.getApprovedToday();
+        int rejectedToday = dao.getRejectedToday();
 
         if (user == null) {
             response.sendRedirect("login");
@@ -77,7 +83,7 @@ public class AdminEventManagerController extends HttpServlet {
                 int eventId = Integer.parseInt(request.getParameter("eventId"));
                 Events event = dao.getDetailsEvents2(eventId);
                 request.setAttribute("event", event);
-                request.setAttribute("currentPage", page); // Preserve page for return
+                request.setAttribute("currentPage", page); 
                 request.getRequestDispatcher("dashboard_admin/AdminEventDetail.jsp").forward(request, response);
                 return;
             } else if (action.equals("approve")) {
@@ -110,7 +116,7 @@ public class AdminEventManagerController extends HttpServlet {
                 }
             }
 
-            // Fallback for empty results
+            
             if (list.isEmpty() && page > 1) {
                 page = 1;
                 list = dao.getEventsList(page, pageSize);
@@ -118,13 +124,19 @@ public class AdminEventManagerController extends HttpServlet {
                 request.setAttribute("error", "Không có sự kiện ở trang được chọn, chuyển về trang 1.");
             }
 
-            // Calculate total pages
+            
             int totalPages = totalEvents == 0 ? 1 : (int) Math.ceil((double) totalEvents / pageSize);
 
-            // Debugging output
+            
             System.out.println("Action: " + action + ", Page: " + page + ", Total Events: " + totalEvents + ", List Size: " + list.size());
 
-            // Set attributes
+           
+            request.setAttribute("pendingEvents", pendingEvents);
+            request.setAttribute("newEventsToday", newEventsToday);
+            request.setAttribute("approvedToday", approvedToday);
+            request.setAttribute("rejectedToday", rejectedToday);
+
+           
             updateEventStatus(list);
             request.setAttribute("listE", list);
             request.setAttribute("currentPage", page);
@@ -161,6 +173,6 @@ public class AdminEventManagerController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Handles admin event management with robust pagination";
+        return "Handles admin event management with robust pagination and statistics";
     }
 }

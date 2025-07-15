@@ -84,8 +84,8 @@
                 <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
 
                  <nav class="hidden md:flex ml-10">
-            <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-            <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+            <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+            <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
             <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
             <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
             <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>

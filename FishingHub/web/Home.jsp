@@ -51,7 +51,7 @@ Users currentUser = (Users) session.getAttribute("user");
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
-                    <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
+                    <a href="Home" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <!-- Header navigation links -->
                     <nav class="hidden md:flex ml-10">
                         <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
@@ -96,7 +96,7 @@ Users currentUser = (Users) session.getAttribute("user");
 
                         <%-- Dashboard Links --%>
                         <% if (currentUser.getRoleId() == 2) { %>
-                        <a href="EventDashboard" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                        <a href="OwnerDashboard" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
                         <a href="LakeServlet" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Hồ câu</a>
 
                         <% } %>
