@@ -107,6 +107,23 @@
         <url-pattern>/RegisterEvent</url-pattern>
     </servlet-mapping>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <servlet-mapping>
         <servlet-name>SearchEventController</servlet-name>
         <url-pattern>/SearchEvent</url-pattern>

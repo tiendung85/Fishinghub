@@ -15,7 +15,7 @@ public class DBConnect {
     private String portNumber = "1433";
     private String instance = "SQLEXPRESS";
     private String userID = "lam";
-    private String password = "lamdz123";
+    private String password = "lampro123";
 
     public DBConnect() {
         try {
@@ -38,7 +38,7 @@ public class DBConnect {
         try {
             String url = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=FishingHub1;trustServerCertificate=true;";
             String user = "lam";
-            String pass = "lamdz123";
+            String pass = "lampro123";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             return DriverManager.getConnection(url, user, pass);
         } catch (Exception ex) {
