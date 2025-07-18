@@ -152,26 +152,28 @@ public class UserDao extends DBConnect {
     }
 
     public void update(Users user) {
-        try {
-            String sql = "UPDATE Users SET FullName=?, Email=?, Phone=?, Password=?, RoleId=?, Gender=?, DateOfBirth=?, Location=?, LastLoginTime=?, Status=? WHERE UserId=?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, user.getFullName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPhone());
-            ps.setString(4, user.getPassword());
-            ps.setInt(5, user.getRoleId());
-            ps.setString(6, user.getGender());
-            ps.setDate(7, user.getDateOfBirth());
-            ps.setString(8, user.getLocation());
-            ps.setTimestamp(9, user.getLastLoginTime());
-            ps.setString(10, user.getStatus());
-            ps.setInt(11, user.getUserId());
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    try {
+        String sql = "UPDATE Users SET FullName=?, Email=?, Phone=?, Password=?, RoleId=?, Gender=?, DateOfBirth=?, Location=?, LastLoginTime=?, Status=?, lastProfileUpdate=? WHERE UserId=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, user.getFullName());
+        ps.setString(2, user.getEmail());
+        ps.setString(3, user.getPhone());
+        ps.setString(4, user.getPassword());
+        ps.setInt(5, user.getRoleId());
+        ps.setString(6, user.getGender());
+        ps.setDate(7, user.getDateOfBirth());
+        ps.setString(8, user.getLocation());
+        ps.setTimestamp(9, user.getLastLoginTime());
+        ps.setString(10, user.getStatus());
+        ps.setTimestamp(11, user.getLastProfileUpdate());  // <-- dòng này là trường mới thêm
+        ps.setInt(12, user.getUserId());
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
+
 
     public void delete(int userId) {
         String sql = "DELETE FROM Users WHERE UserId = ?";
@@ -255,15 +257,14 @@ public class UserDao extends DBConnect {
     }
     return false;
 }
-      public List<Users> listFiltered(String searchQuery, String roleFilter) {
+      public List<Users> listFiltered(String search, String roleFilter) {
     List<Users> userList = new ArrayList<>();
     String sql = "SELECT * FROM Users WHERE 1=1";
-    boolean hasSearch = (searchQuery != null && !searchQuery.trim().isEmpty());
+    boolean hasSearch = (search != null && !search.trim().isEmpty());
     boolean hasRole = (roleFilter != null && !roleFilter.trim().isEmpty());
 
-    // Nếu muốn chắc chắn không phân biệt hoa thường (với FullName là varchar, thêm COLLATE)
     if (hasSearch) {
-        sql += " AND FullName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?";
+        sql += " AND (FullName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ? OR Email COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?)";
     }
     if (hasRole) {
         sql += " AND RoleId = ?";
@@ -272,7 +273,9 @@ public class UserDao extends DBConnect {
     try (PreparedStatement ps = connection.prepareStatement(sql)) {
         int paramIndex = 1;
         if (hasSearch) {
-            ps.setString(paramIndex++, "%" + searchQuery.trim() + "%");
+            String pattern = "%" + search.trim() + "%";
+            ps.setString(paramIndex++, pattern); // FullName
+            ps.setString(paramIndex++, pattern); // Email
         }
         if (hasRole) {
             ps.setString(paramIndex++, roleFilter.trim());
@@ -290,8 +293,7 @@ public class UserDao extends DBConnect {
             user.setLocation(rs.getString("Location"));
             user.setRoleId(rs.getInt("RoleId"));
             user.setLastLoginTime(rs.getTimestamp("LastLoginTime"));
-
-            // Xác định trạng thái Active/Inactive
+            // Set status ...
             Timestamp lastLogin = user.getLastLoginTime();
             if (lastLogin != null) {
                 long diff = System.currentTimeMillis() - lastLogin.getTime();
@@ -303,7 +305,6 @@ public class UserDao extends DBConnect {
             } else {
                 user.setStatus("Inactive");
             }
-
             userList.add(user);
         }
     } catch (SQLException e) {
@@ -311,6 +312,7 @@ public class UserDao extends DBConnect {
     }
     return userList;
 }
+
 
 
        public Users getUserByEmail(String email) {

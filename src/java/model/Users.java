@@ -10,19 +10,21 @@ public class Users {
     private String phone;      
     private String password;
     private String googleId;
-    private int roleId;  // Mã vai trò
+    private int roleId;
     private String gender;
     private Date dateOfBirth;
     private String location;
     private Timestamp createdAt;
-    private Timestamp lastLoginTime;  // Thay Date thành Timestamp
+    private Timestamp lastLoginTime;
     private String status;
-    public Users() {}
-    
+    private Timestamp lastProfileUpdate;   // <-- Trường mới
 
-  // Constructor đầy đủ
+    public Users() {}
+
+    // Constructor đầy đủ
     public Users(int userId, String fullName, String email, String phone, String password, String googleId,
-                int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt) {
+                 int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt,
+                 Timestamp lastLoginTime, Timestamp lastProfileUpdate) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -34,6 +36,8 @@ public class Users {
         this.dateOfBirth = dateOfBirth;
         this.location = location;
         this.createdAt = createdAt;
+        this.lastLoginTime = lastLoginTime;
+        this.lastProfileUpdate = lastProfileUpdate;
     }
 
     // Constructor khi đăng ký
@@ -84,33 +88,27 @@ public class Users {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-    
 
-    public Timestamp getLastLoginTime() {
-    return lastLoginTime;
-}
+    public Timestamp getLastLoginTime() { return lastLoginTime; }
+    public void setLastLoginTime(Timestamp lastLoginTime) { this.lastLoginTime = lastLoginTime; }
 
-public void setLastLoginTime(Timestamp lastLoginTime) {
-    this.lastLoginTime = lastLoginTime;
-}
+    public void setStatus(String status) { this.status = status; }
+    public String getStatus() { return status; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public String getStatus() {
-        return status;
-    }
-    // Phương thức mới để lấy vai trò người dùng theo roleId
+    public Timestamp getLastProfileUpdate() { return lastProfileUpdate; }
+    public void setLastProfileUpdate(Timestamp lastProfileUpdate) { this.lastProfileUpdate = lastProfileUpdate; }
+
+    // Phương thức lấy tên vai trò người dùng
     public String getRole() {
         switch (this.roleId) {
             case 1:
-                return "User"; // Ví dụ, roleId 1 là user
+                return "User";
             case 2:
-                return "FishOwner"; // Ví dụ, roleId 2 là admin
+                return "FishOwner";
             case 3:
-                return "Admin"; // Ví dụ, roleId 3 là Fish Owner
+                return "Admin";
             default:
-                return "Unknown"; // Mặc định nếu không có vai trò
+                return "Unknown";
         }
     }
 
@@ -128,8 +126,8 @@ public void setLastLoginTime(Timestamp lastLoginTime) {
                 ", dateOfBirth=" + dateOfBirth +
                 ", location='" + location + '\'' +
                 ", createdAt=" + createdAt +
+                ", lastLoginTime=" + lastLoginTime +
+                ", lastProfileUpdate=" + lastProfileUpdate +
                 '}';
     }
-
-    
 }
