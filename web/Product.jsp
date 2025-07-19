@@ -241,8 +241,13 @@
                         >
 
                     </div>
-
-
+                        <% if (currentUser != null && currentUser.getRoleId() == 2) { %>
+    <a href="WaitingConfirmListServlet"
+       class="ml-3 px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-button font-medium flex items-center"
+       title="Xác nhận đơn hàng">
+        <i class="ri-list-check-2 mr-2"></i> Đơn chờ xác nhận
+    </a>
+<% } %>
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
                             <i class="ri-notification-3-line text-gray-600"></i>

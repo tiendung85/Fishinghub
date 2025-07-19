@@ -165,7 +165,7 @@ public class UserDao extends DBConnect {
         ps.setString(8, user.getLocation());
         ps.setTimestamp(9, user.getLastLoginTime());
         ps.setString(10, user.getStatus());
-        ps.setTimestamp(11, user.getLastProfileUpdate());  // <-- dòng này là trường mới thêm
+        ps.setTimestamp(11, user.getLastProfileUpdate());  
         ps.setInt(12, user.getUserId());
         ps.executeUpdate();
         ps.close();

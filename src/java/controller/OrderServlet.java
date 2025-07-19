@@ -3,20 +3,20 @@ package controller;
 import dal.OrderDAO;
 import dal.OrderDetailDAO;
 import dal.ProductDAO;
+import dal.UserPermissionDAO;
 import model.Order;
-import model.Status;
-import java.io.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import model.OrderDetail;
+import model.Product;
+import model.Status;
 import model.Users;
 
-@WebServlet(name = "OrderServlet", urlPatterns = {"/Order"})
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.*;
+
+@WebServlet(name = "OrderServlet", urlPatterns = { "/Order" })
 public class OrderServlet extends HttpServlet {
 
     @Override
@@ -27,18 +27,26 @@ public class OrderServlet extends HttpServlet {
         boolean isAjax = (status != null && (keyword != null));
         OrderDAO dao = new OrderDAO();
         List<Status> statuses = dao.getAllStatuses();
+
         if (isAjax) {
-            // AJAX filter: trả về toàn bộ đơn hàng phù hợp, không phân trang
             List<Order> orders = dao.searchOrders(status, keyword);
             response.setContentType("text/html;charset=UTF-8");
             StringBuilder tbody = new StringBuilder();
             for (Order order : orders) {
-                tbody.append("<tr class='hover:bg-gray-50 cursor-pointer' data-status='").append(order.getStatus().getStatusID()).append("' data-order-id='").append(order.getId()).append("' data-status-id='").append(order.getStatus().getStatusID()).append("'>");
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>#ORD-").append(order.getId()).append("</td>");
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>").append(order.getCustomerName()).append("</td>");
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>").append(new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(order.getOrderDate())).append("</td>");
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>").append(String.format("%,.0f", order.getSubtotal())).append(" ₫</td>");
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>").append(String.format("%,.0f", order.getTotal())).append(" ₫</td>");
+                tbody.append("<tr class='hover:bg-gray-50 cursor-pointer' data-status='")
+                        .append(order.getStatus().getStatusID()).append("' data-order-id='").append(order.getId())
+                        .append("' data-status-id='").append(order.getStatus().getStatusID()).append("'>");
+                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>#ORD-")
+                        .append(order.getId()).append("</td>");
+                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>")
+                        .append(order.getCustomerName()).append("</td>");
+                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>")
+                        .append(new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(order.getOrderDate()))
+                        .append("</td>");
+                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>")
+                        .append(String.format("%,.0f", order.getSubtotal())).append(" ₫</td>");
+                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>")
+                        .append(String.format("%,.0f", order.getTotal())).append(" ₫</td>");
                 // Trạng thái
                 String statusClass = "bg-gray-100 text-gray-800";
                 int st = order.getStatus().getStatusID();
@@ -53,16 +61,25 @@ public class OrderServlet extends HttpServlet {
                 } else if (st == 5) {
                     statusClass = "bg-red-100 text-red-800";
                 }
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap'><span class='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium " + statusClass + "'>").append(order.getStatus().getStatusName()).append("</span></td>");
+                tbody.append(
+                        "<td class='px-6 py-4 whitespace-nowrap'><span class='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium "
+                                + statusClass + "'>")
+                        .append(order.getStatus().getStatusName()).append("</span></td>");
                 // Thao tác
-                tbody.append("<td class='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'><div class='flex justify-end space-x-2'>");
+                tbody.append(
+                        "<td class='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'><div class='flex justify-end space-x-2'>");
                 tbody.append("<button class='text-primary hover:text-indigo-900'>Xem</button>");
                 if (st == 3 || st == 5) {
                     tbody.append("<button class='text-gray-400 cursor-not-allowed' disabled>Trạng thái</button>");
                 } else {
-                    tbody.append("<div class='dropdown relative'><button class='text-gray-600 hover:text-gray-900 dropdown-toggle'>Trạng thái</button><ul class='dropdown-menu absolute right-0 mt-2 min-w-[160px] bg-white shadow-lg rounded-md border border-gray-200 py-1 z-10' style='display:none;'>");
+                    tbody.append(
+                            "<div class='dropdown relative'><button class='text-gray-600 hover:text-gray-900 dropdown-toggle'>Trạng thái</button><ul class='dropdown-menu absolute right-0 mt-2 min-w-[160px] bg-white shadow-lg rounded-md border border-gray-200 py-1 z-10' style='display:none;'>");
                     for (Status s : statuses) {
-                        tbody.append("<li><a href=\"javascript:void(0)\" class='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100' onclick=\"confirmStatusChange(" + s.getStatusID() + ", " + order.getId() + ", '" + s.getStatusName().replace("'", "\\'") + "')\">").append(s.getStatusName()).append("</a></li>");
+                        tbody.append(
+                                "<li><a href=\"javascript:void(0)\" class='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100' onclick=\"confirmStatusChange("
+                                        + s.getStatusID() + ", " + order.getId() + ", '"
+                                        + s.getStatusName().replace("'", "\\'") + "')\">")
+                                .append(s.getStatusName()).append("</a></li>");
                     }
                     tbody.append("</ul></div>");
                 }
@@ -72,7 +89,8 @@ public class OrderServlet extends HttpServlet {
             response.getWriter().write(tbody.toString() + "<!--SPLIT--->" + orders.size());
             return;
         }
-        // ...phân trang mặc định...
+
+        // Phân trang mặc định
         int page = 1;
         int pageSize = 10;
         if (request.getParameter("page") != null) {
@@ -102,6 +120,8 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         response.setContentType("application/json");
+        HttpSession session = request.getSession();
+
         try {
             if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("orderId");
@@ -111,62 +131,75 @@ public class OrderServlet extends HttpServlet {
                 response.getWriter().write("{\"success\": " + ok + "}");
                 return;
             } else if ("createOrder".equals(action)) {
-                HttpSession session = request.getSession();
-                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
-                OrderDAO dao = new OrderDAO();
-                /*
-                TODO:
-                CHECK LOGIN OR NOT
-                 */
+                // (Hiếm khi dùng ở đây, thường thanh toán ở ShoppingCartServlet)
+                // Nếu vẫn muốn thêm, có thể tham khảo logic như dưới
                 Users currentUser = (Users) session.getAttribute("user");
                 if (currentUser == null) {
                     request.getRequestDispatcher("Login.jsp").forward(request, response);
+                    return;
+                }
+                Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");
+                if (cart == null || cart.isEmpty()) {
+                    response.getWriter().write("{\"success\": false, \"msg\":\"Giỏ hàng rỗng\"}");
+                    return;
                 }
 
-                dao.createOrder(currentUser.getUserId());
-
-                int orderId = dao.getLastInsertId();
-
-                OrderDetailDAO detailDAO = new OrderDetailDAO();
+                String paymentMethod = request.getParameter("paymentMethod");
+                OrderDAO dao = new OrderDAO();
                 ProductDAO productDAO = new ProductDAO();
+                OrderDetailDAO detailDAO = new OrderDetailDAO();
 
-                double total = 0;
-                List<OrderDetail> detailList = new ArrayList<>();
-                for (String cartItem : cart.keySet()) {
+                double subtotal = 0;
+                for (String id : cart.keySet()) {
+                    int productId = Integer.parseInt(id);
+                    int quantity = cart.get(id);
+                    double price = productDAO.getProductById(productId).getPrice();
+                    subtotal += price * quantity;
+                }
+                Order order = new Order();
+                order.setUserId(currentUser.getUserId());
+                order.setSubtotal(subtotal);
+                order.setTotal(subtotal);
+                order.setStatusId(1);
+                order.setPaymentMethod(paymentMethod == null ? "COD" : paymentMethod);
+
+                int orderId = dao.createOrderReturnId(order);
+                for (String id : cart.keySet()) {
+                    int productId = Integer.parseInt(id);
+                    int quantity = cart.get(id);
+                    double price = productDAO.getProductById(productId).getPrice();
+
                     OrderDetail detail = new OrderDetail();
                     detail.setOrderId(orderId);
-
-                    int productId = Integer.parseInt(cartItem);
-
                     detail.setProductId(productId);
-                    detail.setCartQuantity(cart.get(cartItem));
-                    detail.setPrice(productDAO.getProductById(productId).getPrice());
-                    total += detail.getCartQuantity() * detail.getPrice();
+                    detail.setCartQuantity(quantity);
+                    detail.setPrice(price);
+                    detail.setSubtotal(price * quantity);
                     detailDAO.createDetail(detail);
                 }
-                
-                detailList = detailDAO.getDetailByOrderId(orderId);
-
-                Order order = dao.getOrderById(orderId);
-                order.setTotal(total);
-                dao.updateOrder(order);
-
-                request.setAttribute("order", order);
-                if (!detailList.isEmpty()) {
-                    request.setAttribute("detailList", detailList);
-                }
-                request.setAttribute("currentUser", currentUser);
-                RequestDispatcher rd = request.getRequestDispatcher("Checkout.jsp");
-                rd.forward(request, response);
+                cart.clear();
+                session.setAttribute("CART", cart);
+                session.setAttribute("successMessage", "Đặt hàng thành công! Vui lòng chờ xác nhận.");
+                response.getWriter().write("{\"success\": true}");
+                return;
             }
+
+            // Xử lý cập nhật trạng thái
             String orderIdStr = request.getParameter("orderId");
             String statusIdStr = request.getParameter("statusId");
-            int orderId = Integer.parseInt(orderIdStr);
-            int statusId = Integer.parseInt(statusIdStr);
-            OrderDAO dao = new OrderDAO();
-            boolean ok = dao.updateOrderStatus(orderId, statusId);
-            response.getWriter().write("{\"success\": " + ok + "}");
+            if (orderIdStr != null && statusIdStr != null) {
+                int orderId = Integer.parseInt(orderIdStr);
+                int statusId = Integer.parseInt(statusIdStr);
+                OrderDAO dao = new OrderDAO();
+                boolean ok = dao.updateOrderStatus(orderId, statusId);
+                response.getWriter().write("{\"success\": " + ok + "}");
+                return;
+            }
+
+            // Nếu không có action phù hợp
+            response.getWriter().write("{\"success\": false}");
         } catch (Exception e) {
+            e.printStackTrace();
             response.getWriter().write("{\"success\": false}");
         }
     }

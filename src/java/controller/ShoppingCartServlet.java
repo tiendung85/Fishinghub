@@ -1,91 +1,136 @@
 package controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import dal.UserPermissionDAO;       // THÊM
-import model.Users;                 // THÊM
+import dal.OrderDAO;
+import dal.OrderDetailDAO;
+import dal.ProductDAO;
+import dal.UserPermissionDAO;
+import model.Order;
+import model.OrderDetail;
+import model.Product;
+import model.Users;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.*;
 
 @WebServlet("/ShoppingCartServlet")
 public class ShoppingCartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
-
-        // --- KIỂM TRA QUYỀN MUA HÀNG BỊ CẤM ---
         Users user = (Users) session.getAttribute("user");
+
         if (user != null) {
             int userId = user.getUserId();
             UserPermissionDAO permDao = new UserPermissionDAO();
-            // 7 là permissionId của "Mua hàng" (check lại DB)
             if (permDao.isDeniedPermission(userId, 7)) {
                 session.setAttribute("errorMessage", "Bạn không thể mua hàng do vi phạm nội quy.");
-                response.sendRedirect("PendingOrder.jsp");
+                response.sendRedirect("ShopingCart.jsp");
                 return;
             }
         }
 
-        // Lấy giỏ hàng từ session
-        Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");
-        if (cart == null) {
-            cart = new HashMap<>();
-        }
-
-        // Lấy hành động từ request
         String action = request.getParameter("action");
+        String[] selectedItems = request.getParameterValues("selectedItems");
+        Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");
+        if (cart == null) cart = new HashMap<>();
 
         if ("paySelected".equals(action)) {
-            String[] selectedItems = request.getParameterValues("selectedItems");
-
-            if (selectedItems != null && selectedItems.length > 0) {
-
-                // Lấy hoặc khởi tạo danh sách đã thanh toán & thời gian giao hàng
-                Map<String, Integer> orderedItems = (Map<String, Integer>) session.getAttribute("OrderedItems");
-                if (orderedItems == null) {
-                    orderedItems = new HashMap<>();
-                }
-
-                Map<String, Long> deliveryTimes = (Map<String, Long>) session.getAttribute("DeliveryTimes");
-                if (deliveryTimes == null) {
-                    deliveryTimes = new HashMap<>();
-                }
-
-                for (String itemId : selectedItems) {
-                    if (cart.containsKey(itemId)) {
-                        int quantity = cart.get(itemId);
-                        orderedItems.put(itemId, quantity); // Thêm vào danh sách đã thanh toán
-                        cart.remove(itemId); // Xóa khỏi giỏ hàng
-
-                        long deliveryTime = System.currentTimeMillis() + (2 * 60 * 1000); // 2 phút sau
-                        deliveryTimes.put(itemId, deliveryTime);
-                    }
-                }
-
-                // Lưu lại vào session
-                session.setAttribute("CART", cart);
-                session.setAttribute("OrderedItems", orderedItems);
-                session.setAttribute("DeliveryTimes", deliveryTimes);
-
-                // Thông báo và chuyển hướng
-                session.setAttribute("successMessage", "Mua hàng thành công!");
-                response.sendRedirect("InProgress.jsp");
-            } else {
-                session.setAttribute("errorMessage", "Bạn chưa chọn sản phẩm nào để thanh toán.");
-                response.sendRedirect("PendingOrder.jsp");
+            if (selectedItems == null || selectedItems.length == 0) {
+                session.setAttribute("errorMessage", "Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+                response.sendRedirect("ShopingCart.jsp");
+                return;
             }
-        } else {
-            // Hành động không hợp lệ
-            response.sendRedirect("PendingOrder.jsp");
+
+            String paymentMethod = request.getParameter("paymentMethod");
+            if ("MOMO".equals(paymentMethod)) {
+                response.sendRedirect("MomoNotSupported.jsp");
+                return;
+            }
+
+            OrderDAO orderDAO = new OrderDAO();
+            ProductDAO productDAO = new ProductDAO();
+            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+
+            double subtotal = 0;
+            for (String id : selectedItems) {
+                int productId = Integer.parseInt(id);
+                int quantity = cart.get(id);
+                double price = productDAO.getProductById(productId).getPrice();
+                subtotal += price * quantity;
+            }
+
+            Order newOrder = new Order();
+            newOrder.setUserId(user.getUserId());
+            newOrder.setSubtotal(subtotal);
+            newOrder.setTotal(subtotal);
+            newOrder.setStatusId(1); // Đơn chờ xác nhận
+            newOrder.setPaymentMethod(paymentMethod == null ? "COD" : paymentMethod);
+
+            int orderId = orderDAO.createOrderReturnId(newOrder); // Đã có mã đơn
+
+for (String id : selectedItems) {
+    int productId = Integer.parseInt(id);
+    int quantity = cart.get(id);
+    double price = productDAO.getProductById(productId).getPrice();
+
+    OrderDetail detail = new OrderDetail();
+    detail.setOrderId(orderId);
+    detail.setProductId(productId);
+    detail.setCartQuantity(quantity);
+    detail.setPrice(price);
+    detail.setSubtotal(price * quantity);
+
+    orderDetailDAO.createDetail(detail);  // PHẢI CÓ DÒNG NÀY!
+    cart.remove(id);
+}
+
+
+            session.setAttribute("CART", cart);
+            session.setAttribute("successMessage", "Đặt hàng thành công! Vui lòng chờ chủ hồ xác nhận đơn.");
+            response.sendRedirect("ShopingCart.jsp");
+            return;
         }
+
+        // Các xử lý khác giữ nguyên
+        if (action != null && action.startsWith("deleteItem_")) {
+            String productId = action.substring("deleteItem_".length());
+            cart.remove(productId);
+            session.setAttribute("CART", cart);
+            response.sendRedirect("ShopingCart.jsp");
+            return;
+        }
+
+        if (action != null && action.startsWith("updateItem_")) {
+            String productId = action.substring("updateItem_".length());
+            String quantityParam = request.getParameter("quantity_" + productId);
+            if (quantityParam != null) {
+                try {
+                    int quantity = Integer.parseInt(quantityParam);
+                    if (quantity > 0) cart.put(productId, quantity);
+                } catch (NumberFormatException e) {
+                    // Ignore
+                }
+            }
+            session.setAttribute("CART", cart);
+            response.sendRedirect("ShopingCart.jsp");
+            return;
+        }
+
+        if ("updateCart".equals(request.getParameter("btAction"))) {
+            response.sendRedirect("ShopingCart.jsp");
+            return;
+        } else if ("deleteCart".equals(request.getParameter("btAction"))) {
+            if (selectedItems != null) {
+                for (String id : selectedItems) cart.remove(id);
+            }
+            session.setAttribute("CART", cart);
+            response.sendRedirect("ShopingCart.jsp");
+            return;
+        }
+        response.sendRedirect("ShopingCart.jsp");
     }
 }

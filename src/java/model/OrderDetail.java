@@ -1,76 +1,42 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 public class OrderDetail {
 
-    private int Id;
-    private int OrderId;
-    private int ProductId;
-    private int CartQuantity;
-    private double Price;
-    private double Subtotal;
+    private int id;             // Mã chi tiết đơn hàng
+    private int orderId;        // Mã đơn hàng
+    private int productId;      // Mã sản phẩm
+    private int cartQuantity;   // Số lượng sản phẩm
+    private double price;       // Đơn giá từng sản phẩm
+    private double subtotal;    // Thành tiền của dòng này
 
-    public OrderDetail() {
+    // Constructor
+    public OrderDetail() { }
+
+    public OrderDetail(int id, int orderId, int productId, int cartQuantity, double price, double subtotal) {
+        this.id = id;
+        this.orderId = orderId;
+        this.productId = productId;
+        this.cartQuantity = cartQuantity;
+        this.price = price;
+        this.subtotal = subtotal;
     }
 
-    public OrderDetail(int Id, int OrderId, int ProductId, int CartQuantity, double Price, double Subtotal) {
-        this.Id = Id;
-        this.OrderId = OrderId;
-        this.ProductId = ProductId;
-        this.CartQuantity = CartQuantity;
-        this.Price = Price;
-        this.Subtotal = Subtotal;
-    }
+    // GETTER & SETTER
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public int getId() {
-        return Id;
-    }
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
 
-    public void setId(int Id) {
-        this.Id = Id;
-    }
+    public int getProductId() { return productId; }
+    public void setProductId(int productId) { this.productId = productId; }
 
-    public int getOrderId() {
-        return OrderId;
-    }
+    public int getCartQuantity() { return cartQuantity; }
+    public void setCartQuantity(int cartQuantity) { this.cartQuantity = cartQuantity; }
 
-    public void setOrderId(int OrderId) {
-        this.OrderId = OrderId;
-    }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
 
-    public int getProductId() {
-        return ProductId;
-    }
-
-    public void setProductId(int ProductId) {
-        this.ProductId = ProductId;
-    }
-
-    public int getCartQuantity() {
-        return CartQuantity;
-    }
-
-    public void setCartQuantity(int CartQuantity) {
-        this.CartQuantity = CartQuantity;
-    }
-
-    public double getPrice() {
-        return Price;
-    }
-
-    public void setPrice(double Price) {
-        this.Price = Price;
-    }
-
-    public double getSubtotal() {
-        return Subtotal;
-    }
-
-    public void setSubtotal(double Subtotal) {
-        this.Subtotal = Subtotal;
-    }
-
+    public double getSubtotal() { return subtotal; }
+    public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
 }

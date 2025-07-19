@@ -11,40 +11,73 @@ public class OrderDAO extends DBConnect {
         super();
     }
 
-    public boolean createOrder(int userId) {
-        String sql = "insert into Orders ( UserId, Subtotal, Total, OrderDate, StatusID) "
-                + "VALUES (?, 0, 0, CURRENT_TIMESTAMP, 1)";
-        Order o = null;
+        public int createOrder(Order order) {
+        String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod,RejectReason) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?,?)";
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, userId);
-            int rs = ps.executeUpdate();
-            if (rs > 0) {
-                return true;
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, order.getUserId());
+            ps.setDouble(2, order.getSubtotal());
+            ps.setDouble(3, order.getTotal());
+            ps.setInt(4, order.getStatusId());
+            ps.setString(5, order.getPaymentMethod());
+            ps.setString(5, order.getRejectReason());
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) return -1;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
     public boolean updateOrder(Order order) {
-        String sql = "update Orders set Subtotal = ?, Total = ? "
-                + "where Id = ?";
+        String sql = "update Orders set Subtotal = ?, Total = ?, StatusID = ?, PaymentMethod = ? where Id = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setDouble(1, order.getSubtotal());
             ps.setDouble(2, order.getTotal());
-            ps.setInt(3, order.getId());
+            ps.setInt(3, order.getStatusId());
+            ps.setString(4, order.getPaymentMethod());
+            ps.setInt(5, order.getId());
             int rs = ps.executeUpdate();
-            if (rs > 0) {
-                return true;
-            }
+            return rs > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
+    public List<Order> getAllWaitingConfirmOrders() {
+    List<Order> list = new ArrayList<>();
+    String sql = "SELECT o.*, u.FullName FROM Orders o " +
+                 "JOIN Users u ON o.UserId = u.UserId " +
+                 "WHERE o.StatusID = 1 " +
+                 "ORDER BY o.OrderDate DESC";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Order o = new Order();
+            o.setId(rs.getInt("Id"));
+            o.setUserId(rs.getInt("UserId"));
+            o.setCustomerName(rs.getString("FullName"));
+            o.setOrderDate(rs.getTimestamp("OrderDate"));
+            o.setSubtotal(rs.getDouble("Subtotal"));
+            o.setTotal(rs.getDouble("Total"));
+            o.setStatusId(rs.getInt("StatusID"));
+            o.setPaymentMethod(rs.getString("PaymentMethod"));
+            o.setPaymentMethod(rs.getString("RejectReason"));
+            // Thêm các trường khác nếu cần
+            list.add(o);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 
     public int getLastInsertId() {
         String sql = "select @@identity";
@@ -61,20 +94,22 @@ public class OrderDAO extends DBConnect {
     }
 
     public Order getOrderById(int id) {
-        String sql = "select * from orders where Id = ?";
+        String sql = "select * from Orders where Id = ?";
         Order o = null;
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 o = new Order();
                 o.setId(rs.getInt("Id"));
+                o.setUserId(rs.getInt("UserId"));
                 o.setOrderDate(rs.getTimestamp("OrderDate"));
                 o.setSubtotal(rs.getDouble("Subtotal"));
                 o.setTotal(rs.getDouble("Total"));
+                o.setStatusId(rs.getInt("StatusID"));
+                o.setPaymentMethod(rs.getString("PaymentMethod"));
             }
-
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -260,6 +295,38 @@ public class OrderDAO extends DBConnect {
         e.printStackTrace();
     }
     return list;
+}
+public int createOrderReturnId(Order order) {
+    String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setInt(1, order.getUserId());
+        ps.setDouble(2, order.getSubtotal());
+        ps.setDouble(3, order.getTotal());
+        ps.setInt(4, order.getStatusId());
+        ps.setString(5, order.getPaymentMethod());
+        int affectedRows = ps.executeUpdate();
+        if (affectedRows == 0) return -1;
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) return generatedKeys.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return -1;
+}
+public boolean updateOrderStatusAndReason(int orderId, int statusId, String reason) {
+    String sql = "UPDATE Orders SET StatusID = ?, RejectReason = ? WHERE Id = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, statusId);
+        ps.setString(2, reason);
+        ps.setInt(3, orderId);
+        int rows = ps.executeUpdate();
+        return rows > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
 }
 
 }
