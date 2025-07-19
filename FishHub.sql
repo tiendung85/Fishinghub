@@ -25,7 +25,11 @@ CREATE TABLE Role (
 select * from Role
 select * from Users
 
+SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())
 
+UPDATE Users
+SET CreatedAt = DATEADD(DAY, +7, GETDATE())
+WHERE UserId = 3;
 
 -- Users
 CREATE TABLE Users (

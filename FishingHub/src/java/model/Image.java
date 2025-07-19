@@ -53,9 +53,5 @@ public class Image {
     public String toString() {
         return "Image{" + "imageId=" + imageId + ", postId=" + postId + ", imagePath=" + imagePath + '}';
     }
-    
-    
-    
-    
 
 }

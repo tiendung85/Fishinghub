@@ -10,6 +10,7 @@ public class Post {
     private String topic;
     private String title;
     private String content;
+    private String Status;
 
     private Timestamp createdAt;
     private List<String> images;
@@ -27,7 +28,6 @@ public class Post {
         this.topic = topic;
         this.title = title;
         this.content = content;
-
         this.createdAt = createdAt;
     }
 
@@ -71,6 +71,13 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public String getStatus() {
+        return title;
+    }
+
+    public void setStatus(String status) {
+        this.title = status;
     }
 
     public String getContent() {
@@ -118,6 +125,8 @@ public class Post {
     public void setVideos(List<String> videos) {
         this.videos = videos;
     }
+    
+    
 
     @Override
     public String toString() {

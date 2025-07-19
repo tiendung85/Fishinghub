@@ -194,4 +194,47 @@ public void markResetTokenUsed(String email, String code) {
         e.printStackTrace();
     }
 }
+public int countNewUsersInLastWeek() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())";
+    try (PreparedStatement ps = connection.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
+public int countNewUsersInPreviousWeek() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())";
+    try (PreparedStatement ps = connection.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+public int countUserByRole(String roleName) {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Users U JOIN Role R ON U.RoleId = R.RoleId WHERE R.RoleName = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, roleName);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
 }

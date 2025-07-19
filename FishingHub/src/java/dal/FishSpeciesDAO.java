@@ -76,7 +76,163 @@ public class FishSpeciesDAO extends DBConnect {
             insertImagesForFish(fishId, imageUrls, mainImageIndex);
         }
     }
+    
+        // Xóa toàn bộ ảnh của 1 loài cá
+    public void deleteAllImagesOfFish(int fishSpeciesId) throws SQLException {
+        String sql = "DELETE FROM FishSpeciesImages WHERE FishSpeciesId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, fishSpeciesId);
+            ps.executeUpdate();
+        }
+    }
 
+    // Chèn danh sách ảnh
+    public void insertImagesForFish(int fishId, List<String> imageUrls, int mainImageIndex) throws SQLException {
+        String sql = "INSERT INTO dbo.FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < imageUrls.size(); i++) {
+                ps.setInt(1, fishId);
+                ps.setString(2, imageUrls.get(i));
+                ps.setBoolean(3, i == mainImageIndex);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+        // Thêm mới loài cá
+    public void addFishSpecies(FishSpecies fish) throws SQLException {
+        String sql = "INSERT INTO dbo.FishSpecies (CommonName, ScientificName, Description, Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques, DifficultyLevel, AverageWeightKg, AverageLengthCm, Habitat, Behavior, Tips) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, fish.getCommonName());
+            ps.setString(2, fish.getScientificName());
+            ps.setString(3, fish.getDescription());
+            ps.setString(4, fish.getBait());
+            ps.setString(5, fish.getBestSeason());
+            ps.setString(6, fish.getBestTimeOfDay());
+            ps.setString(7, fish.getFishingSpots());
+            ps.setString(8, fish.getFishingTechniques());
+            ps.setInt(9, fish.getDifficultyLevel());
+            ps.setDouble(10, fish.getAverageWeightKg());
+            ps.setDouble(11, fish.getLength());
+            ps.setString(12, fish.getHabitat());
+            ps.setString(13, fish.getBehavior());
+            ps.setString(14, fish.getTips());
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    fish.setId(rs.getInt(1));
+                }
+            }
+        }
+
+    }
+
+    // Cập nhật loài cá
+    public void updateFishSpecies(FishSpecies fish) throws SQLException {
+        String sql = "UPDATE dbo.FishSpecies SET CommonName = ?, ScientificName = ?, Description = ?, Bait = ?, BestSeason = ?, BestTimeOfDay = ?, FishingSpots = ?, FishingTechniques = ?, DifficultyLevel = ?, AverageWeightKg = ?, AverageLengthCm = ?, Habitat = ?, Behavior = ?, Tips = ? WHERE Id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, fish.getCommonName());
+            ps.setString(2, fish.getScientificName());
+            ps.setString(3, fish.getDescription());
+            ps.setString(4, fish.getBait());
+            ps.setString(5, fish.getBestSeason());
+            ps.setString(6, fish.getBestTimeOfDay());
+            ps.setString(7, fish.getFishingSpots());
+            ps.setString(8, fish.getFishingTechniques());
+            ps.setInt(9, fish.getDifficultyLevel());
+            ps.setDouble(10, fish.getAverageWeightKg());
+            ps.setDouble(11, fish.getLength());
+            ps.setString(12, fish.getHabitat());
+            ps.setString(13, fish.getBehavior());
+            ps.setString(14, fish.getTips());
+            ps.setInt(15, fish.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    // Xóa loài cá theo id
+    public void deleteFishSpecies(int id) throws SQLException {
+        String sql = "DELETE FROM FishSpecies WHERE Id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+
+
+    // Lấy danh sách cá có phân trang, tìm kiếm theo tên thường gọi và lọc độ khó
+    public List<FishSpecies> getFishSpeciesByPageAndFilter(int page, int pageSize, String search, Integer difficulty) throws SQLException {
+        List<FishSpecies> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM FishSpecies WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND CommonName LIKE ?");
+            params.add("%" + search.trim() + "%");
+        }
+        if (difficulty != null) {
+            sql.append(" AND DifficultyLevel = ?");
+            params.add(difficulty);
+        }
+        sql.append(" ORDER BY Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add((page - 1) * pageSize);
+        params.add(pageSize);
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FishSpecies fish = new FishSpecies();
+                fish.setId(rs.getInt("Id"));
+                fish.setCommonName(rs.getString("CommonName"));
+                fish.setScientificName(rs.getString("ScientificName"));
+                fish.setDescription(rs.getString("Description"));
+                fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
+                fish.setBait(rs.getString("Bait"));
+                fish.setBestSeason(rs.getString("BestSeason"));
+                fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
+                fish.setFishingSpots(rs.getString("FishingSpots"));
+                fish.setFishingTechniques(rs.getString("FishingTechniques"));
+                fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
+                fish.setAverageWeightKg(rs.getDouble("AverageWeightKg"));
+                fish.setLength(rs.getDouble("AverageLengthCm"));
+                fish.setHabitat(rs.getString("Habitat"));
+                fish.setBehavior(rs.getString("Behavior"));
+                fish.setTips(rs.getString("Tips"));
+                fish.setImages(getImagesByFishSpeciesId(fish.getId()));
+                list.add(fish);
+            }
+        }
+        return list;
+    }
+
+    // Đếm tổng số cá theo filter
+    public int getTotalFishSpeciesByFilter(String search, Integer difficulty) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM FishSpecies WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND CommonName LIKE ?");
+            params.add("%" + search.trim() + "%");
+        }
+        if (difficulty != null) {
+            sql.append(" AND DifficultyLevel = ?");
+            params.add(difficulty);
+        }
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+    
     public List<FishSpecies> getFishSpeciesByPage(int page, int pageSize) throws SQLException {
         List<FishSpecies> list = new ArrayList<>();
         String sql = "SELECT * FROM FishSpecies ORDER BY Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -233,159 +389,7 @@ public class FishSpeciesDAO extends DBConnect {
         return list;
     }
 
-    // Thêm mới loài cá
-    public void addFishSpecies(FishSpecies fish) throws SQLException {
-        String sql = "INSERT INTO dbo.FishSpecies (CommonName, ScientificName, Description, Bait, BestSeason, BestTimeOfDay, FishingSpots, FishingTechniques, DifficultyLevel, AverageWeightKg, AverageLengthCm, Habitat, Behavior, Tips) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, fish.getCommonName());
-            ps.setString(2, fish.getScientificName());
-            ps.setString(3, fish.getDescription());
-            ps.setString(4, fish.getBait());
-            ps.setString(5, fish.getBestSeason());
-            ps.setString(6, fish.getBestTimeOfDay());
-            ps.setString(7, fish.getFishingSpots());
-            ps.setString(8, fish.getFishingTechniques());
-            ps.setInt(9, fish.getDifficultyLevel());
-            ps.setDouble(10, fish.getAverageWeightKg());
-            ps.setDouble(11, fish.getLength());
-            ps.setString(12, fish.getHabitat());
-            ps.setString(13, fish.getBehavior());
-            ps.setString(14, fish.getTips());
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    fish.setId(rs.getInt(1));
-                }
-            }
-        }
 
-    }
-
-    // Cập nhật loài cá
-    public void updateFishSpecies(FishSpecies fish) throws SQLException {
-        String sql = "UPDATE dbo.FishSpecies SET CommonName = ?, ScientificName = ?, Description = ?, Bait = ?, BestSeason = ?, BestTimeOfDay = ?, FishingSpots = ?, FishingTechniques = ?, DifficultyLevel = ?, AverageWeightKg = ?, AverageLengthCm = ?, Habitat = ?, Behavior = ?, Tips = ? WHERE Id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, fish.getCommonName());
-            ps.setString(2, fish.getScientificName());
-            ps.setString(3, fish.getDescription());
-            ps.setString(4, fish.getBait());
-            ps.setString(5, fish.getBestSeason());
-            ps.setString(6, fish.getBestTimeOfDay());
-            ps.setString(7, fish.getFishingSpots());
-            ps.setString(8, fish.getFishingTechniques());
-            ps.setInt(9, fish.getDifficultyLevel());
-            ps.setDouble(10, fish.getAverageWeightKg());
-            ps.setDouble(11, fish.getLength());
-            ps.setString(12, fish.getHabitat());
-            ps.setString(13, fish.getBehavior());
-            ps.setString(14, fish.getTips());
-            ps.setInt(15, fish.getId());
-            ps.executeUpdate();
-        }
-    }
-
-    // Xóa loài cá theo id
-    public void deleteFishSpecies(int id) throws SQLException {
-        String sql = "DELETE FROM FishSpecies WHERE Id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
-
-    // Xóa toàn bộ ảnh của 1 loài cá
-    public void deleteAllImagesOfFish(int fishSpeciesId) throws SQLException {
-        String sql = "DELETE FROM FishSpeciesImages WHERE FishSpeciesId = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, fishSpeciesId);
-            ps.executeUpdate();
-        }
-    }
-
-    // Chèn danh sách ảnh
-    public void insertImagesForFish(int fishId, List<String> imageUrls, int mainImageIndex) throws SQLException {
-        String sql = "INSERT INTO dbo.FishSpeciesImages (FishSpeciesId, ImageUrl, IsMain) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            for (int i = 0; i < imageUrls.size(); i++) {
-                ps.setInt(1, fishId);
-                ps.setString(2, imageUrls.get(i));
-                ps.setBoolean(3, i == mainImageIndex);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
-    }
-
-    // Lấy danh sách cá có phân trang, tìm kiếm theo tên thường gọi và lọc độ khó
-    public List<FishSpecies> getFishSpeciesByPageAndFilter(int page, int pageSize, String search, Integer difficulty) throws SQLException {
-        List<FishSpecies> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM FishSpecies WHERE 1=1");
-        List<Object> params = new ArrayList<>();
-        if (search != null && !search.trim().isEmpty()) {
-            sql.append(" AND CommonName LIKE ?");
-            params.add("%" + search.trim() + "%");
-        }
-        if (difficulty != null) {
-            sql.append(" AND DifficultyLevel = ?");
-            params.add(difficulty);
-        }
-        sql.append(" ORDER BY Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-        params.add((page - 1) * pageSize);
-        params.add(pageSize);
-        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                ps.setObject(i + 1, params.get(i));
-            }
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                FishSpecies fish = new FishSpecies();
-                fish.setId(rs.getInt("Id"));
-                fish.setCommonName(rs.getString("CommonName"));
-                fish.setScientificName(rs.getString("ScientificName"));
-                fish.setDescription(rs.getString("Description"));
-                fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
-                fish.setBait(rs.getString("Bait"));
-                fish.setBestSeason(rs.getString("BestSeason"));
-                fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
-                fish.setFishingSpots(rs.getString("FishingSpots"));
-                fish.setFishingTechniques(rs.getString("FishingTechniques"));
-                fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
-                fish.setAverageWeightKg(rs.getDouble("AverageWeightKg"));
-                fish.setLength(rs.getDouble("AverageLengthCm"));
-                fish.setHabitat(rs.getString("Habitat"));
-                fish.setBehavior(rs.getString("Behavior"));
-                fish.setTips(rs.getString("Tips"));
-                fish.setImages(getImagesByFishSpeciesId(fish.getId()));
-                list.add(fish);
-            }
-        }
-        return list;
-    }
-
-    // Đếm tổng số cá theo filter
-    public int getTotalFishSpeciesByFilter(String search, Integer difficulty) throws SQLException {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM FishSpecies WHERE 1=1");
-        List<Object> params = new ArrayList<>();
-        if (search != null && !search.trim().isEmpty()) {
-            sql.append(" AND CommonName LIKE ?");
-            params.add("%" + search.trim() + "%");
-        }
-        if (difficulty != null) {
-            sql.append(" AND DifficultyLevel = ?");
-            params.add(difficulty);
-        }
-        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                ps.setObject(i + 1, params.get(i));
-            }
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        }
-        return 0;
-    }
 
 }
 // Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...

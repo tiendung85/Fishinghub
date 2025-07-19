@@ -193,50 +193,7 @@
             <div id="lake-info-container"></div>
         </div>
 
-        <!-- Modal Thêm cá -->
-        <div id="add-fish-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                <h3 class="text-lg font-bold mb-4">Thêm loài cá vào hồ <span id="add-fish-lake-name"></span></h3>
-                <form id="add-fish-form" method="post" action="addFishToLake">
-                    <input type="hidden" name="lakeId" id="add-fish-lake-id" />
-                    <div id="add-fish-list" class="mb-4">
-                        <c:forEach var="fish" items="${lake.fishSpeciesNotInLake}">
-                            <c:set var="addDisplayStyle" value="none" />
-                            <label class="flex items-center mb-1">
-                                <input type="checkbox" name="fishSpeciesIds" value="${fish.id}" class="mr-2 add-fish-checkbox" onchange="toggleFishPriceInput(this)" />
-                                <span>${fish.commonName}</span>
-                                <input type="number" name="fishPrices" placeholder="Giá (VND/kg)" class="ml-2 border rounded px-2 py-1 w-28 fish-price-input" min="1000" step="1000" style="display: ${addDisplayStyle};" />
-                                <span class="ml-1 text-xs text-gray-500">VND/kg</span>
-                            </label>
-                        </c:forEach>
-                    </div>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" onclick="closeAddFishModal()" class="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300">Hủy</button>
-                        <button type="submit" class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600">Thêm</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <c:if test="${not empty lakes}">
-            <c:forEach var="lake" items="${lakes}">
-                <div id="fish-list-not-in-lake-${lake.lakeId}" class="hidden">
-                    <c:choose>
-                        <c:when test="${not empty lake.fishSpeciesNotInLake}">
-                            <c:forEach var="fish" items="${lake.fishSpeciesNotInLake}">
-                                <label class="flex items-center mb-1">
-                                    <input type="checkbox" name="fishSpeciesIds" value="${fish.id}" class="mr-2" />
-                                    <span>${fish.commonName}</span>
-                                    <input type="number" name="fishPrices" placeholder="Giá (VNĐ)" class="ml-2 border rounded px-2 py-1 w-24" min="0" step="1000" required />
-                                </label>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="text-gray-500">Tất cả loài cá đã có trong hồ này.</span>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </c:forEach>
-        </c:if>
+        
 
         <!-- Modal Sửa hồ -->
         <div id="edit-lake-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
@@ -368,6 +325,8 @@
             function closeDeleteLakeModal() {
                 document.getElementById('delete-lake-modal').classList.add('hidden');
             }
+            
+            
             function toggleFishPriceInput(checkbox) {
                 var priceInput = checkbox.parentElement.querySelector('.fish-price-input');
                 if (checkbox.checked) {
@@ -507,37 +466,10 @@
                 });
             }
 
-            function toggleFishPriceInput(checkbox) {
-                var priceInput = checkbox.parentElement.querySelector('.fish-price-input');
-                if (checkbox.checked) {
-                    priceInput.style.display = '';
-                    priceInput.required = true;
-                    priceInput.disabled = false;
-                } else {
-                    priceInput.style.display = 'none';
-                    priceInput.required = false;
-                    priceInput.disabled = false;
-                    priceInput.value = '';
-                }
-            }
+            
 
             // Đảm bảo chỉ required giá khi checkbox được chọn (cập nhật cá)
-            document.querySelectorAll('#update-fish-list .update-fish-checkbox').forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    var priceInput = this.parentElement.querySelector('input[type="number"]');
-                    var hasPrice = this.getAttribute('data-has-price') === 'true';
-                    if (this.checked) {
-                        priceInput.style.display = '';
-                        priceInput.disabled = false;
-                        priceInput.required = true;
-                    } else {
-                        priceInput.style.display = 'none';
-                        priceInput.required = false;
-                        priceInput.disabled = false;
-                        priceInput.value = '';
-                    }
-                });
-            });
+            
 
             // Format giá tiền VND (1.000, 30.000)
             function formatVND(num) {
