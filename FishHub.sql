@@ -26,7 +26,7 @@ select * from Role
 select * from Users
 
 SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())
-
+SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())
 UPDATE Users
 SET CreatedAt = DATEADD(DAY, +7, GETDATE())
 WHERE UserId = 3;
@@ -103,6 +103,7 @@ INSERT INTO OrderStatus (StatusID, StatusName) VALUES
 (4, N'Đã thanh toán'),
 (5, N'Đã hủy');
 
+select * from Post
 -- Orders
 CREATE TABLE Orders (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -218,7 +219,7 @@ CREATE TABLE Post (
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
-
+select * from Post
 
 CREATE TABLE Image (
     ImageId INT PRIMARY KEY IDENTITY,
@@ -759,3 +760,26 @@ VALUES
 (N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 4, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
 (N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 4, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
 (N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 4, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
+
+
+INSERT INTO Post (UserId, Topic, Title, [Content], CreatedAt, Status)
+VALUES 
+(1, N'Câu cá', N'Bài tuần này 1', N'Nội dung tuần này 1', '2025-07-14 10:00:00', N'Pending'),
+(2, N'Câu cá', N'Bài tuần này 2', N'Nội dung tuần này 2', '2025-07-16 09:00:00', N'Pending'),
+(3, N'Câu cá', N'Bài tuần này 3', N'Nội dung tuần này 3', '2025-07-17 14:00:00', N'Pending');
+INSERT INTO Post (UserId, Topic, Title, [Content], CreatedAt, Status)
+VALUES 
+(1, N'Câu cá', N'Bài tuần trước 1', N'Nội dung tuần trước 1', '2025-07-07 08:00:00', N'Pending'),
+(2, N'Câu cá', N'Bài tuần trước 2', N'Nội dung tuần trước 2', '2025-07-09 13:30:00', N'Pending');
+INSERT INTO Post (UserId, Topic, Title, [Content], CreatedAt, Status)
+VALUES 
+(1, N'Câu cá', N'Bài đã duyệt', N'Nội dung đã duyệt', '2025-07-18 08:00:00', N'Approved'),
+(2, N'Câu cá', N'Bài bị từ chối', N'Nội dung bị từ chối', '2025-07-15 11:00:00', N'Rejected');
+
+select * from Role
+
+select * from Users
+
+UPDATE Users
+SET RoleId = 2
+WHERE UserId = 1;

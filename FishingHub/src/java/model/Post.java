@@ -11,6 +11,7 @@ public class Post {
     private String title;
     private String content;
     private String Status;
+    private String AuthorName;
 
     private Timestamp createdAt;
     private List<String> images;
@@ -40,6 +41,8 @@ public class Post {
 
         this.createdAt = createdAt;
     }
+    
+    
 
     public int getPostId() {
         return postId;
@@ -55,6 +58,14 @@ public class Post {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+    
+    public String getAuthorName() {
+        return AuthorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.AuthorName = authorName;
     }
 
     public String getTopic() {

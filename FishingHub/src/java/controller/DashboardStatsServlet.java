@@ -7,8 +7,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession; // cần import dòng này
 import java.io.IOException;
-import java.util.Calendar;
+import java.util.List;
+import model.Post;
 
 @WebServlet(name = "DashboardStatsServlet", urlPatterns = {"/dashboard-stats"})
 public class DashboardStatsServlet extends HttpServlet {
@@ -16,6 +18,14 @@ public class DashboardStatsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // === CHECK ADMIN LOGIN ===
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("roleId") == null
+                || !Integer.valueOf(3).equals(session.getAttribute("roleId"))) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         UserDao userDao = new UserDao();
         PostDAO postDao = new PostDAO();
 
@@ -74,8 +84,15 @@ public class DashboardStatsServlet extends HttpServlet {
         request.setAttribute("countFishingOwner", countFishingOwner);
         request.setAttribute("countAdmin", countAdmin);
 
+        int totalUsers = userDao.countAllUsers();
+        request.setAttribute("totalUsers", totalUsers);
+
+        List<Post> topPendingPosts = postDao.getTopPendingPosts(4);
+        request.setAttribute("topPendingPosts", topPendingPosts);
+
+        System.out.println("SIZE: " + (topPendingPosts == null ? "null" : topPendingPosts.size()));
+
         // Other dashboard data...
         request.getRequestDispatcher("dashboard_admin/Dashboard.jsp").forward(request, response);
     }
-
 }

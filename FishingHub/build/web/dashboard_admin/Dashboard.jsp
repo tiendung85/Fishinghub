@@ -1,4 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
     Integer newUsers = (Integer) request.getAttribute("newUsers");
     if (newUsers == null) {
@@ -224,33 +227,7 @@
                                 </div>
                                 Thông tin loài cá
                             </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">
-                                Thành tựu & Xếp hạng
-                            </div>
-                            <a href="#"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-medal-line"></i>
-                                </div>
-                                Thành tựu
-                            </a>
-                            <a href="#"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-bar-chart-line"></i>
-                                </div>
-                                Bảng xếp hạng
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">
-                                Thống kê
-                            </div>
-                            <a href="#"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-line-chart-line"></i>
-                                </div>
-                                Báo cáo
-                            </a>
+
                         </div>
                     </div>
                     <div class="flex items-center p-4 border-t border-gray-200">
@@ -260,10 +237,15 @@
                                  alt="Admin" />
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-700">Nguyễn Văn Quản</p>
+
                             <p class="text-xs font-medium text-gray-500">Quản trị viên</p>
                         </div>
                     </div>
+                    <div class="p-4 border-t border-gray-200">
+                        <form action="logout" method="post" style="display:inline;">
+                            <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                        </form>
+                    </div>      
                 </div>
             </div>
             <!-- Main content -->
@@ -277,17 +259,11 @@
                     </button>
                     <div class="flex-1 px-4 flex justify-between">
                         <div class="flex-1 flex items-center">
-                            <div class="w-full max-w-2xl">
-                                <div class="relative w-full">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
-                                            <i class="ri-search-line"></i>
-                                        </div>
-                                    </div>
-                                    <input type="text"
-                                           class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                                           placeholder="Tìm kiếm..." />
-                                </div>
+                            <div class="flex justify-end items-center h-16 px-4 space-x-4">
+                                <span class="text-base font-medium text-gray-700">
+                                    Xin chào, <span class="font-semibold text-primary">ADMIN</span>🐳
+                                </span>
+                                
                             </div>
                         </div>
                         <div class="ml-4 flex items-center md:ml-6">
@@ -322,9 +298,8 @@
                         </div>
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             <!-- Stats cards -->
-                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+                                <!-- Card Người dùng mới -->
                                 <div class="bg-white overflow-hidden shadow rounded-lg">
                                     <div class="p-5">
                                         <div class="flex items-center">
@@ -354,7 +329,6 @@
                                                             </div>
                                                             <span>
                                                                 <%= String.format("%.1f", percentChange) %>% so với tuần trước
-
                                                             </span>
                                                         </div>
                                                     </dd>
@@ -363,8 +337,7 @@
                                         </div>
                                     </div>
                                 </div>
-
-
+                                <!-- Card Bài viết chờ duyệt -->
                                 <div class="bg-white overflow-hidden shadow rounded-lg">
                                     <div class="p-5">
                                         <div class="flex items-center">
@@ -405,477 +378,85 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!-- Charts -->
-                            <%-- Ở vị trí muốn hiển thị biểu đồ (ví dụ ngay dưới phần Dashboard) --%>
-                            <div class="bg-white p-5 rounded-lg shadow mt-8">
-                                <h3 class="text-lg font-bold mb-3">User Distribution by Role</h3>
-                                <canvas id="userRoleChart" width="400" height="200"></canvas>
-                            </div>
-
-                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                            <script>
-                                        const userRoleLabels = ['User', 'FishingOwner', 'Admin'];
-                                        const userRoleCounts = [
-                                <%= request.getAttribute("countUser") != null ? request.getAttribute("countUser") : 0 %>,
-                                <%= request.getAttribute("countFishingOwner") != null ? request.getAttribute("countFishingOwner") : 0 %>,
-                                <%= request.getAttribute("countAdmin") != null ? request.getAttribute("countAdmin") : 0 %>
-                                        ];
-
-                                        const ctx = document.getElementById('userRoleChart').getContext('2d');
-                                        new Chart(ctx, {
-                                            type: 'bar',
-                                            data: {
-                                                labels: userRoleLabels,
-                                                datasets: [{
-                                                        label: 'User count by role',
-                                                        data: userRoleCounts,
-                                                        borderWidth: 1,
-                                                        backgroundColor: ['#fbbf24', '#38bdf8', '#f87171'],
-                                                    }]
-                                            },
-                                            options: {
-                                                responsive: true,
-                                                plugins: {
-                                                    legend: {display: false}
-                                                },
-                                                scales: {
-                                                    y: {beginAtZero: true}
-                                                }
-                                            }
-                                        });
-                            </script>
-
-
-                            <!-- Recent events and pending approvals -->
-                            <div class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                                <div class="bg-white shadow rounded-lg overflow-hidden">
-                                    <div class="px-5 py-4 border-b border-gray-200">
-                                        <div class="flex items-center justify-between">
-                                            <h2 class="text-lg font-medium text-gray-900">
-                                                Sự kiện sắp diễn ra
-                                            </h2>
-                                            <a href="#" class="text-sm font-medium text-primary hover:text-indigo-800">
-                                                Xem tất cả
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="px-5 py-3 divide-y divide-gray-200">
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Triển lãm cá cảnh Hà Nội 2025
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-calendar-line"></i>
-                                                        </div>
-                                                        <span>25/05/2025 - 28/05/2025</span>
-                                                    </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-map-pin-line"></i>
-                                                        </div>
-                                                        <span>Trung tâm Hội nghị Quốc gia, Hà Nội</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex items-center">
-                                                    <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                        Sắp diễn ra
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Hội thảo kỹ thuật nuôi cá Koi
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-calendar-line"></i>
-                                                        </div>
-                                                        <span>30/05/2025</span>
-                                                    </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-map-pin-line"></i>
-                                                        </div>
-                                                        <span>Khách sạn Mường Thanh, Đà Nẵng</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex items-center">
-                                                    <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                        Sắp diễn ra
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Cuộc thi cá Betta toàn quốc
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-calendar-line"></i>
-                                                        </div>
-                                                        <span>05/06/2025 - 06/06/2025</span>
-                                                    </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-map-pin-line"></i>
-                                                        </div>
-                                                        <span>SECC, Quận 7, TP. Hồ Chí Minh</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex items-center">
-                                                    <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        Đang đăng ký
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <!-- Charts + Bài viết chờ duyệt nằm cạnh nhau -->
+                            <div class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                                <!-- Biểu đồ cột (chiếm 2/3 hàng) -->
+                                <div class="col-span-2 bg-white p-6 rounded-lg shadow flex flex-col">
+                                    <h3 class="text-lg font-bold mb-3">Phân bố người dùng theo vai trò</h3>
+                                    <p class="text-sm text-gray-500 mb-2">
+                                        Tổng số user: <span class="font-semibold text-gray-800"><%= request.getAttribute("totalUsers") %></span>
+                                    </p>
+                                    <canvas id="userRoleChart" width="400" height="200"></canvas>
+                                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                    <script>
+            const userRoleLabels = ['User', 'FishingOwner', 'Admin'];
+            const userRoleCounts = [
+                                        <%= request.getAttribute("countUser") != null ? request.getAttribute("countUser") : 0 %>,
+                                        <%= request.getAttribute("countFishingOwner") != null ? request.getAttribute("countFishingOwner") : 0 %>,
+                                        <%= request.getAttribute("countAdmin") != null ? request.getAttribute("countAdmin") : 0 %>
+            ];
+            const ctx = document.getElementById('userRoleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: userRoleLabels,
+                    datasets: [{
+                            label: 'User count by role',
+                            data: userRoleCounts,
+                            borderWidth: 1,
+                            backgroundColor: ['#fbbf24', '#38bdf8', '#f87171'],
+                        }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {display: false}
+                    },
+                    scales: {
+                        y: {beginAtZero: true}
+                    }
+                }
+            });
+                                    </script>
                                 </div>
-                                <div class="bg-white shadow rounded-lg overflow-hidden">
-                                    <div class="px-5 py-4 border-b border-gray-200">
-                                        <div class="flex items-center justify-between">
-                                            <h2 class="text-lg font-medium text-gray-900">
-                                                Bài viết chờ duyệt
-                                            </h2>
-                                            <a href="#" class="text-sm font-medium text-primary hover:text-indigo-800">
-                                                Xem tất cả
-                                            </a>
-                                        </div>
+
+                                <!-- Card bài viết chờ duyệt (chiếm 1/3 hàng) -->
+                                <div class="col-span-1 bg-white rounded-lg shadow p-6 flex flex-col">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h3 class="font-semibold text-base">Bài viết chờ duyệt</h3>
+                                        <a href="${pageContext.request.contextPath}/admin/post-approval" class="text-blue-600 text-sm hover:underline">Xem tất cả</a>
                                     </div>
-                                    <div class="px-5 py-3 divide-y divide-gray-200">
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Kỹ thuật nuôi cá rồng trong bể kính
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-user-line"></i>
+                                    <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                                        <c:choose>
+                                            <c:when test="${empty topPendingPosts}">
+                                                <div class="text-gray-400 text-sm italic text-center">Không có bài viết chờ duyệt</div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="post" items="${topPendingPosts}">
+                                                    <div class="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
+                                                        <div>
+                                                            <div class="font-medium text-gray-900">${post.title}</div>
+                                                            <div class="text-xs text-gray-500 flex items-center mt-1">
+                                                                <i class="ri-user-line mr-1"></i> ${post.authorName}
+                                                                <i class="ri-time-line ml-4 mr-1"></i>
+                                                                <fmt:formatDate value="${post.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                                            </div>
                                                         </div>
-                                                        <span>Trần Minh Tuấn</span>
+                                                        <div class="flex gap-1">
+                                                            <button class="rounded bg-blue-600 hover:bg-blue-700 text-white p-2"><i class="ri-check-line"></i></button>
+                                                            <button class="rounded bg-red-500 hover:bg-red-600 text-white p-2"><i class="ri-close-line"></i></button>
+                                                        </div>
                                                     </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-time-line"></i>
-                                                        </div>
-                                                        <span>20/05/2025 15:30</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex space-x-2">
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-check-line"></i>
-                                                        </div>
-                                                    </button>
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-close-line"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Kinh nghiệm chọn thức ăn cho cá Koi
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-user-line"></i>
-                                                        </div>
-                                                        <span>Nguyễn Thị Hương</span>
-                                                    </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-time-line"></i>
-                                                        </div>
-                                                        <span>20/05/2025 10:15</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex space-x-2">
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-check-line"></i>
-                                                        </div>
-                                                    </button>
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-close-line"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="py-3">
-                                            <div class="flex justify-between">
-                                                <div class="flex-1">
-                                                    <h3 class="text-sm font-medium text-gray-900">
-                                                        Bệnh thường gặp ở cá Betta và cách điều trị
-                                                    </h3>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-user-line"></i>
-                                                        </div>
-                                                        <span>Phạm Văn Hoàng</span>
-                                                    </div>
-                                                    <div class="mt-1 flex items-center text-sm text-gray-500">
-                                                        <div class="w-4 h-4 mr-1 flex items-center justify-center">
-                                                            <i class="ri-time-line"></i>
-                                                        </div>
-                                                        <span>19/05/2025 18:45</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0 flex space-x-2">
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-check-line"></i>
-                                                        </div>
-                                                    </button>
-                                                    <button
-                                                        class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-close-line"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Recent orders -->
-                            <div class="mt-8">
-                                <div class="bg-white shadow rounded-lg">
-                                    <div class="px-5 py-4 border-b border-gray-200">
-                                        <div class="flex items-center justify-between">
-                                            <h2 class="text-lg font-medium text-gray-900">
-                                                Đơn hàng gần đây
-                                            </h2>
-                                            <a href="#" class="text-sm font-medium text-primary hover:text-indigo-800">
-                                                Xem tất cả
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="overflow-x-auto">
-                                        <table class="min-w-full divide-y divide-gray-200">
-                                            <thead class="bg-gray-50">
-                                                <tr>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Mã đơn hàng
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Khách hàng
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Sản phẩm
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Tổng tiền
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Trạng thái
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Ngày đặt
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Thao tác
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="bg-white divide-y divide-gray-200">
-                                                <tr>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        #ORD-2589
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Đỗ Thanh Hà
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Bể cá mini + Lọc nước
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        1.250.000 ₫
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                            Đã thanh toán
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        21/05/2025
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div class="flex justify-end space-x-2">
-                                                            <button class="text-primary hover:text-indigo-900">
-                                                                Chi tiết
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        #ORD-2588
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Lê Văn Thành
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Cá Koi Kohaku 25cm
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        3.500.000 ₫
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                            Đang giao hàng
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        20/05/2025
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div class="flex justify-end space-x-2">
-                                                            <button class="text-primary hover:text-indigo-900">
-                                                                Chi tiết
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        #ORD-2587
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Nguyễn Thị Mai Anh
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Thức ăn cá Betta + Thuốc xử lý nước
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        450.000 ₫
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                            Đang xử lý
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        20/05/2025
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div class="flex justify-end space-x-2">
-                                                            <button class="text-primary hover:text-indigo-900">
-                                                                Chi tiết
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        #ORD-2586
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Trần Quốc Bảo
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Bộ lọc Atman AT-3338S
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        850.000 ₫
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                            Hoàn thành
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        19/05/2025
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div class="flex justify-end space-x-2">
-                                                            <button class="text-primary hover:text-indigo-900">
-                                                                Chi tiết
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        #ORD-2585
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Phạm Minh Đức
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        Cá Rồng Bạch Kim 15cm
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        5.800.000 ₫
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                            Đã hủy
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        18/05/2025
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div class="flex justify-end space-x-2">
-                                                            <button class="text-primary hover:text-indigo-900">
-                                                                Chi tiết
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+
+
                         </div>
                     </div>
                 </main>
@@ -883,179 +464,9 @@
         </div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                // Products chart
-                const productsChart = echarts.init(document.getElementById("products-chart"));
-                const productsOption = {
-                    animation: false,
-                    tooltip: {
-                        trigger: "axis",
-                        backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        borderColor: "#e5e7eb",
-                        borderWidth: 1,
-                        textStyle: {
-                            color: "#1f2937",
-                        },
-                    },
-                    legend: {
-                        data: ["Đã bán", "Còn lại"],
-                        textStyle: {
-                            color: "#1f2937",
-                        },
-                    },
-                    grid: {
-                        left: "3%",
-                        right: "4%",
-                        bottom: "3%",
-                        containLabel: true,
-                    },
-                    xAxis: {
-                        type: "category",
-                        boundaryGap: false,
-                        data: ["21/04", "26/04", "01/05", "06/05", "11/05", "16/05", "21/05"],
-                        axisLine: {
-                            lineStyle: {
-                                color: "#e5e7eb",
-                            },
-                        },
-                        axisLabel: {
-                            color: "#1f2937",
-                        },
-                    },
-                    yAxis: {
-                        type: "value",
-                        axisLine: {
-                            lineStyle: {
-                                color: "#e5e7eb",
-                            },
-                        },
-                        axisLabel: {
-                            color: "#1f2937",
-                        },
-                        splitLine: {
-                            lineStyle: {
-                                color: "#f3f4f6",
-                            },
-                        },
-                    },
-                    series: [
-                        {
-                            name: "Đã bán",
-                            type: "line",
-                            smooth: true,
-                            lineStyle: {
-                                width: 3,
-                                color: "rgba(87, 181, 231, 1)",
-                            },
-                            symbol: "none",
-                            areaStyle: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                    {
-                                        offset: 0,
-                                        color: "rgba(87, 181, 231, 0.3)",
-                                    },
-                                    {
-                                        offset: 1,
-                                        color: "rgba(87, 181, 231, 0.1)",
-                                    },
-                                ]),
-                            },
-                            data: [120, 132, 101, 134, 90, 230, 210],
-                        },
-                        {
-                            name: "Còn lại",
-                            type: "line",
-                            smooth: true,
-                            lineStyle: {
-                                width: 3,
-                                color: "rgba(141, 211, 199, 1)",
-                            },
-                            symbol: "none",
-                            areaStyle: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                    {
-                                        offset: 0,
-                                        color: "rgba(141, 211, 199, 0.3)",
-                                    },
-                                    {
-                                        offset: 1,
-                                        color: "rgba(141, 211, 199, 0.1)",
-                                    },
-                                ]),
-                            },
-                            data: [220, 182, 191, 234, 290, 330, 310],
-                        },
-                    ],
-                };
-                productsChart.setOption(productsOption);
-                // Category chart
-                const categoryChart = echarts.init(document.getElementById("category-chart"));
-                const categoryOption = {
-                    animation: false,
-                    tooltip: {
-                        trigger: "item",
-                        backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        borderColor: "#e5e7eb",
-                        borderWidth: 1,
-                        textStyle: {
-                            color: "#1f2937",
-                        },
-                    },
-                    legend: {
-                        orient: "vertical",
-                        right: 10,
-                        top: "center",
-                        textStyle: {
-                            color: "#1f2937",
-                        },
-                    },
-                    series: [
-                        {
-                            name: "Phân loại sản phẩm",
-                            type: "pie",
-                            radius: ["40%", "70%"],
-                            center: ["40%", "50%"],
-                            avoidLabelOverlap: false,
-                            itemStyle: {
-                                borderRadius: 8,
-                                borderColor: "#fff",
-                                borderWidth: 2,
-                            },
-                            label: {
-                                show: false,
-                            },
-                            emphasis: {
-                                label: {
-                                    show: false,
-                                },
-                            },
-                            labelLine: {
-                                show: false,
-                            },
-                            data: [
-                                {
-                                    value: 735,
-                                    name: "Cá cảnh",
-                                    itemStyle: {color: "rgba(87, 181, 231, 1)"},
-                                },
-                                {
-                                    value: 580,
-                                    name: "Thức ăn",
-                                    itemStyle: {color: "rgba(141, 211, 199, 1)"},
-                                },
-                                {
-                                    value: 484,
-                                    name: "Thiết bị",
-                                    itemStyle: {color: "rgba(251, 191, 114, 1)"},
-                                },
-                                {
-                                    value: 300,
-                                    name: "Phụ kiện",
-                                    itemStyle: {color: "rgba(252, 141, 98, 1)"},
-                                },
-                            ],
-                        },
-                    ],
-                };
+
+
+
                 categoryChart.setOption(categoryOption);
                 // Resize charts when window size changes
                 window.addEventListener("resize", function () {

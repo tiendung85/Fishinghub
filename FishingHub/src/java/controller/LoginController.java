@@ -24,10 +24,11 @@ public class LoginController extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            session.setAttribute("roleId", user.getRoleId());
             
             // Check roleId and redirect accordingly
             if (user.getRoleId() == 3) {
-                response.sendRedirect("dashboard_admin/Dashboard.jsp");
+                response.sendRedirect("dashboard-stats");
             } else {
                 response.sendRedirect("Home.jsp");
             }

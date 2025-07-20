@@ -40,8 +40,7 @@ public class UserDao extends DBConnect {
     public void insert(Users user) {
         try {
             String sql = "INSERT INTO Users (FullName, Email, Phone, Password, RoleId, Gender, DateOfBirth, Location) "
-                    +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getEmail());
@@ -140,101 +139,117 @@ public class UserDao extends DBConnect {
         }
         return user;
     }
-    
-    public void saveResetToken(String email, String code, java.sql.Timestamp expiresAt) {
-    String sql = "INSERT INTO password_reset (email, code, expires_at, used) VALUES (?, ?, ?, 0)";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, email);
-        ps.setString(2, code);
-        ps.setTimestamp(3, expiresAt);
-        ps.executeUpdate();
-        ps.close();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-public boolean checkResetToken(String email, String code) {
-    String sql = "SELECT * FROM password_reset WHERE email = ? AND code = ? AND used = 0 AND expires_at > GETDATE()";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, email);
-        ps.setString(2, code);
-        ResultSet rs = ps.executeQuery();
-        boolean found = rs.next();
-        rs.close();
-        ps.close();
-        return found;
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return false;
-}
-public void updatePassword(String email, String newPassword) {
-    String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, newPassword);
-        ps.setString(2, email);
-        ps.executeUpdate();
-        ps.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-public void markResetTokenUsed(String email, String code) {
-    String sql = "UPDATE password_reset SET used = 1 WHERE email = ? AND code = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, email);
-        ps.setString(2, code);
-        ps.executeUpdate();
-        ps.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-public int countNewUsersInLastWeek() {
-    int count = 0;
-    String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())";
-    try (PreparedStatement ps = connection.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-            count = rs.getInt(1);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return count;
-}
 
-public int countNewUsersInPreviousWeek() {
-    int count = 0;
-    String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())";
-    try (PreparedStatement ps = connection.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-            count = rs.getInt(1);
+    public void saveResetToken(String email, String code, java.sql.Timestamp expiresAt) {
+        String sql = "INSERT INTO password_reset (email, code, expires_at, used) VALUES (?, ?, ?, 0)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, code);
+            ps.setTimestamp(3, expiresAt);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-    return count;
-}
-public int countUserByRole(String roleName) {
-    int count = 0;
-    String sql = "SELECT COUNT(*) FROM Users U JOIN Role R ON U.RoleId = R.RoleId WHERE R.RoleName = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, roleName);
-        try (ResultSet rs = ps.executeQuery()) {
+
+    public boolean checkResetToken(String email, String code) {
+        String sql = "SELECT * FROM password_reset WHERE email = ? AND code = ? AND used = 0 AND expires_at > GETDATE()";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, code);
+            ResultSet rs = ps.executeQuery();
+            boolean found = rs.next();
+            rs.close();
+            ps.close();
+            return found;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void markResetTokenUsed(String email, String code) {
+        String sql = "UPDATE password_reset SET used = 1 WHERE email = ? AND code = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, code);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int countNewUsersInLastWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 count = rs.getInt(1);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return count;
     }
-    return count;
-}
+
+    public int countNewUsersInPreviousWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countUserByRole(String roleName) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users U JOIN Role R ON U.RoleId = R.RoleId WHERE R.RoleName = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, roleName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countAllUsers() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
 }

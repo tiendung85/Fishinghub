@@ -395,5 +395,33 @@ public class PostDAO extends DBConnect {
         }
         return count;
     }
+    
+    public List<Post> getTopPendingPosts(int limit) {
+    List<Post> list = new ArrayList<>();
+    String sql = "SELECT TOP (?) P.PostId, P.UserId, P.Topic, P.Title, P.Content, P.CreatedAt, P.Status, U.FullName " +
+                 "FROM Post P JOIN Users U ON P.UserId = U.UserId " +
+                 "WHERE P.Status = 'Pending' " +
+                 "ORDER BY P.CreatedAt DESC";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, limit);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Post p = new Post();
+            p.setPostId(rs.getInt("PostId"));
+            p.setUserId(rs.getInt("UserId"));
+            p.setTopic(rs.getString("Topic"));
+            p.setTitle(rs.getString("Title"));
+            p.setContent(rs.getString("Content"));
+            p.setCreatedAt(rs.getTimestamp("CreatedAt"));
+            p.setStatus(rs.getString("Status"));
+            p.setAuthorName(rs.getString("FullName")); // Cần thêm thuộc tính này trong class Post
+            list.add(p);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
 
 }
