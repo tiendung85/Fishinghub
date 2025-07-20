@@ -152,9 +152,10 @@
 %>
 
                                         <div class="tabs">
-                                            <button class="animate__animated animate__bounceIn" onclick="window.location.href='InProgress.jsp'">Đang giao</button>
-                                            <button class="animate__animated animate__bounceIn" onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
-                                        </div>
+    <button class="animate__animated animate__bounceIn" onclick="window.location.href='MyWaitingOrders'">Chờ xác nhận</button>
+    <button class="animate__animated animate__bounceIn" onclick="window.location.href='InProgress'">Đang giao</button>
+    <button class="animate__animated animate__bounceIn" onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
+</div>
                                         <h3 class="animate__animated animate__fadeInDown">Giỏ Hàng</h3>
                                         <% 
             if (cart.isEmpty()) {

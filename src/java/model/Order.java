@@ -47,12 +47,6 @@ public class Order {
 
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
-    public String getRejectReason() {
-    return rejectReason;
-}
 
-public void setRejectReason(String rejectReason) {
-    this.rejectReason = rejectReason;
-}
 
 }

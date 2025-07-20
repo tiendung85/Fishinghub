@@ -12,7 +12,7 @@ public class OrderDAO extends DBConnect {
     }
 
         public int createOrder(Order order) {
-        String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod,RejectReason) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?,?)";
+        String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?,)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, order.getUserId());
@@ -20,7 +20,6 @@ public class OrderDAO extends DBConnect {
             ps.setDouble(3, order.getTotal());
             ps.setInt(4, order.getStatusId());
             ps.setString(5, order.getPaymentMethod());
-            ps.setString(5, order.getRejectReason());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) return -1;
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -69,7 +68,6 @@ public class OrderDAO extends DBConnect {
             o.setTotal(rs.getDouble("Total"));
             o.setStatusId(rs.getInt("StatusID"));
             o.setPaymentMethod(rs.getString("PaymentMethod"));
-            o.setPaymentMethod(rs.getString("RejectReason"));
             // Thêm các trường khác nếu cần
             list.add(o);
         }
@@ -287,7 +285,7 @@ public class OrderDAO extends DBConnect {
             o.setSubtotal(rs.getDouble("Subtotal"));
             o.setTotal(rs.getDouble("Total"));
             o.setStatusId(rs.getInt("StatusID"));
-            // Nếu có thêm trường deliveryTime thì:
+            o.setPaymentMethod(rs.getString("PaymentMethod"));
             o.setDeliveryTime(rs.getTimestamp("DeliveryTime"));
             list.add(o);
         }
@@ -315,18 +313,48 @@ public int createOrderReturnId(Order order) {
     }
     return -1;
 }
-public boolean updateOrderStatusAndReason(int orderId, int statusId, String reason) {
-    String sql = "UPDATE Orders SET StatusID = ?, RejectReason = ? WHERE Id = ?";
+// Trong OrderDAO.java
+public List<Order> getOrdersByUserAndStatus(int userId, int statusId) {
+    List<Order> list = new ArrayList<>();
+    String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = ?";
     try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setInt(1, statusId);
-        ps.setString(2, reason);
-        ps.setInt(3, orderId);
-        int rows = ps.executeUpdate();
-        return rows > 0;
+        ps.setInt(1, userId);
+        ps.setInt(2, statusId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Order order = new Order();
+            // set các trường cho order
+            order.setId(rs.getInt("Id"));
+            order.setUserId(rs.getInt("UserId"));
+            order.setOrderDate(rs.getTimestamp("OrderDate"));
+            order.setStatusId(rs.getInt("StatusID"));
+            order.setPaymentMethod(rs.getString("PaymentMethod"));
+            list.add(order);
+        }
     } catch (Exception e) {
         e.printStackTrace();
     }
-    return false;
+    return list;
+}
+public List<Order> getDeliveredOrders(int userId, boolean reviewed) {
+    List<Order> list = new ArrayList<>();
+    String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = 3 AND IsReviewed = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setBoolean(2, reviewed);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Order o = new Order();
+            // ...set fields...
+            o.setId(rs.getInt("Id"));
+            o.setOrderDate(rs.getTimestamp("OrderDate"));
+            // ...các trường khác...
+            list.add(o);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
 }
 
 }
