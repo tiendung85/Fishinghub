@@ -270,30 +270,29 @@ public class OrderDAO extends DBConnect {
             return false;
         }
     }
-    public List<Order> getOrdersByUserIdAndStatus(int userId, int statusId) {
-    List<Order> list = new ArrayList<>();
+   public List<Order> getOrdersByUserIdAndStatus(int userId, int statusId) {
+    List<Order> orders = new ArrayList<>();
     String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
         ps.setInt(1, userId);
         ps.setInt(2, statusId);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            Order o = new Order();
-            o.setId(rs.getInt("Id"));
-            o.setUserId(rs.getInt("UserId"));
-            o.setOrderDate(rs.getTimestamp("OrderDate"));
-            o.setSubtotal(rs.getDouble("Subtotal"));
-            o.setTotal(rs.getDouble("Total"));
-            o.setStatusId(rs.getInt("StatusID"));
-            o.setPaymentMethod(rs.getString("PaymentMethod"));
-            o.setDeliveryTime(rs.getTimestamp("DeliveryTime"));
-            list.add(o);
+            Order order = new Order();
+            order.setId(rs.getInt("Id"));
+            order.setUserId(rs.getInt("UserId"));
+            order.setOrderDate(rs.getTimestamp("OrderDate"));
+            order.setStatusId(rs.getInt("StatusID"));
+            order.setPaymentMethod(rs.getString("PaymentMethod"));
+            orders.add(order);
         }
-    } catch (Exception e) {
+    } catch (SQLException e) {
         e.printStackTrace();
     }
-    return list;
+    return orders;
 }
+
 public int createOrderReturnId(Order order) {
     String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
     try {
@@ -336,6 +335,7 @@ public List<Order> getOrdersByUserAndStatus(int userId, int statusId) {
     }
     return list;
 }
+// Lấy đơn hàng với trạng thái đã nhận và tình trạng đã đánh giá hay chưa
 public List<Order> getDeliveredOrders(int userId, boolean reviewed) {
     List<Order> list = new ArrayList<>();
     String sql = "SELECT * FROM Orders WHERE UserId = ? AND StatusID = 3 AND IsReviewed = ?";
@@ -345,10 +345,11 @@ public List<Order> getDeliveredOrders(int userId, boolean reviewed) {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             Order o = new Order();
-            // ...set fields...
             o.setId(rs.getInt("Id"));
+            o.setUserId(rs.getInt("UserId"));
             o.setOrderDate(rs.getTimestamp("OrderDate"));
-            // ...các trường khác...
+            o.setStatusId(rs.getInt("StatusID"));
+            o.setPaymentMethod(rs.getString("PaymentMethod"));
             list.add(o);
         }
     } catch (Exception e) {
@@ -356,5 +357,18 @@ public List<Order> getDeliveredOrders(int userId, boolean reviewed) {
     }
     return list;
 }
+
+public boolean updateOrderReviewed(int orderId) {
+    String sql = "UPDATE Orders SET IsReviewed = 1 WHERE Id = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, orderId);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+
 
 }

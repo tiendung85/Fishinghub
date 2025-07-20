@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Review {
     private int id;
     private int productId;
@@ -8,13 +10,14 @@ public class Review {
     private String reviewText;
     private String image;
     private String video;
+    private Date reviewDate;
 
     // Constructor mặc định
     public Review() {
     }
 
     // Constructor đầy đủ (tùy chọn)
-    public Review(int id, int productId, int userId, int rating, String reviewText, String image, String video) {
+    public Review(int id, int productId, int userId, int rating, String reviewText, String image, String video,Date reviewDate) {
         this.id = id;
         this.productId = productId;
         this.userId = userId;
@@ -22,6 +25,7 @@ public class Review {
         this.reviewText = reviewText;
         this.image = image;
         this.video = video;
+        this.reviewDate=this.reviewDate;
     }
 
     public int getId() {
@@ -71,5 +75,11 @@ public class Review {
     }
     public void setVideo(String video) {
         this.video = video;
+    }
+       public Date getReviewDate() { // Thêm hàm này
+        return reviewDate;
+    }
+    public void setReviewDate(Date reviewDate) { // Thêm hàm này
+        this.reviewDate = reviewDate;
     }
 }

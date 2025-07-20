@@ -34,12 +34,12 @@ public class OrderActionController extends HttpServlet {
             // Người mua hủy đơn
             dao.updateOrderStatus(orderId, 5);
             // Popup sẽ hiện dựa vào tham số trên URL, không cần session message nữa
-            resp.sendRedirect("MyWaitingOrders.jsp?canceled=1");
+            resp.sendRedirect("MyWaitingOrders?canceled=1");
             return;
         } else if ("received".equals(action)) {
             // Người mua xác nhận đã nhận hàng (StatusID = 3)
             dao.updateOrderStatus(orderId, 3);
-            resp.sendRedirect("InProgress.jsp?received=1");
+            resp.sendRedirect("InProgress?received=1");
             return;
         }
         // fallback nếu không đúng action

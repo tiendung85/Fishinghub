@@ -15,6 +15,7 @@ public class Order {
     private java.sql.Timestamp deliveryTime; // Thời gian giao (nếu có)
     private String paymentMethod;
     private String rejectReason;
+    private boolean isReviewed;
 
 
     // GETTER và SETTER
@@ -47,6 +48,12 @@ public class Order {
 
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public boolean isReviewed() {
+    return isReviewed;
+}
 
+public void setReviewed(boolean reviewed) {
+    isReviewed = reviewed;
+}
 
 }

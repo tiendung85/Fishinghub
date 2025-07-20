@@ -97,5 +97,98 @@ public class ReviewDAO extends DBConnect {
     }
     return review;
 }
-
+// Ví dụ ReviewDAO.java
+public boolean hasUserReviewedProduct(int userId, int productId, int orderId) {
+    String sql = "SELECT COUNT(*) FROM Review WHERE UserId=? AND ProductId=? AND OrderId=?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, productId);
+        ps.setInt(3, orderId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) return rs.getInt(1) > 0;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+    return false;
+}
+// Thêm vào ReviewDAO.java
+public List<Review> getAllUserReviewedProducts(int userId) {
+    List<Review> list = new ArrayList<>();
+    String sql = "SELECT * FROM Review WHERE UserId=?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Review r = new Review();
+            r.setId(rs.getInt("Id"));
+            r.setUserId(rs.getInt("UserId"));
+            r.setProductId(rs.getInt("ProductId"));
+            r.setReviewText(rs.getString("ReviewText"));
+            r.setRating(rs.getInt("Rating"));
+            r.setImage(rs.getString("Image"));
+            r.setVideo(rs.getString("Video"));
+            // ... bổ sung các trường khác nếu có
+            list.add(r);
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+    return list;
+}
+public void insertOrUpdateReview(Review review) {
+    // Kiểm tra đã tồn tại review chưa
+    Review existing = getReviewByUserAndProduct(review.getUserId(), review.getProductId());
+    if (existing == null) {
+        // Chưa có thì insert
+        String sql = "INSERT INTO Review (ProductId, UserId, Rating, ReviewText, Image, Video, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, review.getProductId());
+            ps.setInt(2, review.getUserId());
+            ps.setInt(3, review.getRating());
+            ps.setString(4, review.getReviewText());
+            ps.setString(5, review.getImage());
+            ps.setString(6, review.getVideo());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    } else {
+        // Có rồi thì update
+        String sql = "UPDATE Review SET Rating=?, ReviewText=?, Image=?, Video=?, CreatedAt=GETDATE() WHERE UserId=? AND ProductId=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, review.getRating());
+            ps.setString(2, review.getReviewText());
+            ps.setString(3, review.getImage());
+            ps.setString(4, review.getVideo());
+            ps.setInt(5, review.getUserId());
+            ps.setInt(6, review.getProductId());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+public Review getReviewByUserAndProduct(int userId, int productId) {
+    String sql = "SELECT * FROM Review WHERE UserId = ? AND ProductId = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, productId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Review r = new Review();
+            r.setId(rs.getInt("Id"));
+            r.setUserId(rs.getInt("UserId"));
+            r.setProductId(rs.getInt("ProductId"));
+            r.setRating(rs.getInt("Rating"));
+            r.setReviewText(rs.getString("ReviewText"));
+            r.setImage(rs.getString("Image"));
+            r.setVideo(rs.getString("Video"));
+            // ... các trường khác nếu có
+            return r;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 }

@@ -6,7 +6,39 @@
 %>
 <!DOCTYPE html>
 <html>
-<head>
+<style>
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tabs .btn-tab {
+    background-color: #87CEFA;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tabs .btn-tab.active {
+    background-color: #007BFF; /* Đậm hơn để nhận biết nút hiện tại */
+}
+
+.tabs .btn-tab:hover {
+    background-color: #5aaef9;
+}
+</style>
+<div class="tabs">
+    <button class="btn-tab active" onclick="window.location.href='MyWaitingOrders'">Chờ xác nhận</button>
+    <button class="btn-tab" onclick="window.location.href='InProgress'">Đang giao</button>
+    <button class="btn-tab" onclick="window.location.href='Delivered'">Đã nhận</button>
+</div>
+
     <title>Đơn hàng chờ xác nhận</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>

@@ -1,39 +1,52 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="dal.ReviewDAO" %>
-<%@ page import="model.Review" %>
-<%@ page import="model.Users" %>
+<%@page import="model.Users"%>
+<%@page import="model.Review"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="dal.ReviewDAO"%>
 <%
-    int productId = Integer.parseInt(request.getParameter("productId"));
     Users user = (Users) session.getAttribute("user");
-    int userId = user.getUserId();
-    ReviewDAO reviewDAO = new ReviewDAO();
-    Review review = reviewDAO.getReviewByProductIdAndUserId(productId, userId);
+    String productIdRaw = request.getParameter("productId");
+    int productId = -1;
+    try {
+        if (productIdRaw != null && productIdRaw.matches("\\d+")) {
+            productId = Integer.parseInt(productIdRaw);
+        }
+    } catch (Exception ex) {
+        productId = -1;
+    }
+    Review userReview = null;
+    if (productId != -1 && user != null) {
+        ReviewDAO dao = new ReviewDAO();
+        userReview = dao.getReviewByUserAndProduct(user.getUserId(), productId);
+    }
 %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Chi tiết đánh giá sản phẩm</title>
-</head>
+<head><title>Đánh giá của bạn</title></head>
 <body>
-    <h2>Chi tiết đánh giá sản phẩm</h2>
-    <%
-        if (review != null) {
-    %>
-        <p><strong>Đánh giá:</strong> <%= review.getRating() %> sao</p>
-        <p><strong>Nội dung:</strong> <%= review.getReviewText() %></p>
-        <% if (review.getImage() != null) { %>
-            <p><img src="<%= request.getContextPath() + "/" + review.getImage() %>" alt="Ảnh đánh giá" style="max-width:250px;"/></p>
-        <% } %>
-        <% if (review.getVideo() != null) { %>
-            <p><video src="<%= request.getContextPath() + "/" + review.getVideo() %>" controls style="max-width:350px;"></video></p>
-        <% } %>
-    <%
-        } else {
-    %>
-        <p>Không tìm thấy đánh giá cho sản phẩm này.</p>
-    <%
-        }
-    %>
-    <a href="Delivered.jsp">Quay lại</a>
+<% if (productId == -1) { %>
+    <div style="color:red;">Không xác định được sản phẩm!</div>
+<% } else if (user == null) { %>
+    <div style="color:red;">Bạn chưa đăng nhập!</div>
+<% } else { %>
+    <h2>Đánh giá của bạn cho sản phẩm ID: <%= productId %></h2>
+    <% if (userReview == null) { %>
+        <p>Bạn chưa đánh giá sản phẩm này.</p>
+    <% } else { %>
+        <ul>
+            <li>
+                <b>Rating:</b> <%= userReview.getRating() %> sao<br>
+                <b>Nội dung:</b> <%= userReview.getReviewText() %><br>
+                <% if (userReview.getImage() != null) { %>
+                    <img src="<%= userReview.getImage() %>" style="max-width:150px;"><br>
+                <% } %>
+                <% if (userReview.getVideo() != null) { %>
+                    <video width="200" controls>
+                        <source src="<%= userReview.getVideo() %>" type="video/mp4">
+                    </video><br>
+                <% } %>
+            </li>
+        </ul>
+    <% } %>
+<% } %>
 </body>
 </html>

@@ -1,16 +1,27 @@
 package controller;
 
 import dal.OrderDAO;
+import dal.OrderDetailDAO;
+import dal.ProductDAO;
+import dal.ReviewDAO;
 import model.Order;
+import model.OrderDetail;
+import model.Product;
 import model.Users;
+import java.io.IOException;
+import java.util.*;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import java.io.IOException;
-import java.util.*;
+import model.Review;
 
 @WebServlet("/Delivered")
 public class DeliveredController extends HttpServlet {
+    private OrderDAO orderDAO = new OrderDAO();
+    private OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+    private ProductDAO productDAO = new ProductDAO();
+    private ReviewDAO reviewDAO = new ReviewDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -20,16 +31,28 @@ public class DeliveredController extends HttpServlet {
             response.sendRedirect("Login.jsp");
             return;
         }
+        int userId = user.getUserId();
 
-        OrderDAO orderDAO = new OrderDAO();
-        // Lấy đơn đã nhận, chưa đánh giá
-        List<Order> notReviewed = orderDAO.getDeliveredOrders(user.getUserId(), false);
-        // Lấy đơn đã nhận, đã đánh giá
-        List<Order> reviewed = orderDAO.getDeliveredOrders(user.getUserId(), true);
+        // Lấy danh sách đơn hàng đã nhận (StatusID=3)
+        List<Order> deliveredOrders = orderDAO.getDeliveredOrders(userId, false);
+        List<Map<String, Object>> productsToReview = new ArrayList<>();
 
-        request.setAttribute("notReviewedOrders", notReviewed);
-        request.setAttribute("reviewedOrders", reviewed);
-
+        for (Order order : deliveredOrders) {
+            List<OrderDetail> details = orderDetailDAO.getDetailByOrderId(order.getId());
+            for (OrderDetail detail : details) {
+                Product product = productDAO.getProductById(detail.getProductId());
+                // Kiểm tra user đã đánh giá sản phẩm này chưa
+                Review review = reviewDAO.getReviewByUserAndProduct(userId, product.getProductId());
+                if (review == null) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("order", order);
+                    map.put("product", product);
+                    map.put("detail", detail);
+                    productsToReview.add(map);
+                }
+            }
+        }
+        request.setAttribute("productsToReview", productsToReview);
         request.getRequestDispatcher("Delivered.jsp").forward(request, response);
     }
 }
