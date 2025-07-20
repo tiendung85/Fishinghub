@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.PrintWriter;
+import model.EventNotification;
+import model.EventRejections;
 import model.Events;
 import model.Users;
 
@@ -44,63 +47,88 @@ public class EventManagerController extends HttpServlet {
                 pageSize = 5;
             }
         }
-
-        EventDAO dao = new EventDAO();
-        ArrayList<Events> list = new ArrayList<>();
-        int totalItems = 0;
-
         if (user == null) {
             response.sendRedirect("login");
-            return;
-        }
+        } else {
+            EventDAO dao = new EventDAO();
+            ArrayList<Events> list = new ArrayList<>();
+            int totalItems = 0;
+            ArrayList<EventNotification> notifications = dao.getNotificationsByUserId(user.getUserId());
+            request.setAttribute("notifications", notifications);
 
-        Timestamp now = new Timestamp(System.currentTimeMillis());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
 
-        if (action.isEmpty()) {
-            list = dao.getEvents(user.getUserId(), page, pageSize);
-            totalItems = dao.getTotalEvents(user.getUserId());
-        } else if (action.equals("search")) {
-            list = search != null && !search.trim().isEmpty() ? dao.searchEvents(user.getUserId(), search, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
-            totalItems = search != null && !search.trim().isEmpty() ? dao.getTotalSearchEvents(user.getUserId(), search) : dao.getTotalEvents(user.getUserId());
-            request.setAttribute("search", search);
-        } else if (action.equals("filter")) {
-            list = statusFilter != null ? dao.filterEvents(user.getUserId(), statusFilter, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
-            totalItems = statusFilter != null ? dao.getTotalFilterEvents(user.getUserId(), statusFilter) : dao.getTotalEvents(user.getUserId());
-            request.setAttribute("filter", statusFilter);
-        } else if (action.equals("delete")) {
-            try {
-                int id = Integer.parseInt(request.getParameter("eventId"));
-                boolean deleted = dao.deleteEvent(id);
-                request.setAttribute("message", deleted ? "Xóa sự kiện thành công!" : "Không thể xóa sự kiện đã được duyệt hoặc không tồn tại.");
+            if (action.isEmpty()) {
                 list = dao.getEvents(user.getUserId(), page, pageSize);
                 totalItems = dao.getTotalEvents(user.getUserId());
-            } catch (Exception e) {
-                request.setAttribute("message", "Lỗi khi xóa sự kiện.");
+            } else if (action.equals("search")) {
+                list = search != null && !search.trim().isEmpty() ? dao.searchEvents(user.getUserId(), search, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
+                totalItems = search != null && !search.trim().isEmpty() ? dao.getTotalSearchEvents(user.getUserId(), search) : dao.getTotalEvents(user.getUserId());
+                request.setAttribute("search", search);
+            } else if (action.equals("filter")) {
+                list = statusFilter != null ? dao.filterEvents(user.getUserId(), statusFilter, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
+                totalItems = statusFilter != null ? dao.getTotalFilterEvents(user.getUserId(), statusFilter) : dao.getTotalEvents(user.getUserId());
+                request.setAttribute("filter", statusFilter);
+            } else if (action.equals("delete")) {
+                try {
+                    int id = Integer.parseInt(request.getParameter("eventId"));
+                    boolean deleted = dao.deleteEvent(id);
+                    request.setAttribute("message", deleted ? "Xóa sự kiện thành công!" : "Không thể xóa sự kiện đã được duyệt hoặc không tồn tại.");
+                    list = dao.getEvents(user.getUserId(), page, pageSize);
+                    totalItems = dao.getTotalEvents(user.getUserId());
+                } catch (Exception e) {
+                    request.setAttribute("message", "Lỗi khi xóa sự kiện.");
+                }
+            } else if ("getRejection".equals(action)) {
+                try {
+                    int eventId = Integer.parseInt(request.getParameter("eventId"));
+                    EventRejections rejection = dao.getRejectionByEventId(eventId);
+                    if (rejection != null) {
+                        request.setAttribute("rejectionReason", rejection.getRejectReason());
+                        request.setAttribute("rejectionTime", rejection.getRejectedAt() != null ? rejection.getRejectedAt().toString() : "");
+                    } else {
+                        request.setAttribute("rejectionReason", "Không tìm thấy lý do từ chối cho sự kiện này.");
+                        request.setAttribute("rejectionTime", "");
+                    }
+                    request.setAttribute("showModal", true);
+                    // Reload event list to maintain context
+                    list = dao.getEvents(user.getUserId(), page, pageSize);
+                    totalItems = dao.getTotalEvents(user.getUserId());
+                } catch (NumberFormatException e) {
+                    request.setAttribute("rejectionReason", "ID sự kiện không hợp lệ.");
+                    request.setAttribute("rejectionTime", "");
+                    request.setAttribute("showModal", true);
+                    list = dao.getEvents(user.getUserId(), page, pageSize);
+                    totalItems = dao.getTotalEvents(user.getUserId());
+                } catch (Exception e) {
+                    request.setAttribute("rejectionReason", "Lỗi khi lấy thông tin từ chối.");
+                    request.setAttribute("rejectionTime", "");
+                    request.setAttribute("showModal", true);
+                    list = dao.getEvents(user.getUserId(), page, pageSize);
+                    totalItems = dao.getTotalEvents(user.getUserId());
+                }
             }
-        }
 
-        // Tính toán số trang
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+            int totalPages = (int) Math.ceil((double) totalItems / pageSize);
 
-        // Cập nhật trạng thái sự kiện
-        for (Events e : list) {
-            if (now.before(e.getStartTime())) {
-                e.setEventStatus("Sắp diễn ra");
-            } else if (now.after(e.getEndTime())) {
-                e.setEventStatus("Đã kết thúc");
-            } else {
-                e.setEventStatus("Đang diễn ra");
+            for (Events e : list) {
+                if (now.before(e.getStartTime())) {
+                    e.setEventStatus("Sắp diễn ra");
+                } else if (now.after(e.getEndTime())) {
+                    e.setEventStatus("Đã kết thúc");
+                } else {
+                    e.setEventStatus("Đang diễn ra");
+                }
             }
-        }
 
-        // Truyền dữ liệu tới JSP
-        request.setAttribute("listE", list);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("pageSize", pageSize);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("totalItems", totalItems);
-        request.setAttribute("action", action);
-        request.getRequestDispatcher("dashboard_owner/EventManager.jsp").forward(request, response);
+            request.setAttribute("listE", list);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalItems", totalItems);
+            request.setAttribute("action", action);
+            request.getRequestDispatcher("dashboard_owner/EventManager.jsp").forward(request, response);
+        }
     }
 
     @Override

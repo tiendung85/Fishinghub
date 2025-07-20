@@ -175,7 +175,7 @@ CREATE TABLE Event (
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
     CurrentParticipants INT,
-    ContactInfo NVARCHAR(255),
+	Checkin BIT DEFAULT 0,
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
 
@@ -201,7 +201,6 @@ CREATE TABLE EventNotification (
 	Title NVARCHAR(255),
     Message NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
-	IsRead BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (SenderId) REFERENCES Users(UserId)
 );
@@ -209,7 +208,6 @@ CREATE TABLE EventRejections (
     EventId INT PRIMARY KEY,
     RejectReason NVARCHAR(MAX) NOT NULL,
     RejectedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    
     FOREIGN KEY (EventId) REFERENCES Event(EventId)
 );
 

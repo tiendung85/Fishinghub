@@ -5,6 +5,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -18,7 +19,8 @@ public class EventNotification {
     private String title;
     private String message;
     private Timestamp createdAt;
-    private boolean isRead;
+    
+       private String formattedCreatedAt;
 
     public EventNotification(int notificationId, int eventId, int senderId, String message, Timestamp createdAt) {
         this.notificationId = notificationId;
@@ -68,7 +70,9 @@ public class EventNotification {
     }
 
     public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+         this.createdAt = createdAt;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        this.formattedCreatedAt = sdf.format(createdAt);
     }
 
     public String getTitle() {
@@ -79,12 +83,15 @@ public class EventNotification {
         this.title = title;
     }
 
-    public boolean isIsRead() {
-        return isRead;
-    }
+   
 
-    public void setIsRead(boolean isRead) {
-        this.isRead = isRead;
-    }
+   
 
+    public String getFormattedCreatedAt() {
+        return formattedCreatedAt;
+    }
+    
+     public void setFormattedCreatedAt(String formattedCreatedAt) {
+        this.formattedCreatedAt = formattedCreatedAt;
+    }
 }

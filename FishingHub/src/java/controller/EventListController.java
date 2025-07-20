@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.EventNotification;
 import model.Events;
 import model.Users;
 
@@ -47,7 +48,10 @@ public class EventListController extends HttpServlet {
         EventDAO dao = new EventDAO();
         ArrayList<Events> list;
         int totalItems = 0;
-
+        if (user != null) {
+            ArrayList<EventNotification> notifications = dao.getNotificationsByUserId(user.getUserId());
+            request.setAttribute("notifications", notifications);
+        }
         if (action.isEmpty()) {
             list = dao.getEvents(page, pageSize);
             totalItems = dao.getTotalEvents();

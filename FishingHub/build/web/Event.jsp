@@ -42,10 +42,28 @@
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
                     </div>
                     <div class="relative">
-                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer" id="notificationBell">
                             <i class="ri-notification-3-line text-gray-600"></i>
                         </div>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
+                        <c:if test="${not empty notifications}">
+                            <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">${notifications.size()}</span>
+                        </c:if>
+                        <!-- Dropdown thông báo -->
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg overflow-hidden z-50 hidden">
+                            <div class="p-4 border-b font-semibold text-gray-700">Thông báo</div>
+                            <ul class="max-h-64 overflow-y-auto divide-y divide-gray-200">
+                                <c:forEach var="n" items="${notifications}">
+                                    <li class="px-4 py-3 hover:bg-gray-100 text-sm">
+                                        <a href="EventDetails?action=details&eventId=${n.eventId}" class="block text-gray-800 font-medium">${n.title}</a>
+                                        <p class="text-gray-500 text-xs">${n.message}</p>
+                                        <p class="text-gray-400 text-xs mt-1">${n.formattedCreatedAt}</p>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="${empty notifications}">
+                                    <li class="px-4 py-3 text-gray-500 text-sm text-center">Không có thông báo nào</li>
+                                </c:if>
+                            </ul>
+                        </div>
                     </div>
                     <% if (currentUser == null) { %>
                     <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
@@ -436,6 +454,20 @@
             document.getElementById('confirmCancelButton').addEventListener('click', () => {
                 window.location.href = cancelUrl;
                 document.getElementById('cancelModal').classList.add('hidden');
+            });
+
+           const bell = document.getElementById("notificationBell");
+            const dropdown = document.getElementById("notificationDropdown");
+
+            bell.addEventListener("click", () => {
+                dropdown.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", function (event) {
+                const isClickInside = bell.contains(event.target) || dropdown.contains(event.target);
+                if (!isClickInside) {
+                    dropdown.classList.add("hidden");
+                }
             });
         </script>
     </body>

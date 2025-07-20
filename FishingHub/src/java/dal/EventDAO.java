@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import model.EventNotification;
 import model.EventParticipant;
+import model.EventRejections;
 
 /**
  *
@@ -1560,7 +1561,7 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-   public int getRejectedToday() {
+    public int getRejectedToday() {
         String sql = """
                      SELECT COUNT(*) AS RejectedToday
                      FROM Event
@@ -1620,4 +1621,57 @@ public class EventDAO extends DBConnect {
         }
         return 0;
     }
+
+    public ArrayList<EventNotification> getNotificationsByUserId(int userId) {
+        ArrayList<EventNotification> list = new ArrayList<>();
+        String sql = """
+                 SELECT en.*
+                 FROM EventNotification en
+                 JOIN EventParticipant ep ON en.EventId = ep.EventId
+                 WHERE ep.UserId = ?
+                 ORDER BY en.CreatedAt DESC
+                 """;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, userId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                EventNotification en = new EventNotification();
+                en.setNotificationId(rs.getInt("NotificationId"));
+                en.setEventId(rs.getInt("EventId"));
+                en.setSenderId(rs.getInt("SenderId"));
+                en.setTitle(rs.getString("Title"));
+                en.setMessage(rs.getString("Message"));
+                en.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                
+                list.add(en);
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getNotificationsByUserId: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public EventRejections getRejectionByEventId(int eventId) {
+        String sql = "SELECT EventId, RejectReason, RejectedAt FROM EventRejections WHERE EventId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, eventId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                EventRejections rejection = new EventRejections();
+                rejection.setEventId(rs.getInt("EventId"));
+                rejection.setRejectReason(rs.getString("RejectReason"));
+                rejection.setRejectedAt(rs.getTimestamp("RejectedAt"));
+                return rejection;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // hoặc dùng log framework
+        }
+
+        return null; // Không có bản ghi nào
+    }
+
 }

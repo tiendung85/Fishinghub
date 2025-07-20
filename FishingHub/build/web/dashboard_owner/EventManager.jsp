@@ -67,7 +67,7 @@
                                 Quản lý sự kiện
                             </div>
                             <a 
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md ">
+                                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md ">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-calendar-event-line"></i>
                                 </div>
@@ -146,53 +146,13 @@
                     class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200"
                     >
                     <button
-                        type="button"
                         class="px-4 border-r border-gray-200 text-gray-500 md:hidden"
                         >
                         <div class="w-6 h-6 flex items-center justify-center">
                             <i class="ri-menu-line"></i>
                         </div>
                     </button>
-                    <div class="flex-1 px-4 flex justify-between">
-                        <div class="flex-1 flex items-center">
-                            <div class="w-full max-w-2xl">
-                                <div class="relative w-full">
-                                    <div
-                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                                        >
-                                        <div
-                                            class="w-5 h-5 flex items-center justify-center text-gray-400"
-                                            >
-                                            <i class="ri-search-line"></i>
-                                        </div>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                                        placeholder="Tìm kiếm..."
-                                        />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ml-4 flex items-center md:ml-6">
-                            <button
-                                class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none"
-                                >
-                                <div class="w-6 h-6 flex items-center justify-center">
-                                    <i class="ri-notification-3-line"></i>
-                                </div>
-                            </button>
-                            <div class="relative ml-3">
-                                <div class="flex items-center">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                                        >
-                                        Online
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <!-- Main content area -->
                 <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 overflow-x-auto">
@@ -359,8 +319,13 @@
 
                                                 </button>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div class="flex justify-end space-x-2">
+                                            <td class="px-6 py-4  text-right text-sm font-medium">
+                                                <div class="flex justify-end ">
+                                                    <c:if test="${o.status == 'rejected'}">
+                                                        <a href="EventManager?action=getRejection&eventId=${o.eventId}" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                                                            <i class="ri-eye-line text-red-600"></i>
+                                                        </a>
+                                                    </c:if>
                                                     <button onclick="location.href = 'EventUpdate?action=event&eventId=${o.eventId}'"
                                                             class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
                                                         <i class="ri-edit-line text-blue-600"></i>
@@ -379,13 +344,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <script>
-                            function confirmDelete(eventId) {
-                                if (confirm("Bạn có chắc chắn muốn xóa sự kiện này không?")) {
-                                    window.location.href = 'EventManager?action=delete&eventId=' + eventId;
-                                }
-                            }
-                        </script>
+
                         <!-- Pagination -->
                         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                             <div class="flex-1 flex justify-between sm:hidden">
@@ -437,8 +396,38 @@
                             </div>
                         </div>
                     </div>
+                                    
+                    <div id="rejectionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full ${showModal ? '' : 'hidden'}">
+                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                            <div class="mt-3 text-center">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Lý do từ chối</h3>
+                                <div class="mt-2 px-7 py-3">
+                                    <p id="rejectionReason" class="text-sm text-gray-500">${rejectionReason}</p>
+                                    <c:if test="${not empty rejectionTime}">
+                                        <p id="rejectionTime" class="text-sm text-gray-500 mt-2">Thời gian từ chối: ${rejectionTime}</p>
+                                    </c:if>
+                                </div>
+                                <div class="items-center px-4 py-3">
+                                    <button id="closeModal" onclick="closeModal()" class="px-4 py-2 bg-primary text-white text-base font-medium rounded-button w-full hover:bg-primary/90">
+                                        Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
+        <script>
+            function confirmDelete(eventId) {
+                if (confirm("Bạn có chắc chắn muốn xóa sự kiện này không?")) {
+                    window.location.href = 'EventManager?action=delete&eventId=' + eventId;
+                }
+            }
+
+            function closeModal() {
+                document.getElementById('rejectionModal').classList.add('hidden');
+            }
+        </script>
     </body>
 </html>

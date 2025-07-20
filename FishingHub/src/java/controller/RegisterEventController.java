@@ -79,11 +79,11 @@ public class RegisterEventController extends HttpServlet {
                     String email = request.getParameter("email");
                     String cccd = request.getParameter("cccd");
 
-                    // Biểu thức chính quy kiểm tra số điện thoại: 10 số, bắt đầu bằng 0
+                    
                     Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
-                    // Biểu thức chính quy kiểm tra email
+                    
                     Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-                    // Biểu thức chính quy kiểm tra CCCD: đúng 12 chữ số
+                    
                     Pattern cccdPattern = Pattern.compile("^[0-9]{12}$");
 
                     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
