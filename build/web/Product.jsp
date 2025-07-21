@@ -474,16 +474,23 @@
 
                     <!-- Products Header -->
                     <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                        <div
-                            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                            >
-                            <div>
-                                <h1 class="text-xl font-bold text-gray-800">
-                                    Sản Phẩm Câu Cá
-                                </h1>
-                            </div>
-                        </div>
-                    </div>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex items-center gap-4">
+    <h1 class="text-xl font-bold text-gray-800">
+        Sản Phẩm Câu Cá
+    </h1>
+    <% if (currentUser != null && currentUser.getRoleId() == 1) { %>
+        <a href="MyWaitingOrders"
+           class="ml-3 px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-button font-medium flex items-center"
+           style="font-size: 15px;">
+            <i class="ri-file-list-2-line mr-2"></i>
+            Đơn hàng của bạn
+        </a>
+    <% } %>
+</div>
+    </div>
+</div>
+
                     <!-- Products Grid -->
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"

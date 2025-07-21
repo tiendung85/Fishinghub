@@ -3,18 +3,18 @@ package controller;
 import dal.OrderDAO;
 import dal.OrderDetailDAO;
 import dal.ProductDAO;
-import dal.UserPermissionDAO;
 import model.Order;
-import model.OrderDetail;
-import model.Product;
 import model.Status;
-import model.Users;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
+import java.io.*;
+import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import java.io.IOException;
-import java.util.*;
+import jakarta.servlet.annotation.WebServlet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.OrderDetail;
+import model.Users;
 
 @WebServlet(name = "OrderServlet", urlPatterns = { "/Order" })
 public class OrderServlet extends HttpServlet {
@@ -27,8 +27,8 @@ public class OrderServlet extends HttpServlet {
         boolean isAjax = (status != null && (keyword != null));
         OrderDAO dao = new OrderDAO();
         List<Status> statuses = dao.getAllStatuses();
-
         if (isAjax) {
+            // AJAX filter: trả về toàn bộ đơn hàng phù hợp, không phân trang
             List<Order> orders = dao.searchOrders(status, keyword);
             response.setContentType("text/html;charset=UTF-8");
             StringBuilder tbody = new StringBuilder();
@@ -89,8 +89,7 @@ public class OrderServlet extends HttpServlet {
             response.getWriter().write(tbody.toString() + "<!--SPLIT--->" + orders.size());
             return;
         }
-
-        // Phân trang mặc định
+        // ...phân trang mặc định...
         int page = 1;
         int pageSize = 10;
         if (request.getParameter("page") != null) {
@@ -120,8 +119,6 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         response.setContentType("application/json");
-        HttpSession session = request.getSession();
-
         try {
             if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("orderId");
@@ -131,75 +128,72 @@ public class OrderServlet extends HttpServlet {
                 response.getWriter().write("{\"success\": " + ok + "}");
                 return;
             } else if ("createOrder".equals(action)) {
-                // (Hiếm khi dùng ở đây, thường thanh toán ở ShoppingCartServlet)
-                // Nếu vẫn muốn thêm, có thể tham khảo logic như dưới
+                HttpSession session = request.getSession();
+                Map<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("CART");
+                OrderDAO dao = new OrderDAO();
+                /*
+                 * TODO:
+                 * CHECK LOGIN OR NOT
+                 */
                 Users currentUser = (Users) session.getAttribute("user");
                 if (currentUser == null) {
                     request.getRequestDispatcher("Login.jsp").forward(request, response);
-                    return;
-                }
-                Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("CART");
-                if (cart == null || cart.isEmpty()) {
-                    response.getWriter().write("{\"success\": false, \"msg\":\"Giỏ hàng rỗng\"}");
-                    return;
                 }
 
-                String paymentMethod = request.getParameter("paymentMethod");
-                OrderDAO dao = new OrderDAO();
-                ProductDAO productDAO = new ProductDAO();
+                dao.createOrder(currentUser.getUserId());
+
+                int orderId = dao.getLastInsertId();
+
                 OrderDetailDAO detailDAO = new OrderDetailDAO();
+                ProductDAO productDAO = new ProductDAO();
 
-                double subtotal = 0;
-                for (String id : cart.keySet()) {
-                    int productId = Integer.parseInt(id);
-                    int quantity = cart.get(id);
-                    double price = productDAO.getProductById(productId).getPrice();
-                    subtotal += price * quantity;
-                }
-                Order order = new Order();
-                order.setUserId(currentUser.getUserId());
-                order.setSubtotal(subtotal);
-                order.setTotal(subtotal);
-                order.setStatusId(1);
-                order.setPaymentMethod(paymentMethod == null ? "COD" : paymentMethod);
-
-                int orderId = dao.createOrderReturnId(order);
-                for (String id : cart.keySet()) {
-                    int productId = Integer.parseInt(id);
-                    int quantity = cart.get(id);
-                    double price = productDAO.getProductById(productId).getPrice();
-
+                double total = 0;
+                List<OrderDetail> detailList = new ArrayList<>();
+                for (String cartItem : cart.keySet()) {
                     OrderDetail detail = new OrderDetail();
                     detail.setOrderId(orderId);
+
+                    int productId = Integer.parseInt(cartItem);
+
                     detail.setProductId(productId);
-                    detail.setCartQuantity(quantity);
-                    detail.setPrice(price);
-                    detail.setSubtotal(price * quantity);
+                    detail.setCartQuantity(cart.get(cartItem));
+                    detail.setPrice(productDAO.getProductById(productId).getPrice());
+                    total += detail.getCartQuantity() * detail.getPrice();
                     detailDAO.createDetail(detail);
                 }
-                cart.clear();
-                session.setAttribute("CART", cart);
-                session.setAttribute("successMessage", "Đặt hàng thành công! Vui lòng chờ xác nhận.");
-                response.getWriter().write("{\"success\": true}");
-                return;
-            }
 
-            // Xử lý cập nhật trạng thái
+                detailList = detailDAO.getDetailByOrderId(orderId);
+
+                Order order = dao.getOrderById(orderId);
+                order.setTotal(total);
+                dao.updateOrder(order);
+
+                request.setAttribute("order", order);
+                if (!detailList.isEmpty()) {
+                    request.setAttribute("detailList", detailList);
+                }
+                request.setAttribute("currentUser", currentUser);
+                RequestDispatcher rd = request.getRequestDispatcher("Checkout.jsp");
+                rd.forward(request, response);
+            }
             String orderIdStr = request.getParameter("orderId");
-            String statusIdStr = request.getParameter("statusId");
-            if (orderIdStr != null && statusIdStr != null) {
-                int orderId = Integer.parseInt(orderIdStr);
-                int statusId = Integer.parseInt(statusIdStr);
-                OrderDAO dao = new OrderDAO();
-                boolean ok = dao.updateOrderStatus(orderId, statusId);
-                response.getWriter().write("{\"success\": " + ok + "}");
-                return;
-            }
+String statusIdStr = request.getParameter("statusId");
+int orderId = Integer.parseInt(orderIdStr);
+int statusId = Integer.parseInt(statusIdStr);
+OrderDAO dao = new OrderDAO();
+boolean ok = dao.updateOrderStatus(orderId, statusId);
 
-            // Nếu không có action phù hợp
-            response.getWriter().write("{\"success\": false}");
+// Kiểm tra request là AJAX hay form thường
+String requestedWith = request.getHeader("X-Requested-With");
+if ("XMLHttpRequest".equals(requestedWith)) {
+    // AJAX request
+    response.setContentType("application/json");
+    response.getWriter().write("{\"success\": " + ok + "}");
+} else {
+    // Form submit bình thường: redirect về trang quản lý đơn hàng
+    response.sendRedirect("Order");
+}
         } catch (Exception e) {
-            e.printStackTrace();
             response.getWriter().write("{\"success\": false}");
         }
     }

@@ -11,26 +11,21 @@ public class OrderDAO extends DBConnect {
         super();
     }
 
-        public int createOrder(Order order) {
-        String sql = "INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID, PaymentMethod) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?,)";
+        public boolean createOrder(int userId) {
+        String sql = "insert into Orders ( UserId, Subtotal, Total, OrderDate, StatusID) "
+                + "VALUES (?, 0, 0, CURRENT_TIMESTAMP, 1)";
+        Order o = null;
         try {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, order.getUserId());
-            ps.setDouble(2, order.getSubtotal());
-            ps.setDouble(3, order.getTotal());
-            ps.setInt(4, order.getStatusId());
-            ps.setString(5, order.getPaymentMethod());
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) return -1;
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                }
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            int rs = ps.executeUpdate();
+            if (rs > 0) {
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1;
+        return false;
     }
 
     public boolean updateOrder(Order order) {
