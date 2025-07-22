@@ -75,6 +75,7 @@
             <td>
                 <form method="get" action="Review.jsp" style="margin:0;">
                     <input type="hidden" name="productId" value="<%= product.getProductId() %>"/>
+                    <input type="hidden" name="orderId" value="<%= order.getId() %>"/>
                     <button type="submit" class="btn-review">Đánh giá</button>
                 </form>
             </td>

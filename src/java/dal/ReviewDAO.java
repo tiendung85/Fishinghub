@@ -9,21 +9,22 @@ public class ReviewDAO extends DBConnect {
 
     // Lưu review với userId
     public boolean saveReview(Review review) {
-        String sql = "INSERT INTO Review (productId, userId, rating, reviewText, image, video) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, review.getProductId());
-            ps.setInt(2, review.getUserId());
-            ps.setInt(3, review.getRating());
-            ps.setString(4, review.getReviewText());
-            ps.setString(5, review.getImage());
-            ps.setString(6, review.getVideo());
-            int result = ps.executeUpdate();
-            return result > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    String sql = "INSERT INTO Review (productId, userId, orderId, rating, reviewText, image, video) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, review.getProductId());
+        ps.setInt(2, review.getUserId());
+        ps.setInt(3, review.getOrderId());
+        ps.setInt(4, review.getRating());
+        ps.setString(5, review.getReviewText());
+        ps.setString(6, review.getImage());
+        ps.setString(7, review.getVideo());
+        int result = ps.executeUpdate();
+        return result > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return false;
+}
 
     // Lấy đánh giá của 1 user cho 1 sản phẩm
     public Review getReviewByProductIdAndUserId(int productId, int userId) {
@@ -43,6 +44,8 @@ public class ReviewDAO extends DBConnect {
             review.setReviewText(rs.getString("reviewText"));
             review.setImage(rs.getString("image"));
             review.setVideo(rs.getString("video"));
+            review.setOrderId(rs.getInt("OrderId"));
+
         }
     } catch (Exception e) {
         e.printStackTrace();
@@ -68,6 +71,7 @@ public class ReviewDAO extends DBConnect {
                 review.setReviewText(rs.getString("reviewText"));
                 review.setImage(rs.getString("image"));
                 review.setVideo(rs.getString("video"));
+                review.setOrderId(rs.getInt("OrderId"));
                 list.add(review);
             }
         } catch (Exception e) {
@@ -127,6 +131,8 @@ public List<Review> getAllUserReviewedProducts(int userId) {
             r.setRating(rs.getInt("Rating"));
             r.setImage(rs.getString("Image"));
             r.setVideo(rs.getString("Video"));
+            r.setOrderId(rs.getInt("OrderId"));
+
             // ... bổ sung các trường khác nếu có
             list.add(r);
         }
@@ -183,7 +189,32 @@ public Review getReviewByUserAndProduct(int userId, int productId) {
             r.setReviewText(rs.getString("ReviewText"));
             r.setImage(rs.getString("Image"));
             r.setVideo(rs.getString("Video"));
-            // ... các trường khác nếu có
+            r.setOrderId(rs.getInt("OrderId"));
+            return r;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+public Review getReviewByUserProductOrder(int userId, int productId, int orderId) {
+    String sql = "SELECT * FROM Review WHERE UserId=? AND ProductId=? AND OrderId=?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ps.setInt(2, productId);
+        ps.setInt(3, orderId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Review r = new Review();
+            // set các trường cho r...
+            r.setId(rs.getInt("Id"));
+            r.setUserId(rs.getInt("UserId"));
+            r.setProductId(rs.getInt("ProductId"));
+            r.setOrderId(rs.getInt("OrderId"));
+            r.setRating(rs.getInt("Rating"));
+            r.setReviewText(rs.getString("ReviewText"));
+            r.setImage(rs.getString("Image"));
+            r.setVideo(rs.getString("Video"));
             return r;
         }
     } catch (Exception e) {

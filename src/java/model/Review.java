@@ -11,6 +11,7 @@ public class Review {
     private String image;
     private String video;
     private Date reviewDate;
+    private int orderId;
 
     // Constructor mặc định
     public Review() {
@@ -82,4 +83,12 @@ public class Review {
     public void setReviewDate(Date reviewDate) { // Thêm hàm này
         this.reviewDate = reviewDate;
     }
+    public int getOrderId() {
+    return orderId;
+}
+
+public void setOrderId(int orderId) {
+    this.orderId = orderId;
+}
+
 }

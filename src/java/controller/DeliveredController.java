@@ -42,14 +42,15 @@ public class DeliveredController extends HttpServlet {
             for (OrderDetail detail : details) {
                 Product product = productDAO.getProductById(detail.getProductId());
                 // Kiểm tra user đã đánh giá sản phẩm này chưa
-                Review review = reviewDAO.getReviewByUserAndProduct(userId, product.getProductId());
-                if (review == null) {
+                boolean reviewed = reviewDAO.hasUserReviewedProduct(userId, product.getProductId(), order.getId());
+                    if (!reviewed) {
                     Map<String, Object> map = new HashMap<>();
                     map.put("order", order);
                     map.put("product", product);
                     map.put("detail", detail);
                     productsToReview.add(map);
-                }
+}
+
             }
         }
         request.setAttribute("productsToReview", productsToReview);

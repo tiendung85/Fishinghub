@@ -84,7 +84,10 @@
         <div class="msg-error">Không xác định được sản phẩm để đánh giá!</div>
     <% } else { %>
     <form action="ReviewController" method="post" enctype="multipart/form-data">
+        
         <input type="hidden" name="productId" value="<%= productId %>">
+        <input type="hidden" name="orderId" value="<%= orderId %>">
+
 
         <label>Đánh giá (1-5 sao):</label>
         <input type="number" class="form-control" name="rating" min="1" max="5" required>
