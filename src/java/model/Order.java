@@ -14,9 +14,8 @@ public class Order {
     private Status status;              // Đối tượng trạng thái (nếu có)
     private java.sql.Timestamp deliveryTime; // Thời gian giao (nếu có)
     private String paymentMethod;
-    private String rejectReason;
     private boolean isReviewed;
-
+    private int shopId;
 
     // GETTER và SETTER
     public int getId() { return id; }
@@ -55,5 +54,11 @@ public class Order {
 public void setReviewed(boolean reviewed) {
     isReviewed = reviewed;
 }
+    public int getShopId() {
+        return shopId;
+    }
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
+    }
 
 }

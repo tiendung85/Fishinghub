@@ -139,8 +139,8 @@ public class OrderServlet extends HttpServlet {
                 if (currentUser == null) {
                     request.getRequestDispatcher("Login.jsp").forward(request, response);
                 }
-
-                dao.createOrder(currentUser.getUserId());
+                
+                dao.createOrder(currentUser.getUserId(), currentUser.getShopId());
 
                 int orderId = dao.getLastInsertId();
 

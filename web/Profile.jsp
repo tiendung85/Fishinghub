@@ -53,6 +53,7 @@
         </div>
         <div class="user-profile">
             <div class="profile-functions flex gap-2">
+                <button class="btn btn-outline-secondary" onclick="window.location.href='PersonalPage.jsp'">Trang cá nhân</button>
                 <button class="btn btn-outline-primary" onclick="window.location.href='ChangePassword.jsp'">Đổi mật khẩu</button>
                 <button class="btn btn-outline-success" onclick="window.location.href='Feedback.jsp'">Góp ý</button>
             </div>
