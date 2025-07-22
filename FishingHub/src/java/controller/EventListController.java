@@ -27,10 +27,10 @@ public class EventListController extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,14 +49,15 @@ public class EventListController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -64,29 +65,25 @@ public class EventListController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
-
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
         String action = request.getParameter("action");
         EventDAO dao = new EventDAO();
-        ArrayList<Events> list = new ArrayList<>();
+
+        ArrayList<Events> list;
+        if (action == null) {
+            list = dao.getEvents();
+        } else if (action.equals("upcoming")) {
+            list = dao.upComingEvents();
+        } else if (action.equals("ongoing")) {
+            list = dao.getOngoingEvents();
+        } else if (action.equals("saved")) {
+            list = dao.getSavedEvents(user.getUserId());
+        } else {
+            list = new ArrayList<>();
+        }
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
-
-        if (action == null || action.equals("all")) {
-            list = dao.getEvents(user.getUserId());
-        } else if (action.equals("upcoming")) {
-            list = dao.upComingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
-         else if (action.equals("ongoing")) {
-            list = dao.getOngoingEvents(user.getUserId()); // tạo thêm hàm này trong DAO
-        } 
-
-        // Xác định trạng thái và đăng ký của user cho từng event
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();
+
         for (Events e : list) {
             if (now.before(e.getStartTime())) {
                 e.setEventStatus("Sắp diễn ra");
@@ -96,7 +93,10 @@ public class EventListController extends HttpServlet {
                 e.setEventStatus("Đang diễn ra");
             }
 
-            boolean isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
+            boolean isRegistered = false;
+            if (user != null) {
+                isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
+            }
             isRegisteredList.add(isRegistered);
         }
 
@@ -108,10 +108,10 @@ public class EventListController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

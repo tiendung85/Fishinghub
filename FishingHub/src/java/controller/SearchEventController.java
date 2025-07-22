@@ -61,39 +61,36 @@ public class SearchEventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
         String search = request.getParameter("query");
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("login");
-        } else {
-            EventDAO dao = new EventDAO();
-            ArrayList<Events> listS = dao.searchEvents(search,user.getUserId());
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+        EventDAO dao = new EventDAO();
+        ArrayList<Events> listS = dao.searchEvents(search);
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        ArrayList<Boolean> isRegisteredList = new ArrayList<>();
 
-            // Create a list to store registration status for each event
-            ArrayList<Boolean> isRegisteredList = new ArrayList<>();
+        for (Events e : listS) {
+            
+            if (now.before(e.getStartTime())) {
+                e.setEventStatus("Sắp diễn ra");
+            } else if (now.after(e.getEndTime())) {
+                e.setEventStatus("Đã kết thúc");
+            } else {
+                e.setEventStatus("Đang diễn ra");
+            }
 
-            for (Events e : listS) {
-                // Set event status
-                if (now.before(e.getStartTime())) {
-                    e.setEventStatus("Sắp diễn ra");
-                } else if (now.after(e.getEndTime())) {
-                    e.setEventStatus("Đã kết thúc");
-                } else {
-                    e.setEventStatus("Đang diễn ra");
-                }
-
-                // Check if the user is registered for this event
+            
+            if (user == null) {
+                isRegisteredList.add(false); 
+            } else {
                 boolean isRegistered = dao.isUserRegistered(e.getEventId(), user.getUserId());
                 isRegisteredList.add(isRegistered);
             }
-            request.setAttribute("listE", listS);
-            request.setAttribute("isRegisteredList", isRegisteredList);
-            request.getRequestDispatcher("Event.jsp").forward(request, response);
         }
-
+        request.setAttribute("search", search);
+        request.setAttribute("listE", listS);
+        request.setAttribute("isRegisteredList", isRegisteredList);
+        request.getRequestDispatcher("Event.jsp").forward(request, response);
     }
 
     /**

@@ -60,6 +60,22 @@ VALUES (
     N'Hà Nội'                    -- Location
 );
 
+-- Shop table: mỗi chủ hồ câu có 1 shop riêng
+CREATE TABLE Shop (
+    ShopId INT PRIMARY KEY IDENTITY(1,1),
+    OwnerId INT NOT NULL,
+    ShopName NVARCHAR(255),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (OwnerId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+-- Giả sử có các chủ hồ câu với UserId từ 21 đến 24
+INSERT INTO Shop (OwnerId, ShopName) VALUES
+(21, N'Hồ câu giải trí Hoàng Gia'),
+(22, N'Shop cá Koi Nam Định'),
+(23, N'Cửa hàng cá cảnh Quận 7'),
+(24, N'Thế giới đồ câu miền Tây');
+
 
 -- Categories
 CREATE TABLE Category (
@@ -67,7 +83,7 @@ CREATE TABLE Category (
     Name NVARCHAR(100) NOT NULL
 );
 
--- Products
+-- Product gắn shop
 CREATE TABLE Product (
     ProductId INT PRIMARY KEY IDENTITY,
     Name NVARCHAR(255) NOT NULL,
@@ -76,7 +92,9 @@ CREATE TABLE Product (
     StockQuantity INT NOT NULL,
     SoldQuantity INT DEFAULT 0,
     CategoryId INT,
-    FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
+    ShopId INT,
+    FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId),
+    FOREIGN KEY (ShopId) REFERENCES Shop(ShopId) ON DELETE SET NULL
 );
 
 -- ShoppingCart
@@ -116,6 +134,7 @@ CREATE TABLE Orders (
     FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
 
+select * from Orders
 -- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
 VALUES (1, 500000, 550000, '2025-05-30 10:30:00', 1);
@@ -200,6 +219,11 @@ CREATE TABLE Event (
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
 
+select * from Event
+SELECT * FROM Event 
+WHERE Status = 'approved' 
+AND StartTime <= GETDATE() 
+AND EndTime >= GETDATE();
 -- EventParticipants
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
@@ -641,6 +665,19 @@ CREATE TABLE LakeFish (
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
 
+CREATE TABLE LakeCustomFish (
+    CustomFishId INT PRIMARY KEY IDENTITY,
+    LakeId INT NOT NULL,
+    FishName NVARCHAR(100) NOT NULL,
+    Price FLOAT NOT NULL,
+    FOREIGN KEY (LakeId) REFERENCES FishingLake(LakeId) ON DELETE CASCADE
+);
+
+select  * from LakeCustomFish
+select * from LakeFish
+select * from Event
+
+
 DROP TABLE LakeFish;
 DROP TABLE FishingLake;
 
@@ -711,21 +748,23 @@ INSERT INTO Category (Name) VALUES
 (N'Daiwa'),       -- CategoryId = 2
 (N'Rapala');     -- CategoryId = 3
 
-INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId) VALUES
-(N'Rapala Snow', 2800000.00, 'https://vuadocau.com/wp-content/uploads/2020/02/Rapala-snow-3.png', 50, 12, 3),
-(N'Dây dù ( Dây PE) Sufix 832 chính hãng Rapala', 360000.00, 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpsbnugehb6aa2', 78, 43, 3),
-(N'Rapala Shadow Baitcasting', 1700000.00, 'https://lh4.googleusercontent.com/proxy/Vub1k7AeGzHBTDraGCkY1oPobLU0RLd3sE9EvZPlnvgt5U2X4F2NmxhwBXYnNIbXHJbyoNGOg9QBueIHQSq1E6Dolsg6jZQbuBTkFhbbsfFX-AlIaQ', 55, 10, 3),
-(N'Rapala Sideral 201', 1650000.00, 'https://www.eastackle.com/images/product/large/rapala-sideral-201-bait-casting-reel-8577_7_.jpg', 10, 5, 3),
-(N'Hộp Đựng Phụ Kiện Câu Cá Đa Năng Daiwa', 85000.00, 'https://vuadocau.com/wp-content/uploads/magictoolbox_cache/6b9a437c5150b07b7797f5bf9befc233/4/0/40710/original/1187082081/hop-daiwa.jpg', 150, 30, 2),
-(N'Thùng đựng dụng cụ đi câu Daiwa Tackle Box', 105000.00, 'https://daiwa.sg/wp-content/uploads/2023/05/TackleBoxTB_3000HS.jpg', 100, 25, 2),
-(N'Cần máy đứng Daiwa Liberty Club Seabass 90ML/96M', 1990000.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbTaMhTlIyS_KCqPfB5J8NdHz1eCExx1oT4g&s', 99, 16, 2),
-(N'Cần du lịch lồng dùng Daiwa Ardito-TR - 70MHF-SC', 2000000.00, 'https://vuadocau.com/wp-content/uploads/2020/11/Ardito-TR.jpg', 120, 10, 2),
-(N'Cần lure Daiwa Tatula - bản JP', 2450000.00, 'https://vuadocau.com/wp-content/uploads/2020/04/Daiwa-Tatula-1.jpg', 87, 45, 2),
-(N'Cần Câu Lure 4 Khúc Rapala Classic Countdown', 830000.00, 'https://vuadocau.com/wp-content/uploads/2021/06/classic-countdown.jpg', 96, 69, 3),
-(N'Shimano Nexave Shore Cast – 2023', 1200000.00, 'https://fergostackleworld.com.au/cdn/shop/files/shimano-nexave-1203-6-10kg-surf-rod_600x.jpg?v=1686720217', 120, 50, 1),
-(N'Cần Jig Shimano Grappler Type J 2025', 3900000.00, 'https://tunafishtackle.com/wp-content/uploads/2020/06/Grappler-Type-J-Spinning.jpg', 90, 45, 1),
-(N'Bao đựng đồ câu Shimano Butterfly', 1900000.00, 'https://shopcancau.vn/uploads/source/Phu%20kien/bao%20hop/shimano/Bao-dung-do-cau-shimano-butterfly-1.jpg', 69, 41, 1),
-(N'Cần câu lure Shimano Expride', 3550000.00, 'https://down-vn.img.susercontent.com/file/9d4da39c76846eaff9e59bcde535d953', 80, 65, 1);
+-- Dữ liệu mẫu Product với ShopId = 1
+INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId, ShopId) VALUES
+(N'Rapala Snow', 2800000.00, 'https://vuadocau.com/wp-content/uploads/2020/02/Rapala-snow-3.png', 50, 12, 3, 1),
+(N'Dây dù ( Dây PE) Sufix 832 chính hãng Rapala', 360000.00, 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpsbnugehb6aa2', 78, 43, 3, 1),
+(N'Rapala Shadow Baitcasting', 1700000.00, 'https://lh4.googleusercontent.com/proxy/Vub1k7AeGzHBTDraGCkY1oPobLU0RLd3sE9EvZPlnvgt5U2X4F2NmxhwBXYnNIbXHJbyoNGOg9QBueIHQSq1E6Dolsg6jZQbuBTkFhbbsfFX-AlIaQ', 55, 10, 3, 1),
+(N'Rapala Sideral 201', 1650000.00, 'https://www.eastackle.com/images/product/large/rapala-sideral-201-bait-casting-reel-8577_7_.jpg', 10, 5, 3, 1),
+(N'Hộp Đựng Phụ Kiện Câu Cá Đa Năng Daiwa', 85000.00, 'https://vuadocau.com/wp-content/uploads/magictoolbox_cache/6b9a437c5150b07b7797f5bf9befc233/4/0/40710/original/1187082081/hop-daiwa.jpg', 150, 30, 2, 1),
+(N'Thùng đựng dụng cụ đi câu Daiwa Tackle Box', 105000.00, 'https://daiwa.sg/wp-content/uploads/2023/05/TackleBoxTB_3000HS.jpg', 100, 25, 2, 1),
+(N'Cần máy đứng Daiwa Liberty Club Seabass 90ML/96M', 1990000.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbTaMhTlIyS_KCqPfB5J8NdHz1eCExx1oT4g&s', 99, 16, 2, 1),
+(N'Cần du lịch lồng dùng Daiwa Ardito-TR - 70MHF-SC', 2000000.00, 'https://vuadocau.com/wp-content/uploads/2020/11/Ardito-TR.jpg', 120, 10, 2, 1),
+(N'Cần lure Daiwa Tatula - bản JP', 2450000.00, 'https://vuadocau.com/wp-content/uploads/2020/04/Daiwa-Tatula-1.jpg', 87, 45, 2, 1),
+(N'Cần Câu Lure 4 Khúc Rapala Classic Countdown', 830000.00, 'https://vuadocau.com/wp-content/uploads/2021/06/classic-countdown.jpg', 96, 69, 3, 1),
+(N'Shimano Nexave Shore Cast – 2023', 1200000.00, 'https://fergostackleworld.com.au/cdn/shop/files/shimano-nexave-1203-6-10kg-surf-rod_600x.jpg?v=1686720217', 120, 50, 1, 1),
+(N'Cần Jig Shimano Grappler Type J 2025', 3900000.00, 'https://tunafishtackle.com/wp-content/uploads/2020/06/Grappler-Type-J-Spinning.jpg', 90, 45, 1, 1),
+(N'Bao đựng đồ câu Shimano Butterfly', 1900000.00, 'https://shopcancau.vn/uploads/source/Phu%20kien/bao%20hop/shimano/Bao-dung-do-cau-shimano-butterfly-1.jpg', 69, 41, 1, 1),
+(N'Cần câu lure Shimano Expride', 3550000.00, 'https://down-vn.img.susercontent.com/file/9d4da39c76846eaff9e59bcde535d953', 80, 65, 1, 1);
+
 
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
@@ -783,3 +822,24 @@ select * from Users
 UPDATE Users
 SET RoleId = 2
 WHERE UserId = 1;
+
+
+SELECT TOP 3 P.PostId, P.UserId, P.Topic, P.Title, P.Content, P.CreatedAt, P.Status, U.FullName  
+                 FROM Post P JOIN Users U ON P.UserId = U.UserId 
+                 WHERE P.Status = 'Pending' 
+                ORDER BY P.CreatedAt DESC
+
+
+select * from Product
+
+select * from Orders
+select * from Shop
+
+SELECT COUNT(*) FROM Orders WHERE UserId = 1 AND OrderDate >= DATEADD(DAY, -7, GETDATE())
+
+SELECT COUNT(*) FROM Product WHERE OwnerId = 1
+
+SELECT COUNT(*) FROM Product 
+SELECT COUNT(*) FROM Orders WHERE UserId = 3 AND OrderDate >= DATEADD(DAY, -7, GETDATE())
+
+

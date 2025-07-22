@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import model.Users;
 import java.io.IOException;
 
-@WebServlet(name = "CreateLakeServlet", urlPatterns = {"/createLake"})
+@WebServlet(name = "CreateLakeServlet", urlPatterns = { "/createLake" })
 public class CreateLakeServlet extends HttpServlet {
     private final FishingLakeDAO fishingLakeDAO = new FishingLakeDAO();
 
@@ -30,11 +30,11 @@ public class CreateLakeServlet extends HttpServlet {
 
         try {
             fishingLakeDAO.createLake(lakeName, lakeLocation, ownerId);
-            response.sendRedirect("profile");
+            response.sendRedirect("LakeServlet");
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Tạo hồ câu mới thất bại. Vui lòng thử lại!");
-            request.getRequestDispatcher("Profile.jsp").forward(request, response);
+            request.getRequestDispatcher("Lake.jsp").forward(request, response);
         }
     }
 }

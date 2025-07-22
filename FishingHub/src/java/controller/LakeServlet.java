@@ -18,14 +18,15 @@ import jakarta.servlet.http.HttpSession;
 import model.Users;
 import model.FishingLake;
 import model.FishSpecies;
+import model.LakeCustomFish;
 import model.LakeFishInfo;
 
 /**
  *
  * @author Viehai
  */
-@WebServlet(name = "ProfileServlet", urlPatterns = {"/profile"})
-public class ProfileServlet extends HttpServlet {
+@WebServlet(name = "LakeServlet", urlPatterns = {"/LakeServlet"})
+public class LakeServlet extends HttpServlet {
 
     private final FishingLakeDAO fishingLakeDAO = new FishingLakeDAO();
     private final FishSpeciesDAO fishSpeciesDAO = new FishSpeciesDAO();
@@ -49,11 +50,9 @@ public class ProfileServlet extends HttpServlet {
             lakes = fishingLakeDAO.getLakesByOwnerId(currentUser.getUserId());
             if (lakes != null) {
                 for (FishingLake lake : lakes) {
-                    List<String> fishNames = fishingLakeDAO.getFishSpeciesNamesByLakeId(lake.getLakeId());
-                    lake.setFishSpeciesNames(fishNames);
-                    // Lấy danh sách loài cá chưa có trong hồ này và set vào object hồ
-                    List<FishSpecies> notInLake = fishingLakeDAO.getFishSpeciesNotInLake(lake.getLakeId());
-                    lake.setFishSpeciesNotInLake(notInLake);
+
+                    List<LakeCustomFish> customFishList = fishingLakeDAO.getCustomFishByLake(lake.getLakeId());
+                    lake.setCustomFishList(customFishList);
                     // Lấy danh sách cá và giá tiền trong hồ này
                     List<LakeFishInfo> fishInfoList = fishingLakeDAO.getLakeFishInfoList(lake.getLakeId());
                     lake.setLakeFishInfoList(fishInfoList);
@@ -68,7 +67,7 @@ public class ProfileServlet extends HttpServlet {
         // Truyền dữ liệu sang JSP
         request.setAttribute("lakes", lakes);
         request.setAttribute("fishSpeciesList", fishSpeciesList);
-        request.getRequestDispatcher("Profile.jsp").forward(request, response);
+        request.getRequestDispatcher("Lake.jsp").forward(request, response);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.LakeCustomFish;
 
 public class FishingLakeDAO extends DBConnect {
 
@@ -36,9 +37,9 @@ public class FishingLakeDAO extends DBConnect {
 
     public List<String> getFishSpeciesNamesByLakeId(int lakeId) throws SQLException {
         List<String> speciesNames = new ArrayList<>();
-        String sql = "SELECT fs.CommonName FROM FishSpecies fs " +
-                     "JOIN LakeFish lf ON fs.Id = lf.FishSpeciesId " +
-                     "WHERE lf.LakeId = ?";
+        String sql = "SELECT fs.CommonName FROM FishSpecies fs "
+                + "JOIN LakeFish lf ON fs.Id = lf.FishSpeciesId "
+                + "WHERE lf.LakeId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, lakeId);
             ResultSet rs = stmt.executeQuery();
@@ -65,7 +66,6 @@ public class FishingLakeDAO extends DBConnect {
         throw new SQLException("Tạo hồ câu mới thất bại!");
     }
 
-
     // Thêm nhiều loài cá vào hồ (có giá)
     public void addFishToLake(int lakeId, List<Integer> fishSpeciesIds, List<Double> prices) throws SQLException {
         String sql = "INSERT INTO LakeFish (LakeId, FishSpeciesId, Price) VALUES (?, ?, ?)";
@@ -89,8 +89,6 @@ public class FishingLakeDAO extends DBConnect {
         }
     }
 
-
-
     // Sửa thông tin hồ
     public void updateLake(int lakeId, String name, String location) throws SQLException {
         String sql = "UPDATE FishingLake SET Name = ?, Location = ? WHERE LakeId = ?";
@@ -113,33 +111,13 @@ public class FishingLakeDAO extends DBConnect {
         }
     }
 
-    // Lấy danh sách loài cá chưa có trong hồ
-    public List<model.FishSpecies> getFishSpeciesNotInLake(int lakeId) throws SQLException {
-        List<model.FishSpecies> list = new ArrayList<>();
-        String sql = "SELECT * FROM FishSpecies WHERE Id NOT IN (SELECT FishSpeciesId FROM LakeFish WHERE LakeId = ?) ORDER BY Id";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, lakeId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                model.FishSpecies fish = new model.FishSpecies();
-                fish.setId(rs.getInt("Id"));
-                fish.setCommonName(rs.getString("CommonName"));
-                fish.setScientificName(rs.getString("ScientificName"));
-                fish.setDescription(rs.getString("Description"));
-                // Có thể bổ sung các trường khác nếu cần
-                list.add(fish);
-            }
-        }
-        return list;
-    }
-
     // Lấy danh sách cá và giá tiền cho từng hồ
     public List<LakeFishInfo> getLakeFishInfoList(int lakeId) throws SQLException {
         List<LakeFishInfo> list = new ArrayList<>();
-        String sql = "SELECT fs.Id, fs.CommonName, lf.Price " +
-                     "FROM LakeFish lf " +
-                     "JOIN FishSpecies fs ON lf.FishSpeciesId = fs.Id " +
-                     "WHERE lf.LakeId = ?";
+        String sql = "SELECT fs.Id, fs.CommonName, lf.Price "
+                + "FROM LakeFish lf "
+                + "JOIN FishSpecies fs ON lf.FishSpeciesId = fs.Id "
+                + "WHERE lf.LakeId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, lakeId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -168,4 +146,50 @@ public class FishingLakeDAO extends DBConnect {
         }
         return null; // hoặc có thể trả về 0 nếu muốn
     }
+
+    // Lấy danh sách cá custom của hồ
+    public List<LakeCustomFish> getCustomFishByLake(int lakeId) {
+        List<LakeCustomFish> list = new ArrayList<>();
+        String sql = "SELECT * FROM LakeCustomFish WHERE LakeId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, lakeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                LakeCustomFish fish = new LakeCustomFish();
+                fish.setCustomFishId(rs.getInt("CustomFishId"));
+                fish.setLakeId(rs.getInt("LakeId"));
+                fish.setFishName(rs.getString("FishName"));
+                fish.setPrice(rs.getDouble("Price"));
+                list.add(fish);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Xoá tất cả custom fish theo hồ (dọn dẹp trước khi thêm mới)
+    public void removeAllCustomFishFromLake(int lakeId) {
+        String sql = "DELETE FROM LakeCustomFish WHERE LakeId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, lakeId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+// Thêm custom fish vào hồ
+    public void addCustomFish(LakeCustomFish fish) {
+        String sql = "INSERT INTO LakeCustomFish (LakeId, FishName, Price) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, fish.getLakeId());
+            ps.setString(2, fish.getFishName());
+            ps.setDouble(3, fish.getPrice());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

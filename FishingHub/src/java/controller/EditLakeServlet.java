@@ -11,15 +11,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "EditLakeServlet", urlPatterns = {"/editLake"})
+@WebServlet(name = "EditLakeServlet", urlPatterns = { "/editLake" })
 public class EditLakeServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String lakeIdStr = request.getParameter("lakeId");
         String name = request.getParameter("lakeName");
         String lakeLocation = request.getParameter("lakeLocation");
         if (lakeIdStr == null || name == null || lakeLocation == null) {
-            response.sendRedirect("profile?error=missing_data");
+            response.sendRedirect("LakeServlet?error=missing_data");
             return;
         }
         int lakeId = Integer.parseInt(lakeIdStr);
@@ -27,10 +28,10 @@ public class EditLakeServlet extends HttpServlet {
         FishingLakeDAO lakeDAO = new FishingLakeDAO();
         try {
             lakeDAO.updateLake(lakeId, name, lakeLocation);
-            response.sendRedirect("profile");
+            response.sendRedirect("LakeServlet");
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("profile");
+            response.sendRedirect("LakeServlet");
         }
     }
 }

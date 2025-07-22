@@ -5,6 +5,8 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
     Users currentUser = (Users) session.getAttribute("user");
     List<FishingLake> lakes = (List<FishingLake>) request.getAttribute("lakes");
@@ -69,31 +71,20 @@
                     </nav>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
-                    </div>
-                    <div class="relative">
-                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
-                            <i class="ri-notification-3-line text-gray-600"></i>
-                        </div>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
-                    </div>
+
                     <% if (currentUser == null) { %>
-                        <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
-                        <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
+                    <a href="Login.jsp" class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap">Đăng Nhập</a>
+                    <a href="Register.jsp" class="bg-white text-primary border border-primary px-4 py-2 rounded-button whitespace-nowrap">Đăng Ký</a>
                     <% } else { %>
-                        <div class="flex items-center space-x-3">
-                            <a href="profile" class="font-semibold text-primary hover:underline flex items-center">
-                                <i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %>
-                            </a>
-                            <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
-                            <form action="logout" method="post" style="display:inline;">
-                                <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
-                            </form>
-                        </div>
+                    <div class="flex items-center space-x-3">
+                        <a href="profile" class="font-semibold text-primary hover:underline flex items-center">
+                            <i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %>
+                        </a>
+                        <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                        <form action="logout" method="post" style="display:inline;">
+                            <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                        </form>
+                    </div>
                     <% } %>
                 </div>
             </div>
@@ -164,17 +155,27 @@
                         <div class="mb-2">
                             <span class="font-semibold">Loài cá trong hồ:</span>
                             <ul class="list-disc ml-6">
-                                <c:choose>
-                                    <c:when test="${not empty lake.lakeFishInfoList}">
-                                        <c:forEach var="info" items="${lake.lakeFishInfoList}">
-                                            <li>${info.fishName} <span class="text-gray-500">Giá thu lại: <span class="fish-price-format">${info.price}</span> VND/kg</span></li>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li>Chưa có dữ liệu</li>
-                                    </c:otherwise>
-                                </c:choose>
+                                <!-- Cá hệ thống -->
+                                <c:forEach var="info" items="${lake.lakeFishInfoList}">
+                                    <li>
+                                        ${info.fishName}
+                                        <c:if test="${info.price != null && info.price > 0}">
+                                            Giá thu lại: <fmt:formatNumber value="${info.price}" type="number" minFractionDigits="0" /> VND/kg
+                                        </c:if>
+                                    </li>
+                                </c:forEach>
+                                <!-- Cá custom -->
+                                <c:forEach var="customFish" items="${lake.customFishList}">
+                                    <li>
+                                        ${customFish.fishName}
+                                        <c:if test="${customFish.price != null && customFish.price > 0}">
+                                            Giá thu lại: <fmt:formatNumber value="${customFish.price}" type="number" minFractionDigits="0" /> VND/kg
+                                        </c:if>
+                                    </li>
+                                </c:forEach>
                             </ul>
+
+
                         </div>
                         <div class="flex gap-3 mt-4">
                             <button class="flex items-center px-3 py-2 bg-green-500 text-white rounded-button hover:bg-green-600" title="Cập nhật loài cá" onclick="document.getElementById('update-fish-modal-${lake.lakeId}').classList.remove('hidden')">
@@ -193,7 +194,7 @@
             <div id="lake-info-container"></div>
         </div>
 
-        
+
 
         <!-- Modal Sửa hồ -->
         <div id="edit-lake-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
@@ -246,10 +247,13 @@
         <c:forEach var="lake" items="${lakes}">
             <div id="update-fish-modal-${lake.lakeId}" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
                 <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                    <h3 class="text-lg font-bold mb-4">Cập nhật loài cá cho hồ <span>${lake.name}</span></h3>
+                    <h3 class="text-lg font-bold mb-4">
+                        Cập nhật loài cá cho hồ <span>${lake.name}</span>
+                    </h3>
                     <form method="post" action="updateLakeFish">
                         <input type="hidden" name="lakeId" value="${lake.lakeId}" />
                         <div class="mb-4">
+                            <!-- Các loài cá hệ thống -->
                             <c:forEach var="fish" items="${fishSpeciesList}">
                                 <c:set var="fishPrice" value="" />
                                 <c:set var="isChecked" value="false" />
@@ -263,11 +267,40 @@
                                 <label class="flex items-center mb-1">
                                     <input type="checkbox" name="fishSpeciesIds" value="${fish.id}" class="mr-2 update-fish-checkbox" <c:if test="${isChecked}">checked</c:if> onchange="toggleFishPriceInput(this)" />
                                     <span>${fish.commonName}</span>
-                                    <input type="number" name="fishPrices_${fish.id}" placeholder="Giá (VND/kg)" class="ml-2 border rounded px-2 py-1 w-28 fish-price-input" min="1000" step="1000" style="display: ${displayStyle};" value="${fishPrice}" />
+                                    <input type="number" name="fishPrices_${fish.id}" placeholder="Giá (VND/kg)" class="ml-2 border rounded px-2 py-1 w-28 fish-price-input"  style="display: ${displayStyle};" value="${fishPrice}" />
                                     <span class="ml-1 text-xs text-gray-500">VND/kg</span>
                                 </label>
                             </c:forEach>
                         </div>
+
+                        <!-- Cá custom đã có (readonly, hiển thị cho vui) -->
+                        <c:if test="${not empty lake.customFishList}">
+                            <div class="mb-4" id="current-custom-fish-group-${lake.lakeId}">
+                                <label class="block font-semibold mb-1">Các loài cá tự thêm hiện tại:</label>
+                                <c:forEach var="customFish" items="${lake.customFishList}">
+                                    <div class="flex items-center mb-1">
+                                        <input type="text" name="customFishName" value="${customFish.fishName}" class="border rounded px-2 py-1 w-40 mr-2"/>
+                                        <input type="number" name="customFishPrice" value="${customFish.price}"  class="border rounded px-2 py-1 w-28"/>
+                                        <span class="ml-1 text-xs text-gray-500">VND/kg</span>
+                                        <!-- Nút X để xóa -->
+                                        <button type="button" onclick="removeCustomFishRow(this)" class="ml-2 text-red-500 font-bold rounded-full px-2">×</button>
+                                    </div>
+                                </c:forEach>
+                            </div>
+
+                        </c:if>
+
+                        <!-- Nhập cá custom mới -->
+                        <div class="mb-4" id="custom-fish-group-${lake.lakeId}">
+                            <label class="block font-semibold mb-1">Thêm cá tự do:</label>
+                            <div class="flex items-center mb-1">
+                                <input type="text" name="customFishName" placeholder="Tên cá tự thêm" class="border rounded px-2 py-1 w-40 mr-2" />
+                                <input type="number" name="customFishPrice" placeholder="Giá (VND/kg)" class="border rounded px-2 py-1 w-28" />
+                                <span class="ml-1 text-xs text-gray-500">VND/kg</span>
+                                <button type="button" onclick="addCustomFishRow(${lake.lakeId})" class="ml-2 text-blue-500 font-bold">+</button>
+                            </div>
+                        </div>
+
                         <div class="flex justify-end gap-2">
                             <button type="button" onclick="document.getElementById('update-fish-modal-${lake.lakeId}').classList.add('hidden')" class="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300">Hủy</button>
                             <button type="submit" class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600">Cập nhật</button>
@@ -277,17 +310,38 @@
             </div>
         </c:forEach>
 
+        <!-- Script cho thêm dòng nhập cá custom -->
         <script>
-            document.getElementById('btn-create-lake').onclick = function() {
+            function addCustomFishRow(lakeId) {
+                const group = document.getElementById('custom-fish-group-' + lakeId);
+                const div = document.createElement('div');
+                div.className = "flex items-center mb-1";
+                div.innerHTML = `
+                <input type="text" name="customFishName" placeholder="Tên cá tự thêm" class="border rounded px-2 py-1 w-40 mr-2" />
+                <input type="number" name="customFishPrice" placeholder="Giá (VND/kg)" min="1000" step="1000" class="border rounded px-2 py-1 w-28" />
+                <span class="ml-1 text-xs text-gray-500">VND/kg</span>
+                <button type="button" onclick="this.parentNode.remove()" class="ml-2 text-red-500 font-bold">-</button>
+            `;
+                group.appendChild(div);
+            }
+
+            function removeCustomFishRow(btn) {
+                btn.parentNode.remove();
+            }
+        </script>
+
+
+        <script>
+            document.getElementById('btn-create-lake').onclick = function () {
                 document.getElementById('create-lake-form').classList.remove('hidden');
             };
-            document.getElementById('cancel-create-lake').onclick = function() {
+            document.getElementById('cancel-create-lake').onclick = function () {
                 document.getElementById('create-lake-form').classList.add('hidden');
             };
 
-            document.querySelectorAll('.lake-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.lake-info-block').forEach(function(div) {
+            document.querySelectorAll('.lake-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.lake-info-block').forEach(function (div) {
                         div.classList.add('hidden');
                     });
                     var lakeId = btn.getAttribute('data-lake-id');
@@ -325,76 +379,79 @@
             function closeDeleteLakeModal() {
                 document.getElementById('delete-lake-modal').classList.add('hidden');
             }
-            
-            
+
+
             function toggleFishPriceInput(checkbox) {
                 var priceInput = checkbox.parentElement.querySelector('.fish-price-input');
                 if (checkbox.checked) {
                     priceInput.style.display = '';
-                    priceInput.required = true;
+                    // Không cần required
                     priceInput.disabled = false;
                 } else {
                     priceInput.style.display = 'none';
-                    priceInput.required = false;
+                    // Không cần required
                     priceInput.disabled = false;
                     priceInput.value = '';
                 }
             }
 
+
             document.addEventListener("DOMContentLoaded", function () {
                 function loadProvinces(selectElement) {
                     fetch("https://provinces.open-api.vn/api/p/")
-                        .then(response => response.json())
-                        .then(data => {
-                            selectElement.innerHTML = '<option value="">Chọn Tỉnh/Thành</option>';
-                            data.forEach(province => {
-                                let option = document.createElement("option");
-                                option.value = province.code;
-                                option.textContent = province.name;
-                                selectElement.appendChild(option);
-                            });
-                        })
-                        .catch(error => console.error("❌ Lỗi khi tải danh sách tỉnh/thành:", error));
+                            .then(response => response.json())
+                            .then(data => {
+                                selectElement.innerHTML = '<option value="">Chọn Tỉnh/Thành</option>';
+                                data.forEach(province => {
+                                    let option = document.createElement("option");
+                                    option.value = province.code;
+                                    option.textContent = province.name;
+                                    selectElement.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error("❌ Lỗi khi tải danh sách tỉnh/thành:", error));
                 }
 
                 function loadDistricts(provinceCode, districtSelect, wardSelect) {
-                    if (!provinceCode) return;
+                    if (!provinceCode)
+                        return;
                     districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
                     wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
                     districtSelect.disabled = true;
                     wardSelect.disabled = true;
                     let apiUrl = "https://provinces.open-api.vn/api/p/" + provinceCode + "?depth=2";
                     fetch(apiUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.districts.forEach(district => {
-                                let option = document.createElement("option");
-                                option.value = district.code;
-                                option.textContent = district.name;
-                                districtSelect.appendChild(option);
-                            });
-                            districtSelect.disabled = false;
-                        })
-                        .catch(error => console.error("❌ Lỗi khi tải danh sách quận/huyện:", error));
+                            .then(response => response.json())
+                            .then(data => {
+                                data.districts.forEach(district => {
+                                    let option = document.createElement("option");
+                                    option.value = district.code;
+                                    option.textContent = district.name;
+                                    districtSelect.appendChild(option);
+                                });
+                                districtSelect.disabled = false;
+                            })
+                            .catch(error => console.error("❌ Lỗi khi tải danh sách quận/huyện:", error));
                 }
 
                 function loadWards(districtCode, wardSelect) {
-                    if (!districtCode) return;
+                    if (!districtCode)
+                        return;
                     wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
                     wardSelect.disabled = true;
                     let apiUrl = "https://provinces.open-api.vn/api/d/" + districtCode + "?depth=2";
                     fetch(apiUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.wards.forEach(ward => {
-                                let option = document.createElement("option");
-                                option.value = ward.code;
-                                option.textContent = ward.name;
-                                wardSelect.appendChild(option);
-                            });
-                            wardSelect.disabled = false;
-                        })
-                        .catch(error => console.error("❌ Lỗi khi tải danh sách phường/xã:", error));
+                            .then(response => response.json())
+                            .then(data => {
+                                data.wards.forEach(ward => {
+                                    let option = document.createElement("option");
+                                    option.value = ward.code;
+                                    option.textContent = ward.name;
+                                    wardSelect.appendChild(option);
+                                });
+                                wardSelect.disabled = false;
+                            })
+                            .catch(error => console.error("❌ Lỗi khi tải danh sách phường/xã:", error));
                 }
 
                 const createProvinceSelect = document.getElementById("create-province");
@@ -432,7 +489,7 @@
 
             const createLakeForm = document.getElementById('create-lake-form');
             if (createLakeForm) {
-                createLakeForm.addEventListener('submit', function(e) {
+                createLakeForm.addEventListener('submit', function (e) {
                     const provinceSelect = document.getElementById('create-province');
                     const districtSelect = document.getElementById('create-district');
                     const wardSelect = document.getElementById('create-ward');
@@ -450,7 +507,7 @@
 
             const editLakeForm = document.getElementById('edit-lake-form');
             if (editLakeForm) {
-                editLakeForm.addEventListener('submit', function(e) {
+                editLakeForm.addEventListener('submit', function (e) {
                     const provinceSelect = document.getElementById('edit-province');
                     const districtSelect = document.getElementById('edit-district');
                     const wardSelect = document.getElementById('edit-ward');
@@ -466,10 +523,10 @@
                 });
             }
 
+
+
             
 
-            // Đảm bảo chỉ required giá khi checkbox được chọn (cập nhật cá)
-            
 
             // Format giá tiền VND (1.000, 30.000)
             function formatVND(num) {
@@ -477,41 +534,16 @@
                     num = num.replace(/[^\d.\-]/g, ''); // loại bỏ ký tự không phải số
                 }
                 let n = Number(num);
-                if (!n || isNaN(n) || n <= 0) return '0';
+                if (!n || isNaN(n) || n <= 0)
+                    return '0';
                 return Math.round(n).toLocaleString('vi-VN');
             }
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.fish-price-format').forEach(function(span) {
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.fish-price-format').forEach(function (span) {
                     span.textContent = formatVND(span.textContent);
                 });
 
-                // Validate giá > 1000 khi submit form thêm/cập nhật cá
-                function validateFishPrice(formId) {
-                    const form = document.getElementById(formId);
-                    if (!form) return;
-                    form.addEventListener('submit', function(e) {
-                        let valid = true;
-                        let firstInvalid = null;
-                        form.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
-                            const priceInput = cb.parentElement.querySelector('input[type="number"]');
-                            if (!priceInput || Number(priceInput.value) < 1000) {
-                                valid = false;
-                                priceInput.classList.add('border-red-500');
-                                if (!firstInvalid) firstInvalid = priceInput;
-                            } else {
-                                priceInput.classList.remove('border-red-500');
-                            }
-                        });
-                        if (!valid) {
-                            e.preventDefault();
-                            alert('Giá tiền phải lớn hơn hoặc bằng 1.000 VND/kg cho mỗi loài cá!');
-                            if (firstInvalid) firstInvalid.focus();
-                        }
-                    });
-                }
-
-                validateFishPrice('add-fish-form');
-                validateFishPrice('update-fish-form');
+                
             });
         </script>
     </body>
