@@ -155,20 +155,23 @@ public class OrderDAO extends DBConnect {
     }
 
     public boolean updateOrderStatus(int orderId, int statusId) {
-        System.out.println("[DEBUG] updateOrderStatus called with orderId=" + orderId + ", statusId=" + statusId);
-        String sql = "UPDATE Orders SET StatusID = ? WHERE Id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, statusId);
-            ps.setInt(2, orderId);
-            int rows = ps.executeUpdate();
-            System.out.println("[DEBUG] Rows updated: " + rows);
-            return rows > 0;
-        } catch (Exception e) {
-            System.out.println("[ERROR] Failed to update order status: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+    String sql;
+    if (statusId == 3) { // 3 là trạng thái hoàn thành/đã nhận
+        sql = "UPDATE Orders SET StatusID = ?, DeliveryTime = GETDATE() WHERE Id = ?";
+    } else {
+        sql = "UPDATE Orders SET StatusID = ? WHERE Id = ?";
     }
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, statusId);
+        ps.setInt(2, orderId);
+        return ps.executeUpdate() > 0;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+    return false;
+}
+
 
     public List<Order> getOrdersByPage(int page, int pageSize) {
         List<Order> list = new ArrayList<>();
