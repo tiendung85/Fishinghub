@@ -71,10 +71,13 @@ CREATE TABLE Shop (
 
 -- Giả sử có các chủ hồ câu với UserId từ 21 đến 24
 INSERT INTO Shop (OwnerId, ShopName) VALUES
-(21, N'Hồ câu giải trí Hoàng Gia'),
-(22, N'Shop cá Koi Nam Định'),
-(23, N'Cửa hàng cá cảnh Quận 7'),
-(24, N'Thế giới đồ câu miền Tây');
+(1, N'Hồ câu giải trí Hoàng Gia'),
+(3, N'Shop cá Koi Nam Định'),
+(1, N'Cửa hàng cá cảnh Quận 7'),
+(7, N'Thế giới đồ câu miền Tây');
+
+select * from Users
+SELECT UserId, RoleId FROM Users;
 
 
 -- Categories
