@@ -1,18 +1,18 @@
-﻿﻿
+﻿
 USE master;
 GO
 
 
-ALTER DATABASE FishingHub
+ALTER DATABASE FishingHub1
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
 
-DROP DATABASE FishingHub;
+DROP DATABASE FishingHub1;
 GO
 
-CREATE DATABASE FishingHub;
+CREATE DATABASE FishingHub1;
 GO
 USE FishingHub;
 GO
@@ -23,6 +23,7 @@ CREATE TABLE Role (
     RoleName NVARCHAR(50) NOT NULL
 );
 
+INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
 
 
 -- Users
@@ -41,6 +42,73 @@ CREATE TABLE Users (
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
 
+ALTER TABLE Users ADD LastLoginTime datetime NULL;
+ALTER TABLE Users ADD Status nvarchar(20) NULL;
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
+(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Văn A', 'a1@example.com', '0901234567', 'password123', NULL, 1, N'Nam', '1995-01-01', N'Hà Nội'),
+(N'Trần Thị B', 'b2@example.com', '0912345678', 'password123', NULL, 1, N'Nữ', '1994-02-02', N'Hồ Chí Minh'),
+(N'Lê Văn C', 'c3@example.com', '0923456789', 'password123', NULL, 1, N'Nam', '1993-03-03', N'Đà Nẵng'),
+(N'Phạm Thị D', 'd4@example.com', '0934567890', 'password123', NULL, 1, N'Nữ', '1992-04-04', N'Cần Thơ'),
+(N'Hoàng Văn E', 'e5@example.com', '0945678901', 'password123', NULL, 1, N'Nam', '1991-05-05', N'Hải Phòng'),
+(N'Đặng Thị F', 'f6@example.com', '0956789012', 'password123', NULL, 1, N'Nữ', '1990-06-06', N'Huế'),
+(N'Vũ Văn G', 'g7@example.com', '0967890123', 'password123', NULL, 1, N'Nam', '1989-07-07', N'Nha Trang'),
+(N'Ngô Thị H', 'h8@example.com', '0978901234', 'password123', NULL, 1, N'Nữ', '1988-08-08', N'Buôn Ma Thuột'),
+(N'Hồ Văn I', 'i9@example.com', '0989012345', 'password123', NULL, 1, N'Nam', '1987-09-09', N'Lâm Đồng'),
+(N'Bùi Thị J', 'j10@example.com', '0990123456', 'password123', NULL, 1, N'Nữ', '1986-10-10', N'Bình Dương');
+
+CREATE TABLE Permission (
+    permissionId INT PRIMARY KEY IDENTITY(1,1),
+    permissionName NVARCHAR(100) NOT NULL
+);
+
+-- Dữ liệu mẫu, chỉ tạo 1 lần
+INSERT INTO Permission (permissionName) VALUES
+    (N'Đăng bài'),
+    (N'Bình luận'),
+    (N'Tạo sự kiện'),
+    (N'Nhắn tin'),
+    (N'Thanh toán'),
+    (N'Đổi ảnh đại diện');
+INSERT INTO Permission (permissionName) VALUES (N'Mua hàng');
+
+CREATE TABLE RolePermission (
+    roleId INT,
+    permissionId INT,
+    PRIMARY KEY (roleId, permissionId),
+    FOREIGN KEY (roleId) REFERENCES Role(roleId),
+    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
+);
+-- Ví dụ: User chỉ có đăng bài và bình luận, FishOwner có thêm tạo sự kiện, Quản trị viên có mọi quyền
+INSERT INTO RolePermission (roleId, permissionId) VALUES
+    (1, 1), (1, 2),         -- User: Đăng bài, Bình luận
+    (2, 1), (2, 2), (2, 3), -- FishOwner: Đăng bài, Bình luận, Tạo sự kiện
+    (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6); -- Admin: Tất cả
+
+CREATE TABLE UserDeniedPermission (
+    userId INT,
+    permissionId INT,
+    PRIMARY KEY (userId, permissionId),
+    FOREIGN KEY (userId) REFERENCES Users(userId),
+    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
+);
+
+-- Bảng này chỉ lưu những quyền bị cấm
+-- Nếu userId=6 bị cấm quyềnId=2,4: INSERT INTO UserDeniedPermission VALUES (6,2), (6,4)
+
+-- User/FishOwner/Admin đều có quyền mua hàng mặc định
+INSERT INTO RolePermission (roleId, permissionId) VALUES
+    (1, 7), (2, 7), (3, 7);
+
+
+
 -- Categories
 CREATE TABLE Category (
     CategoryId INT PRIMARY KEY IDENTITY,
@@ -57,6 +125,19 @@ CREATE TABLE Product (
     SoldQuantity INT DEFAULT 0,
     CategoryId INT,
     FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
+);
+
+CREATE TABLE [dbo].[Review](
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [ProductId] INT NOT NULL,
+    [UserId] INT NOT NULL,
+    [Rating] INT NOT NULL,           -- Số sao: 1-5
+    [ReviewText] NVARCHAR(MAX) NULL, -- Nội dung đánh giá
+    [Image] VARCHAR(255) NULL,       -- Đường dẫn ảnh
+    [Video] VARCHAR(255) NULL,       -- Đường dẫn video
+    [CreatedAt] DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Review_Product FOREIGN KEY (ProductId) REFERENCES Product(ProductId),
+    CONSTRAINT FK_Review_User FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 
 -- ShoppingCart
@@ -94,6 +175,7 @@ CREATE TABLE Orders (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
     FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
+ALTER TABLE Orders ADD DeliveryTime DATETIME NULL;
 
 -- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
@@ -147,6 +229,16 @@ VALUES (2, 320000, 350000);
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
 VALUES (3, 150000, 180000, '2025-05-30 17:55:00', 1);
 
+
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY IDENTITY,
+    OrderID INT,
+    ProductID INT,
+    Rating INT,
+    ReviewText TEXT,
+    FOREIGN KEY (OrderID) REFERENCES Orders(ID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
 -- OrderDetails
 CREATE TABLE OrderDetail (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -183,12 +275,11 @@ CREATE TABLE Event (
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
     UserId INT NOT NULL,
-    NumberPhone VARCHAR(11) NOT NULL,
-    Email VARCHAR(255) NOT NULL,
-    CCCD VARCHAR(20) NOT Null,
+	NumberPhone VARCHAR(11) NOT NULL,
+	Email VARCHAR (255) NOT Null,
+	CCCD VARCHAR(20),
     Checkin BIT DEFAULT 0,
-    CheckinTime DATETIME,
-    JoinDate DATE DEFAULT GETDATE(), 
+	CheckinTime DATETIME, 
     PRIMARY KEY (EventId, UserId),
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
@@ -222,6 +313,33 @@ CREATE TABLE Post (
 	Status NVARCHAR(20) DEFAULT N'chờ duyệt',
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
+
+CREATE TABLE PostRejections (
+    RejectionId INT PRIMARY KEY IDENTITY,
+    PostId INT NOT NULL,
+
+    Reason NVARCHAR(MAX) NOT NULL,
+    RejectedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    
+);
+
+CREATE TABLE PostNotification (
+    NotificationId INT PRIMARY KEY IDENTITY,
+    PostId INT NOT NULL,
+    ReceiverId INT NOT NULL,      -- Người nhận (chủ bài viết)
+    Message NVARCHAR(MAX) NOT NULL,
+    IsRead BIT DEFAULT 0,         -- Đã đọc hay chưa
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    FOREIGN KEY (ReceiverId) REFERENCES Users(UserId)
+);
+SELECT * FROM PostNotification WHERE ReceiverId = 1;
+
+select * from Post
+
+
+
 
 
 CREATE TABLE Image (
@@ -613,12 +731,6 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
-DELETE FROM FishSpecies;
-
-DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
-
-
-
 
 -- Fish
 CREATE TABLE Fish (
@@ -628,6 +740,44 @@ CREATE TABLE Fish (
     FishSpeciesId INT,
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
+
+-- Fish
+CREATE TABLE DifficultyPoint (
+    DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
+    Point INT NOT NULL                -- Ví dụ: 20, 50, 100
+);
+
+INSERT INTO DifficultyPoint (DifficultyLevel, Point)
+VALUES 
+(1, 20),
+(2, 40),
+(3, 70),
+(4,100);
+
+
+
+CREATE TABLE FishingLake (
+    LakeId INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    Location NVARCHAR(255),
+    OwnerId INT, -- FK đến Users(UserId)
+    FOREIGN KEY (OwnerId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE LakeFish (
+    LakeId INT,
+    FishSpeciesId INT,
+	Price FLOAT NOT NULL, --giá loài cá
+    PRIMARY KEY (LakeId, FishSpeciesId),
+    FOREIGN KEY (LakeId) REFERENCES FishingLake(LakeId),
+    FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
+);
+
+select * from LakeFish
+
+SELECT fs.CommonName, lf.Price FROM FishSpecies fs 
+                JOIN LakeFish lf ON fs.Id = lf.FishSpeciesId
+                WHERE lf.LakeId = 1
 
 -- Achievements
 CREATE TABLE Achievement (
@@ -660,30 +810,6 @@ CREATE TABLE password_reset (
 
 
 
-INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
-
-INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
-VALUES 
-(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
-(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
-
-  
-select * from users
-
-
-
-select * from PostComment
-select * from Post
-select * from Image
-
-
-SELECT * FROM Post WHERE Status = N'đã duyệt'
-select * from PostLike
-
-select * from SavedPost
-
 INSERT INTO Category (Name) VALUES
 (N'Shimano'),     -- CategoryId = 1
 (N'Daiwa'),       -- CategoryId = 2
@@ -705,42 +831,295 @@ INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId
 (N'Bao đựng đồ câu Shimano Butterfly', 1900000.00, 'https://shopcancau.vn/uploads/source/Phu%20kien/bao%20hop/shimano/Bao-dung-do-cau-shimano-butterfly-1.jpg', 69, 41, 1),
 (N'Cần câu lure Shimano Expride', 3550000.00, 'https://down-vn.img.susercontent.com/file/9d4da39c76846eaff9e59bcde535d953', 80, 65, 1);
 
-INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
-VALUES 
-(N'Giải câu cá mùa hè', N'Hồ Tây', N'Sự kiện dành cho mọi lứa tuổi.', N'Hà Nội', 3, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 50, 10),
-(N'Thử thách câu cá đêm', N'Hồ Trị An', N'Cuộc thi diễn ra trong đêm.', N'Đồng Nai', 3, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 30, 5),
-(N'Ngày hội câu cá thiếu nhi', N'Hồ Bán Nguyệt', N'Dành cho trẻ em và phụ huynh.', N'TP.HCM', 3, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 40, 15),
-(N'Giải đấu các CLB câu cá', N'Hồ Dầu Tiếng', N'Dành cho các CLB chuyên nghiệp.', N'Tây Ninh', 3, DATEADD(DAY, 15, GETDATE()), DATEADD(DAY, 16, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 100, 20),
-(N'Câu cá gây quỹ từ thiện', N'Hồ Xuân Hương', N'Sự kiện thiện nguyện giúp đỡ trẻ em.', N'Đà Lạt', 3, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'approved', GETDATE(), 'download.jpg', 60, 18);
 
--- 5 sự kiện đã kết thúc
-INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
-VALUES 
-(N'Cuộc thi câu cá đầu xuân', N'Hồ Gươm', N'Chào mừng năm mới.', N'Hà Nội', 3, DATEADD(DAY, -10, GETDATE()), DATEADD(DAY, -9, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 70, 50),
-(N'Thử thách 24h câu cá', N'Hồ Phú Ninh', N'Câu cá không nghỉ suốt 1 ngày.', N'Quảng Nam', 3, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 35, 28),
-(N'Giải đấu cuối năm', N'Hồ Tuyền Lâm', N'Tổng kết mùa giải.', N'Đà Lạt', 3, DATEADD(DAY, -20, GETDATE()), DATEADD(DAY, -19, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 80, 45),
-(N'Sự kiện giao lưu miền Trung', N'Hồ Khe Sanh', N'Câu cá và trao đổi kinh nghiệm.', N'Quảng Trị', 3, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 55, 37),
-(N'Hội thi câu cá sinh viên', N'Hồ Thủ Đức', N'Dành cho các bạn sinh viên.', N'TP.HCM', 3, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 60);
 
--- 5 sự kiện đang diễn ra
+
+-- Các sự kiện đã kết thúc (5 sự kiện đầu)
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES
-(N'Câu cá Marathon', N'Hồ Tràm', N'Sự kiện kéo dài nhiều giờ liên tục.', N'Vũng Tàu', 3, DATEADD(HOUR, -3, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 45, 33),
-(N'Sự kiện giao lưu Bắc - Nam', N'Hồ Hàm Thuận', N'Kết nối anh em cần thủ.', N'Bình Thuận', 3, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 5, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 70, 25),
-(N'Thử thách tốc độ câu cá', N'Hồ An Dương', N'Ai bắt được cá nhanh nhất?', N'Hải Phòng', 3, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 60, 40),
-(N'Chinh phục hồ sâu', N'Hồ Tân Hiệp', N'Địa điểm khó câu nhất năm.', N'Long An', 3, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 50, 22),
-(N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', N'Tuyển chọn đội tuyển quốc gia.', N'Vĩnh Long', 3, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 80);
--- 5 sự kiện sắp diễn ra chỉ còn 1 chỗ trống
+(N'Giải câu cá đầu năm', N'Hồ Gươm', 
+N'Sự kiện mở màn cho mùa giải mới với nhiều hoạt động hấp dẫn như thi câu, trình diễn thiết bị hiện đại, giao lưu với các vận động viên kỳ cựu trong ngành câu cá.', 
+N'Hà Nội', 3, DATEADD(DAY, -10, GETDATE()), DATEADD(DAY, -9, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 60, 10),
+
+(N'Thử thách đêm trăng', N'Hồ Trị An', 
+N'Một đêm thi câu đầy kịch tính và thú vị dưới ánh trăng, nơi người tham gia được thử sức với các loài cá hoạt động về đêm và tận hưởng không khí thiên nhiên hoang sơ.', 
+N'Đồng Nai', 3, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 40, 10),
+
+(N'Câu cá giao lưu các tỉnh miền Trung', N'Hồ Khe Sanh', 
+N'Sự kiện nhằm tăng cường tình đoàn kết giữa các hội câu cá khu vực miền Trung với các hoạt động chính như thi đấu kỹ năng, chia sẻ kinh nghiệm và trình diễn mồi câu độc đáo.', 
+N'Quảng Trị', 3, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), 'images (4).jpg', 55, 10),
+
+(N'Hội thi câu cá sinh viên 2025', N'Hồ Thủ Đức', 
+N'Cuộc thi đầy hào hứng dành cho sinh viên các trường đại học trong khu vực nhằm rèn luyện kỹ năng thực hành, tạo cơ hội kết nối và xây dựng tinh thần đồng đội qua hoạt động thể thao ngoài trời.', 
+N'TP.HCM', 3, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 10),
+
+(N'Ngày hội câu cá cuối năm', N'Hồ Tuyền Lâm', 
+N'Sự kiện tổng kết mùa giải câu cá với lễ trao giải, tiệc nhẹ và không khí ấm cúng bên hồ trong khung cảnh cao nguyên lãng mạn, tạo kỷ niệm khó quên cho người tham gia.', 
+N'Đà Lạt', 3, DATEADD(DAY, -20, GETDATE()), DATEADD(DAY, -19, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 70, 10);
+
+-- Các sự kiện đang diễn ra hoặc sắp diễn ra (5 sự kiện sau)
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES
+(N'Câu cá Marathon', N'Hồ Tràm', 
+N'Sự kiện kéo dài liên tục nhiều giờ, thử thách sức bền và kỹ thuật của các cần thủ. Người tham gia sẽ thi đấu theo lượt và ghi điểm dựa trên số lượng và trọng lượng cá bắt được.', 
+N'Vũng Tàu', 3, DATEADD(HOUR, -3, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 45, 10),
+
+(N'Sự kiện giao lưu Bắc - Nam', N'Hồ Hàm Thuận', 
+N'Sự kiện nhằm kết nối cộng đồng cần thủ từ khắp ba miền, với hoạt động thi đấu kết hợp giao lưu, chia sẻ kỹ thuật, trải nghiệm mồi câu độc đáo và trình diễn thiết bị câu mới nhất.', 
+N'Bình Thuận', 3, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 5, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 70, 10),
+
+(N'Thử thách tốc độ câu cá', N'Hồ An Dương', 
+N'Ai sẽ là người bắt được cá đầu tiên trong thời gian ngắn nhất? Cuộc thi chú trọng vào phản xạ nhanh và chọn vị trí tốt, phù hợp cho cả người mới và chuyên nghiệp.', 
+N'Hải Phòng', 3, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 60, 10),
+
+(N'Chinh phục hồ sâu', N'Hồ Tân Hiệp', 
+N'Hồ sâu có độ khó cao, đòi hỏi kỹ thuật và sự kiên nhẫn của người câu. Thử thách lần này tập trung vào khả năng cảm nhận và xử lý khi cá lớn cắn câu ở độ sâu lớn.', 
+N'Long An', 3, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 50, 10),
+
+(N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', 
+N'Sự kiện chọn ra các cần thủ xuất sắc nhất đại diện cho quốc gia tham gia giải đấu quốc tế. Thí sinh phải vượt qua nhiều vòng kiểm tra kỹ năng, độ chính xác và tốc độ.', 
+N'Vĩnh Long', 3, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 0);
+
+INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
+VALUES
+(N'Lễ hội câu cá mùa thu', N'Hồ Tây', 
+N'Lễ hội được tổ chức nhằm tạo sân chơi lành mạnh cho người yêu thích bộ môn câu cá, đồng thời quảng bá vẻ đẹp Hồ Tây và nâng cao ý thức bảo vệ môi trường sinh thái xung quanh khu vực hồ.', 
+N'Hà Nội', 3, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 0),
+
+(N'Giải đấu câu cá toàn miền Bắc', N'Hồ Đại Lải', 
+N'Sự kiện quy tụ các tay câu đến từ khắp các tỉnh phía Bắc với cơ hội giao lưu, học hỏi kỹ năng cũng như tranh tài qua nhiều vòng thi đấu cam go và hấp dẫn.', 
+N'Vĩnh Phúc', 3, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 5, GETDATE()), 'approved', GETDATE(), 'images.jpg', 80, 0),
+
+(N'Thử thách câu cá cuối tuần', N'Hồ Đồng Đò', 
+N'Chương trình dành cho người mới bắt đầu và các gia đình muốn trải nghiệm câu cá trong không khí cuối tuần thư giãn. Có hỗ trợ thiết bị và hướng dẫn cơ bản từ ban tổ chức.', 
+N'Hà Nội', 3, DATEADD(DAY, 1, GETDATE()), DATEADD(DAY, 2, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 40, 0),
+
+(N'Cúp vô địch miền Trung', N'Hồ Phú Ninh', 
+N'Sự kiện được tổ chức chuyên nghiệp với hệ thống chấm điểm tự động, quy tụ các vận động viên câu cá bán chuyên từ khu vực miền Trung với giải thưởng giá trị và vinh danh toàn quốc.', 
+N'Quảng Nam', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 70, 0),
+
+(N'Ngày hội câu cá xanh', N'Hồ Xuân Hương', 
+N'Sự kiện mang thông điệp sống xanh, khuyến khích người tham gia thực hiện nguyên tắc câu cá bắt - thả để bảo tồn hệ sinh thái và nâng cao nhận thức cộng đồng về bảo vệ nguồn nước.', 
+N'Đà Lạt', 3, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'approved', GETDATE(), 'download.jpg', 50, 10),
+
+(N'Thi tài cần thủ trẻ', N'Hồ Bán Nguyệt', 
+N'Cuộc thi dành riêng cho những bạn trẻ yêu thích môn thể thao câu cá, tạo môi trường thi đấu vui vẻ, công bằng và truyền cảm hứng sống lành mạnh cho thế hệ mới.', 
+N'TP.HCM', 3, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 45, 10),
+
+(N'Chinh phục cá khủng', N'Hồ Trị An', 
+N'Một sự kiện dành cho các cần thủ yêu thích thử thách, với các khu vực được phân loại theo độ khó và cơ hội bắt được những loài cá lớn có trọng lượng lên đến hàng chục kg.', 
+N'Đồng Nai', 3, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 55, 10),
+
+(N'Giao lưu cần thủ ba miền', N'Hồ Tân Hiệp', 
+N'Sự kiện mang tính kết nối cộng đồng, nơi các cần thủ đến từ Bắc – Trung – Nam có dịp gặp gỡ, giao lưu, thi đấu và chia sẻ kinh nghiệm với nhau trong không khí thân thiện.', 
+N'Long An', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 60, 10),
+
+(N'Hội thi câu cá doanh nghiệp', N'Hồ Hàm Thuận', 
+N'Sự kiện dành riêng cho các tổ chức và doanh nghiệp muốn tổ chức hoạt động team building, nâng cao tinh thần đoàn kết trong môi trường gần gũi thiên nhiên.', 
+N'Bình Thuận', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 100, 10),
+
+(N'Lễ hội cần thủ toàn quốc', N'Hồ Suối Lạnh', 
+N'Sự kiện lớn nhất trong năm với sự tham gia của các tuyển thủ hàng đầu và đại diện từ các CLB trên cả nước, bao gồm nhiều hoạt động hấp dẫn: thi đấu, hội chợ thiết bị, giao lưu chuyên gia.', 
+N'Phan Thiết', 3, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'images (4).jpg', 120, 10);
+
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
 VALUES 
-(N'Thi đấu bán chuyên mùa hè', N'Hồ Suối Vàng', N'Sân chơi cho các cần thủ bán chuyên.', N'Lâm Đồng', 3, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), N'images (1).jpg', 30, 29),
-(N'Cúp câu cá miền Tây', N'Hồ Tràm Chim', N'Sự kiện khu vực đồng bằng sông Cửu Long.', N'Đồng Tháp', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), N'images (2).jpg', 50, 50),
-(N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
-(N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 3, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
-(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
+-- Event 1
+(1, 5, '0901000001', 'user5_event1@example.com', '001122334501'),
+(1, 6, '0901000002', 'user6_event1@example.com', '001122334502'),
+(1, 7, '0901000003', 'user7_event1@example.com', '001122334503'),
+(1, 8, '0901000004', 'user8_event1@example.com', '001122334504'),
+(1, 9, '0901000005', 'user9_event1@example.com', '001122334505'),
+(1, 10, '0901000006', 'user10_event1@example.com', '001122334506'),
+(1, 11, '0901000007', 'user11_event1@example.com', '001122334507'),
+(1, 12, '0901000008', 'user12_event1@example.com', '001122334508'),
+(1, 13, '0901000009', 'user13_event1@example.com', '001122334509'),
+(1, 14, '0901000010', 'user14_event1@example.com', '001122334510'),
 
+-- Event 2
+(2, 5, '0902000001', 'user5_event2@example.com', '001122334511'),
+(2, 6, '0902000002', 'user6_event2@example.com', '001122334512'),
+(2, 7, '0902000003', 'user7_event2@example.com', '001122334513'),
+(2, 8, '0902000004', 'user8_event2@example.com', '001122334514'),
+(2, 9, '0902000005', 'user9_event2@example.com', '001122334515'),
+(2, 10, '0902000006', 'user10_event2@example.com', '001122334516'),
+(2, 11, '0902000007', 'user11_event2@example.com', '001122334517'),
+(2, 12, '0902000008', 'user12_event2@example.com', '001122334518'),
+(2, 13, '0902000009', 'user13_event2@example.com', '001122334519'),
+(2, 14, '0902000010', 'user14_event2@example.com', '001122334520'),
 
-SELECT COUNT(*) AS RejectedToday
-FROM Event
-WHERE Status = 'rejected'
-  AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE);
+-- Event 3
+(3, 5, '0903000001', 'user5_event3@example.com', '001122334521'),
+(3, 6, '0903000002', 'user6_event3@example.com', '001122334522'),
+(3, 7, '0903000003', 'user7_event3@example.com', '001122334523'),
+(3, 8, '0903000004', 'user8_event3@example.com', '001122334524'),
+(3, 9, '0903000005', 'user9_event3@example.com', '001122334525'),
+(3, 10, '0903000006', 'user10_event3@example.com', '001122334526'),
+(3, 11, '0903000007', 'user11_event3@example.com', '001122334527'),
+(3, 12, '0903000008', 'user12_event3@example.com', '001122334528'),
+(3, 13, '0903000009', 'user13_event3@example.com', '001122334529'),
+(3, 14, '0903000010', 'user14_event3@example.com', '001122334530'),
+
+-- Event 4
+(4, 5, '0904000001', 'user5_event4@example.com', '001122334531'),
+(4, 6, '0904000002', 'user6_event4@example.com', '001122334532'),
+(4, 7, '0904000003', 'user7_event4@example.com', '001122334533'),
+(4, 8, '0904000004', 'user8_event4@example.com', '001122334534'),
+(4, 9, '0904000005', 'user9_event4@example.com', '001122334535'),
+(4, 10, '0904000006', 'user10_event4@example.com', '001122334536'),
+(4, 11, '0904000007', 'user11_event4@example.com', '001122334537'),
+(4, 12, '0904000008', 'user12_event4@example.com', '001122334538'),
+(4, 13, '0904000009', 'user13_event4@example.com', '001122334539'),
+(4, 14, '0904000010', 'user14_event4@example.com', '001122334540'),
+
+-- Event 5
+(5, 5, '0905000001', 'user5_event5@example.com', '001122334541'),
+(5, 6, '0905000002', 'user6_event5@example.com', '001122334542'),
+(5, 7, '0905000003', 'user7_event5@example.com', '001122334543'),
+(5, 8, '0905000004', 'user8_event5@example.com', '001122334544'),
+(5, 9, '0905000005', 'user9_event5@example.com', '001122334545'),
+(5, 10, '0905000006', 'user10_event5@example.com', '001122334546'),
+(5, 11, '0905000007', 'user11_event5@example.com', '001122334547'),
+(5, 12, '0905000008', 'user12_event5@example.com', '001122334548'),
+(5, 13, '0905000009', 'user13_event5@example.com', '001122334549'),
+(5, 14, '0905000010', 'user14_event5@example.com', '001122334550'),
+
+-- Event 6
+(6, 5, '0906000001', 'user5_event6@example.com', '001122334551'),
+(6, 6, '0906000002', 'user6_event6@example.com', '001122334552'),
+(6, 7, '0906000003', 'user7_event6@example.com', '001122334553'),
+(6, 8, '0906000004', 'user8_event6@example.com', '001122334554'),
+(6, 9, '0906000005', 'user9_event6@example.com', '001122334555'),
+(6, 10, '0906000006', 'user10_event6@example.com', '001122334556'),
+(6, 11, '0906000007', 'user11_event6@example.com', '001122334557'),
+(6, 12, '0906000008', 'user12_event6@example.com', '001122334558'),
+(6, 13, '0906000009', 'user13_event6@example.com', '001122334559'),
+(6, 14, '0906000010', 'user14_event6@example.com', '001122334560'),
+
+-- Event 7
+(7, 5, '0907000001', 'user5_event7@example.com', '001122334561'),
+(7, 6, '0907000002', 'user6_event7@example.com', '001122334562'),
+(7, 7, '0907000003', 'user7_event7@example.com', '001122334563'),
+(7, 8, '0907000004', 'user8_event7@example.com', '001122334564'),
+(7, 9, '0907000005', 'user9_event7@example.com', '001122334565'),
+(7, 10, '0907000006', 'user10_event7@example.com', '001122334566'),
+(7, 11, '0907000007', 'user11_event7@example.com', '001122334567'),
+(7, 12, '0907000008', 'user12_event7@example.com', '001122334568'),
+(7, 13, '0907000009', 'user13_event7@example.com', '001122334569'),
+(7, 14, '0907000010', 'user14_event7@example.com', '001122334570'),
+
+-- Event 8
+(8, 5, '0908000001', 'user5_event8@example.com', '001122334571'),
+(8, 6, '0908000002', 'user6_event8@example.com', '001122334572'),
+(8, 7, '0908000003', 'user7_event8@example.com', '001122334573'),
+(8, 8, '0908000004', 'user8_event8@example.com', '001122334574'),
+(8, 9, '0908000005', 'user9_event8@example.com', '001122334575'),
+(8, 10, '0908000006', 'user10_event8@example.com', '001122334576'),
+(8, 11, '0908000007', 'user11_event8@example.com', '001122334577'),
+(8, 12, '0908000008', 'user12_event8@example.com', '001122334578'),
+(8, 13, '0908000009', 'user13_event8@example.com', '001122334579'),
+(8, 14, '0908000010', 'user14_event8@example.com', '001122334580'),
+
+-- Event 9
+(9, 5, '0909000001', 'user5_event9@example.com', '001122334581'),
+(9, 6, '0909000002', 'user6_event9@example.com', '001122334582'),
+(9, 7, '0909000003', 'user7_event9@example.com', '001122334583'),
+(9, 8, '0909000004', 'user8_event9@example.com', '001122334584'),
+(9, 9, '0909000005', 'user9_event9@example.com', '001122334585'),
+(9, 10, '0909000006', 'user10_event9@example.com', '001122334586'),
+(9, 11, '0909000007', 'user11_event9@example.com', '001122334587'),
+(9, 12, '0909000008', 'user12_event9@example.com', '001122334588'),
+(9, 13, '0909000009', 'user13_event9@example.com', '001122334589'),
+(9, 14, '0909000010', 'user14_event9@example.com', '001122334590'),
+
+-- Event 10
+(10, 5, '0910000001', 'user5_event10@example.com', '001122334591'),
+(10, 6, '0910000002', 'user6_event10@example.com', '001122334592'),
+(10, 7, '0910000003', 'user7_event10@example.com', '001122334593'),
+(10, 8, '0910000004', 'user8_event10@example.com', '001122334594'),
+(10, 9, '0910000005', 'user9_event10@example.com', '001122334595'),
+(10, 10, '0910000006', 'user10_event10@example.com', '001122334596'),
+(10, 11, '0910000007', 'user11_event10@example.com', '001122334597'),
+(10, 12, '0910000008', 'user12_event10@example.com', '001122334598'),
+(10, 13, '0910000009', 'user13_event10@example.com', '001122334599'),
+(10, 14, '0910000010', 'user14_event10@example.com', '001122334600');
+
+-- Sự kiện 11
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(11, 5, '0901234567', 'a1@example.com', '001122334455'),
+(11, 6, '0912345678', 'b2@example.com', '001122334456'),
+(11, 7, '0923456789', 'c3@example.com', '001122334457'),
+(11, 8, '0934567890', 'd4@example.com', '001122334458'),
+(11, 9, '0945678901', 'e5@example.com', '001122334459'),
+(11, 10, '0956789012', 'f6@example.com', '001122334460'),
+(11, 11, '0967890123', 'g7@example.com', '001122334461'),
+(11, 12, '0978901234', 'h8@example.com', '001122334462'),
+(11, 13, '0989012345', 'i9@example.com', '001122334463'),
+(11, 14, '0990123456', 'j10@example.com', '001122334464');
+
+-- Sự kiện 12
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(12, 5, '0901234567', 'a1@example.com', '001122334455'),
+(12, 6, '0912345678', 'b2@example.com', '001122334456'),
+(12, 7, '0923456789', 'c3@example.com', '001122334457'),
+(12, 8, '0934567890', 'd4@example.com', '001122334458'),
+(12, 9, '0945678901', 'e5@example.com', '001122334459'),
+(12, 10, '0956789012', 'f6@example.com', '001122334460'),
+(12, 11, '0967890123', 'g7@example.com', '001122334461'),
+(12, 12, '0978901234', 'h8@example.com', '001122334462'),
+(12, 13, '0989012345', 'i9@example.com', '001122334463'),
+(12, 14, '0990123456', 'j10@example.com', '001122334464');
+
+-- Sự kiện 13
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(13, 5, '0901234567', 'a1@example.com', '001122334455'),
+(13, 6, '0912345678', 'b2@example.com', '001122334456'),
+(13, 7, '0923456789', 'c3@example.com', '001122334457'),
+(13, 8, '0934567890', 'd4@example.com', '001122334458'),
+(13, 9, '0945678901', 'e5@example.com', '001122334459'),
+(13, 10, '0956789012', 'f6@example.com', '001122334460'),
+(13, 11, '0967890123', 'g7@example.com', '001122334461'),
+(13, 12, '0978901234', 'h8@example.com', '001122334462'),
+(13, 13, '0989012345', 'i9@example.com', '001122334463'),
+(13, 14, '0990123456', 'j10@example.com', '001122334464');
+
+-- Sự kiện 14
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(14, 5, '0901234567', 'a1@example.com', '001122334455'),
+(14, 6, '0912345678', 'b2@example.com', '001122334456'),
+(14, 7, '0923456789', 'c3@example.com', '001122334457'),
+(14, 8, '0934567890', 'd4@example.com', '001122334458'),
+(14, 9, '0945678901', 'e5@example.com', '001122334459'),
+(14, 10, '0956789012', 'f6@example.com', '001122334460'),
+(14, 11, '0967890123', 'g7@example.com', '001122334461'),
+(14, 12, '0978901234', 'h8@example.com', '001122334462'),
+(14, 13, '0989012345', 'i9@example.com', '001122334463'),
+(14, 14, '0990123456', 'j10@example.com', '001122334464');
+
+-- Sự kiện 15
+INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
+VALUES
+(15, 5, '0901234567', 'a1@example.com', '001122334455'),
+(15, 6, '0912345678', 'b2@example.com', '001122334456'),
+(15, 7, '0923456789', 'c3@example.com', '001122334457'),
+(15, 8, '0934567890', 'd4@example.com', '001122334458'),
+(15, 9, '0945678901', 'e5@example.com', '001122334459'),
+(15, 10, '0956789012', 'f6@example.com', '001122334460'),
+(15, 11, '0967890123', 'g7@example.com', '001122334461'),
+(15, 12, '0978901234', 'h8@example.com', '001122334462'),
+(15, 13, '0989012345', 'i9@example.com', '001122334463'),
+(15, 14, '0990123456', 'j10@example.com', '001122334464');
+
+INSERT INTO EventNotification (EventId, SenderId, Title, Message, CreatedAt)
+VALUES 
+(11, 3, N'Thông báo sự kiện', N'Xin chào! Sự kiện Hồ Tây sẽ bắt đầu trong vài ngày tới. Hãy chuẩn bị cần câu của bạn!', GETDATE()),
+(12, 3, N'Thông báo sự kiện', N'Chào mừng bạn đến với sự kiện tại Hồ Trị An. Đừng quên mang theo giấy tờ tùy thân!', GETDATE()),
+(13, 3, N'Thông báo sự kiện', N'Sự kiện tại Hồ Suối Hai sẽ diễn ra vào cuối tuần này. Vui lòng đến đúng giờ.', GETDATE()),
+(14, 3, N'Thông báo quan trọng', N'Có một số thay đổi về địa điểm tập trung cho sự kiện tại Hồ Đồng Mô. Vui lòng kiểm tra lại chi tiết.', GETDATE()),
+(15, 3, N'Cập nhật từ ban tổ chức', N'Sự kiện Hồ Đại Lải sẽ có thêm phần thi kỹ thuật câu. Tham gia để nhận phần thưởng hấp dẫn!', GETDATE());
+
+SELECT * FROM PostNotification WHERE ReceiverId = 1 ORDER BY CreatedAt DESC;

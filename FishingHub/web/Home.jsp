@@ -207,7 +207,7 @@ Users currentUser = (Users) session.getAttribute("user");
                                             </div>
                                             <div class="flex gap-4 mt-4">
                                                
-                                                <c:if test="${user.getRoleId() != 2}">
+                                                <c:if test="${user.getUserId() != o.hostId}">
                                                     <c:choose>
                                                         <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
 

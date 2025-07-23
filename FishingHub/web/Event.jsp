@@ -61,7 +61,7 @@
                                 </c:forEach>
                                 <c:if test="${empty notifications}">
                                     <li class="px-4 py-3 text-gray-500 text-sm text-center">Không có thông báo nào</li>
-                                </c:if>
+                                    </c:if>
                             </ul>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
         <div class="bg-gray-50 border-b border-gray-200">
             <div class="container mx-auto px-4 py-3">
                 <div class="flex items-center text-sm">
-                    <a href="Home" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
+                    <a href="Home" data-readdy="true" class="text-gray-600 hover:text-primary">Trang chủ</a>
                     <div class="w-4 h-4 flex items-center justify-center text-gray-400 mx-1">
                         <i class="ri-arrow-right-s-line"></i>
                     </div>
@@ -101,12 +101,12 @@
             <div class="container mx-auto px-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Featured Events</h1>
-                        <p class="text-gray-600 mt-2">All ongoing and upcoming fishing events</p>
+                        <h1 class="text-3xl font-bold text-gray-900">Tất cả sự kiện</h1>
+                        <p class="text-gray-600 mt-2">Tất cả các sự kiện câu cá đang diễn ra và sắp diễn ra</p>
                     </div>
-                    <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center justify-between gap-4  ">
                         <form action="SearchEvent" method="GET" class="flex items-center w-full max-w-lg">
-                            <input type="text" name="query" placeholder="Search for events..."
+                            <input type="text" name="query" placeholder="Tìm kiếm sự kiện..."
                                    value="${search}"
                                    class="w-full pl-4 pr-20 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm">
                             <button type="submit" class="bg-primary text-white px-4 py-2 hover:bg-blue-700 flex items-center justify-center">
@@ -116,22 +116,23 @@
                         <c:if test="${user.getRoleId() == 2}">
                             <a href="Event?action=create_event" class="bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap flex items-center gap-2">
                                 <i class="ri-add-line"></i>
-                                <span>Create Event</span>
+                                <span>Tạo sự kiện</span>
                             </a>
                         </c:if>
                     </div>
                 </div>
 
-                <div class="bg-white rounded shadow-sm mb-8">
-                    <div class="flex border-b border-gray-200">
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList'"> All Events </button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary cursor-pointer" onclick="location.href = 'EventList?action=upcoming'">Up Coming Events</button>
-                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=ongoing'">Ongoing Events</button>
+                <div class="bg-white rounded shadow-sm mb-8 mx-auto">
+                    <div class="flex justify-center border-b border-gray-200">
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList'">Tất cả</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary cursor-pointer" onclick="location.href = 'EventList?action=upcoming'">Sắp diễn ra</button>
+                        <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=ongoing'">Đang diễn ra</button>
                         <c:if test="${user!=null}">
-                            <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=saved'">My Events</button>
+                            <button class="tab-button px-6 py-4 text-gray-600 font-medium hover:text-primary" onclick="location.href = 'EventList?action=saved'">Đã tham gia</button>
                         </c:if>
                     </div>
                 </div>
+
 
                 <!-- Events List -->
                 <div id="all-events" class="event-list">
@@ -198,12 +199,12 @@
                                                         <i class="ri-user-line"></i>
                                                     </div>
                                                     <span class="ml-1 text-sm text-gray-500 participant-count" data-event-id="${o.eventId}">
-                                                        ${o.currentParticipants}/${o.maxParticipants} people
+                                                        ${o.currentParticipants}/${o.maxParticipants} người
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="flex gap-4 mt-4">
-                                                <c:if test="${user.getRoleId() != 2}">
+                                                <c:if test="${user.getUserId() != o.hostId}">
                                                     <c:choose>
                                                         <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
 
@@ -456,7 +457,7 @@
                 document.getElementById('cancelModal').classList.add('hidden');
             });
 
-           const bell = document.getElementById("notificationBell");
+            const bell = document.getElementById("notificationBell");
             const dropdown = document.getElementById("notificationDropdown");
 
             bell.addEventListener("click", () => {

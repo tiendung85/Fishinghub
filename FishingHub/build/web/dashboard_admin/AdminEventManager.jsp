@@ -69,14 +69,14 @@
                             </a>
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý sự kiện
                             </div>
-                            <a href="#"
+                            <a href="AdminEventManager"
                                class="sidebar-item active flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-calendar-event-line"></i>
                                 </div>
                                 Sự kiện
                             </a>
-                            
+
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý bài viết
                             </div>
                             <a href="PostManagement.jsp"
@@ -160,7 +160,7 @@
                         </div>
                         <!-- Stats Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            
+
                             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -174,7 +174,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -187,7 +187,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -309,23 +309,12 @@
                                                             <i class="ri-eye-line"></i>
                                                         </div>
                                                     </button>
-                                                    <button class="text-green-600 hover:text-green-700"
-                                                            title="Chỉnh sửa">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-edit-line"></i>
-                                                        </div>
-                                                    </button>
-                                                    <button class="text-red-600 hover:text-red-700" title="Xóa">
-                                                        <div class="w-4 h-4 flex items-center justify-center">
-                                                            <i class="ri-delete-bin-line"></i>
-                                                        </div>
-                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     </c:forEach>
 
-                                   
+
                                 </tbody>
                             </table>
                         </div>
@@ -383,10 +372,10 @@
                             </div>
                         </div>
                     </div>
+                </main>
             </div>
-        </main>
+        </div>
     </div>
-</div>
 </body>
 
 </html>

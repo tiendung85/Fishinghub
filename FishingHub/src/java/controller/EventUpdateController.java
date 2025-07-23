@@ -170,7 +170,7 @@ public class EventUpdateController extends HttpServlet {
                     return;
                 }
 
-                String uploadPath = getServletContext().getRealPath("") + File.separator + "assets/img/eventPoster";
+                String uploadPath = "G:\\SWP\\FishingHub\\Fishinghub\\Fishinghub\\web" + File.separator + "assets/img/eventPoster";
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();

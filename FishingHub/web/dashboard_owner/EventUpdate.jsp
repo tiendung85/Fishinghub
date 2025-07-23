@@ -216,19 +216,11 @@
                             <div class="flex flex-col lg:flex-row gap-8">
                                 <!-- Ảnh poster bên trái -->
                                 <div class="flex-shrink-0 w-full lg:w-1/4">
-                                    <label for="posterFile"
-                                           class="block text-sm font-medium text-gray-700 mb-2">Ảnh
-                                        Poster:</label>
-                                    <!-- Ảnh xem trước -->
-                                    <img id="posterPreview"
-                                         src="assets/img/eventPoster/${event.posterUrl}"
-                                         alt="Xem trước ảnh"
-                                         class="mb-3 w-full rounded shadow object-cover ${event.posterUrl == null ? 'hidden' : ''}" />
+                                    <label for="posterFile" class="block text-sm font-medium text-gray-700 mb-2">Ảnh Poster:</label>
+                                    <img id="posterPreview" src="assets/img/eventPoster/${event.posterUrl}?t=${System.currentTimeMillis()}" alt="Xem trước ảnh" class="mb-3 w-full rounded shadow object-cover" />
                                     <c:if test="${event.status == 'pending'}">
-                                        <input type="file" id="posterFile" name="posterFile"
-
-                                               accept="image/*"
-                                               class="block w-full h-12 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-medium file:bg-gray-50 file:text-primary hover:file:bg-gray-100">
+                                        <input type="file" id="posterFile" name="posterFile" accept="image/*" class="block w-full h-12 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-medium file:bg-gray-50 file:text-primary hover:file:bg-gray-100">
+                                        <p id="posterError" class="error hidden"></p>
                                     </c:if>
                                 </div>
                                 <!-- Thông tin sự kiện bên phải -->
@@ -332,6 +324,71 @@
 
             </div>
         </div>
+        <script>
+// Xử lý ảnh xem trước
+            const posterFileInput = document.getElementById('posterFile');
+            const posterPreview = document.getElementById('posterPreview');
+            const posterError = document.getElementById('posterError');
+
+            if (posterFileInput) {
+                posterFileInput.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    posterError.classList.add('hidden'); // Ẩn thông báo lỗi trước khi kiểm tra
+
+                    if (file) {
+// Kiểm tra định dạng ảnh
+                        if (!file.type.startsWith('image/')) {
+                            posterError.textContent = 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF).';
+                            posterError.classList.remove('hidden');
+                            posterFileInput.value = ''; // Xóa giá trị input
+                            posterPreview.classList.add('hidden');
+                            return;
+                        }
+
+// Kiểm tra kích thước file (giới hạn 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            posterError.textContent = 'File ảnh quá lớn. Kích thước tối đa là 5MB.';
+                            posterError.classList.remove('hidden');
+                            posterFileInput.value = '';
+                            posterPreview.classList.add('hidden');
+                            return;
+                        }
+
+// Đọc và hiển thị ảnh xem trước
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            posterPreview.src = e.target.result;
+                            posterPreview.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        posterPreview.classList.add('hidden');
+                    }
+                });
+            }
+
+// Xử lý validate form trước khi submit
+            const updateEventForm = document.getElementById('updateEventForm');
+            updateEventForm.addEventListener('submit', function (event) {
+                const startTime = new Date(document.getElementById('startTime').value);
+                const endTime = new Date(document.getElementById('endTime').value);
+                const maxParticipants = document.getElementById('maxParticipants').value;
+
+// Kiểm tra thời gian
+                if (startTime >= endTime) {
+                    event.preventDefault();
+                    alert('Thời gian kết thúc phải sau thời gian bắt đầu.');
+                    return;
+                }
+
+// Kiểm tra số người tham gia tối đa
+                if (maxParticipants < 1) {
+                    event.preventDefault();
+                    alert('Số người tham gia tối đa phải lớn hơn 0.');
+                    return;
+                }
+            });
+        </script>
     </body>
 </html>
 

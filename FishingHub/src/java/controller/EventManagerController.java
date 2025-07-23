@@ -27,9 +27,9 @@ public class EventManagerController extends HttpServlet {
         String search = request.getParameter("search");
         String statusFilter = request.getParameter("status");
 
-        // Xử lý phân trang
+        
         int page = 1;
-        int pageSize = 5; // Số sự kiện mỗi trang
+        int pageSize = 5; 
         String pageStr = request.getParameter("page");
         String pageSizeStr = request.getParameter("pageSize");
 
@@ -91,7 +91,7 @@ public class EventManagerController extends HttpServlet {
                         request.setAttribute("rejectionTime", "");
                     }
                     request.setAttribute("showModal", true);
-                    // Reload event list to maintain context
+                    
                     list = dao.getEvents(user.getUserId(), page, pageSize);
                     totalItems = dao.getTotalEvents(user.getUserId());
                 } catch (NumberFormatException e) {
@@ -134,7 +134,7 @@ public class EventManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response); // Xử lý POST giống GET
+        doGet(request, response); 
     }
 
     @Override

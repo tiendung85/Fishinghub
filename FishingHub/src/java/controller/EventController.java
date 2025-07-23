@@ -22,9 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import model.Users;
 
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-        maxFileSize = 1024 * 1024 * 10, // 10MB
-        maxRequestSize = 1024 * 1024 * 50) // 50MB
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50) 
 public class EventController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "assets/img/eventPoster";
@@ -131,7 +131,8 @@ public class EventController extends HttpServlet {
                         return;
                     }
 
-                    String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+                    String uploadPath = "G:\\SWP\\FishingHub\\Fishinghub\\Fishinghub\\web" + File.separator + UPLOAD_DIR;
+
                     File uploadDir = new File(uploadPath);
                     if (!uploadDir.exists()) {
                         uploadDir.mkdirs();

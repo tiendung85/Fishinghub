@@ -43,7 +43,7 @@
 
     <body>
         <div class="flex h-screen">
-            <div class="hidden md:flex md:flex-shrink-0">
+             <div class="hidden md:flex md:flex-shrink-0">
                 <div class="flex flex-col w-64 bg-white border-r border-gray-200">
                     <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
                         <h1 class="text-2xl font-['Pacifico'] text-primary">FishingHub</h1>
@@ -59,7 +59,8 @@
                             </a>
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý người dùng
                             </div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <a href="${pageContext.request.contextPath}/UserManager"
+                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-user-line"></i>
                                 </div>
@@ -67,17 +68,18 @@
                             </a>
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý sự kiện
                             </div>
-                            <a href="#"
+                            <a href="AdminEventManager"
                                class="sidebar-item active flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-calendar-event-line"></i>
                                 </div>
                                 Sự kiện
                             </a>
-                           
+
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý bài viết
                             </div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <a href="PostManagement.jsp"
+                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-file-list-line"></i>
                                 </div>
@@ -85,7 +87,8 @@
                             </a>
                             <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý kiến thức
                             </div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <a href="${pageContext.request.contextPath}/FishManage"
+                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                 <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
                                     <i class="ri-book-open-line"></i>
                                 </div>
