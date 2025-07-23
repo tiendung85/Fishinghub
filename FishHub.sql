@@ -1,4 +1,4 @@
-﻿
+
 USE master;
 GO
 
@@ -12,9 +12,9 @@ GO
 DROP DATABASE FishingHub1;
 GO
 
-CREATE DATABASE FishingHub;
+CREATE DATABASE FishingHub1;
 GO
-USE FishingHub;
+USE FishingHub1;
 GO
 
 -- Roles
@@ -23,6 +23,7 @@ CREATE TABLE Role (
     RoleName NVARCHAR(50) NOT NULL
 );
 
+INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
 
 
 -- Users
@@ -41,6 +42,61 @@ CREATE TABLE Users (
     FOREIGN KEY (RoleId) REFERENCES Role(RoleId)
 );
 
+ALTER TABLE Users ADD LastLoginTime datetime NULL;
+ALTER TABLE Users ADD Status nvarchar(20) NULL;
+
+INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
+VALUES 
+(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
+(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
+(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
+
+CREATE TABLE Permission (
+    permissionId INT PRIMARY KEY IDENTITY(1,1),
+    permissionName NVARCHAR(100) NOT NULL
+);
+
+-- Dữ liệu mẫu, chỉ tạo 1 lần
+INSERT INTO Permission (permissionName) VALUES
+    (N'Đăng bài'),
+    (N'Bình luận'),
+    (N'Tạo sự kiện'),
+    (N'Nhắn tin'),
+    (N'Thanh toán'),
+    (N'Đổi ảnh đại diện');
+INSERT INTO Permission (permissionName) VALUES (N'Mua hàng');
+
+CREATE TABLE RolePermission (
+    roleId INT,
+    permissionId INT,
+    PRIMARY KEY (roleId, permissionId),
+    FOREIGN KEY (roleId) REFERENCES Role(roleId),
+    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
+);
+-- Ví dụ: User chỉ có đăng bài và bình luận, FishOwner có thêm tạo sự kiện, Quản trị viên có mọi quyền
+INSERT INTO RolePermission (roleId, permissionId) VALUES
+    (1, 1), (1, 2),         -- User: Đăng bài, Bình luận
+    (2, 1), (2, 2), (2, 3), -- FishOwner: Đăng bài, Bình luận, Tạo sự kiện
+    (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6); -- Admin: Tất cả
+
+CREATE TABLE UserDeniedPermission (
+    userId INT,
+    permissionId INT,
+    PRIMARY KEY (userId, permissionId),
+    FOREIGN KEY (userId) REFERENCES Users(userId),
+    FOREIGN KEY (permissionId) REFERENCES Permission(permissionId)
+);
+
+-- Bảng này chỉ lưu những quyền bị cấm
+-- Nếu userId=6 bị cấm quyềnId=2,4: INSERT INTO UserDeniedPermission VALUES (6,2), (6,4)
+
+-- User/FishOwner/Admin đều có quyền mua hàng mặc định
+INSERT INTO RolePermission (roleId, permissionId) VALUES
+    (1, 7), (2, 7), (3, 7);
+
+
+
 -- Categories
 CREATE TABLE Category (
     CategoryId INT PRIMARY KEY IDENTITY,
@@ -57,6 +113,19 @@ CREATE TABLE Product (
     SoldQuantity INT DEFAULT 0,
     CategoryId INT,
     FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
+);
+
+CREATE TABLE [dbo].[Review](
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [ProductId] INT NOT NULL,
+    [UserId] INT NOT NULL,
+    [Rating] INT NOT NULL,           -- Số sao: 1-5
+    [ReviewText] NVARCHAR(MAX) NULL, -- Nội dung đánh giá
+    [Image] VARCHAR(255) NULL,       -- Đường dẫn ảnh
+    [Video] VARCHAR(255) NULL,       -- Đường dẫn video
+    [CreatedAt] DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Review_Product FOREIGN KEY (ProductId) REFERENCES Product(ProductId),
+    CONSTRAINT FK_Review_User FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 
 -- ShoppingCart
@@ -94,6 +163,7 @@ CREATE TABLE Orders (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
     FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
+ALTER TABLE Orders ADD DeliveryTime DATETIME NULL;
 
 -- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
@@ -147,6 +217,16 @@ VALUES (2, 320000, 350000);
 INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
 VALUES (3, 150000, 180000, '2025-05-30 17:55:00', 1);
 
+
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY IDENTITY,
+    OrderID INT,
+    ProductID INT,
+    Rating INT,
+    ReviewText TEXT,
+    FOREIGN KEY (OrderID) REFERENCES Orders(ID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
 -- OrderDetails
 CREATE TABLE OrderDetail (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -163,19 +243,19 @@ CREATE TABLE OrderDetail (
 CREATE TABLE Event (
     EventId INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(255) NOT NULL,
-	LakeName NVARCHAR(255), 
-    Description TEXT,
+    LakeName NVARCHAR(255), 
+    Description NVARCHAR(MAX),
     Location NVARCHAR(255),
     HostId INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
     Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'approved', 'rejected')),
     CreatedAt DATETIME DEFAULT GETDATE(),
-
     ApprovedAt DATETIME,
     PosterUrl NVARCHAR(255), 
     MaxParticipants INT,
-	CurrentParticipants INT,
+    CurrentParticipants INT,
+	Checkin BIT DEFAULT 0,
     FOREIGN KEY (HostId) REFERENCES Users(UserId)
 );
 
@@ -183,9 +263,31 @@ CREATE TABLE Event (
 CREATE TABLE EventParticipant (
     EventId INT NOT NULL,
     UserId INT NOT NULL,
+	NumberPhone VARCHAR(11) NOT NULL,
+	Email VARCHAR (255) NOT Null,
+	CCCD VARCHAR(20),
+    Checkin BIT DEFAULT 0,
+	CheckinTime DATETIME, 
     PRIMARY KEY (EventId, UserId),
     FOREIGN KEY (EventId) REFERENCES Event(EventId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE EventNotification (
+    NotificationId INT IDENTITY PRIMARY KEY,
+    EventId INT NOT NULL,
+    SenderId INT NOT NULL, 
+	Title NVARCHAR(255),
+    Message NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (EventId) REFERENCES Event(EventId),
+    FOREIGN KEY (SenderId) REFERENCES Users(UserId)
+);
+CREATE TABLE EventRejections (
+    EventId INT PRIMARY KEY,
+    RejectReason NVARCHAR(MAX) NOT NULL,
+    RejectedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (EventId) REFERENCES Event(EventId)
 );
 
 -- Posts
@@ -199,6 +301,33 @@ CREATE TABLE Post (
 	Status NVARCHAR(20) DEFAULT N'chờ duyệt',
     FOREIGN KEY (UserId) REFERENCES Users(UserId) 
 );
+
+CREATE TABLE PostRejections (
+    RejectionId INT PRIMARY KEY IDENTITY,
+    PostId INT NOT NULL,
+
+    Reason NVARCHAR(MAX) NOT NULL,
+    RejectedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    
+);
+
+CREATE TABLE PostNotification (
+    NotificationId INT PRIMARY KEY IDENTITY,
+    PostId INT NOT NULL,
+    ReceiverId INT NOT NULL,      -- Người nhận (chủ bài viết)
+    Message NVARCHAR(MAX) NOT NULL,
+    IsRead BIT DEFAULT 0,         -- Đã đọc hay chưa
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    FOREIGN KEY (ReceiverId) REFERENCES Users(UserId)
+);
+SELECT * FROM PostNotification WHERE ReceiverId = 1;
+
+select * from Image
+
+
+
 
 
 CREATE TABLE Image (
@@ -590,12 +719,6 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
-DELETE FROM FishSpecies;
-
-DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
-
-
-
 
 -- Fish
 CREATE TABLE Fish (
@@ -605,6 +728,44 @@ CREATE TABLE Fish (
     FishSpeciesId INT,
     FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
 );
+
+-- Fish
+CREATE TABLE DifficultyPoint (
+    DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
+    Point INT NOT NULL                -- Ví dụ: 20, 50, 100
+);
+
+INSERT INTO DifficultyPoint (DifficultyLevel, Point)
+VALUES 
+(1, 20),
+(2, 40),
+(3, 70),
+(4,100);
+
+
+
+CREATE TABLE FishingLake (
+    LakeId INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    Location NVARCHAR(255),
+    OwnerId INT, -- FK đến Users(UserId)
+    FOREIGN KEY (OwnerId) REFERENCES Users(UserId)
+);
+
+CREATE TABLE LakeFish (
+    LakeId INT,
+    FishSpeciesId INT,
+	Price FLOAT NOT NULL, --giá loài cá
+    PRIMARY KEY (LakeId, FishSpeciesId),
+    FOREIGN KEY (LakeId) REFERENCES FishingLake(LakeId),
+    FOREIGN KEY (FishSpeciesId) REFERENCES FishSpecies(Id)
+);
+
+select * from LakeFish
+
+SELECT fs.CommonName, lf.Price FROM FishSpecies fs 
+                JOIN LakeFish lf ON fs.Id = lf.FishSpeciesId
+                WHERE lf.LakeId = 1
 
 -- Achievements
 CREATE TABLE Achievement (
@@ -637,30 +798,6 @@ CREATE TABLE password_reset (
 
 
 
-INSERT INTO Role (RoleName) VALUES  ('User'),('FishingOwner'),('Admin');
-
-INSERT INTO Users (FullName, Email, Phone, Password, GoogleId, RoleId, Gender, DateOfBirth, Location)
-VALUES 
-(N'Nguyễn Tiến Dũng', 'tien.dungg2011@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Hưng Yên'),
-(N'Chu Việt Hải', 'haicv@gmail.com', '0933444555', '12345', 'google12345', 1, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Chu Ngọc Dũng', 'ngocdung@gmail.com', '0933444555', '12345', 'google12345', 2, N'Nam', '1985-12-01', N'Ba Vì'),
-(N'Admin', 'admin@gmail.com', '0933444555', '12345', 'google12345', 3, N'Nam', '1985-12-01', N'Ba Vì');
-
-  
-select * from users
-
-
-
-select * from PostComment
-select * from Post
-select * from Image
-
-
-SELECT * FROM Post WHERE Status = N'đã duyệt'
-select * from PostLike
-
-select * from SavedPost
-
 INSERT INTO Category (Name) VALUES
 (N'Shimano'),     -- CategoryId = 1
 (N'Daiwa'),       -- CategoryId = 2
@@ -684,34 +821,48 @@ INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId
 
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
-(N'Giải câu cá mùa hè', N'Hồ Tây', N'Sự kiện dành cho mọi lứa tuổi.', N'Hà Nội', 4, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 50, 10),
-(N'Thử thách câu cá đêm', N'Hồ Trị An', N'Cuộc thi diễn ra trong đêm.', N'Đồng Nai', 4, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 30, 5),
-(N'Ngày hội câu cá thiếu nhi', N'Hồ Bán Nguyệt', N'Dành cho trẻ em và phụ huynh.', N'TP.HCM', 4, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 40, 15),
-(N'Giải đấu các CLB câu cá', N'Hồ Dầu Tiếng', N'Dành cho các CLB chuyên nghiệp.', N'Tây Ninh', 4, DATEADD(DAY, 15, GETDATE()), DATEADD(DAY, 16, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 100, 20),
-(N'Câu cá gây quỹ từ thiện', N'Hồ Xuân Hương', N'Sự kiện thiện nguyện giúp đỡ trẻ em.', N'Đà Lạt', 4, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'approved', GETDATE(), 'download.jpg', 60, 18);
+(N'Giải câu cá mùa hè', N'Hồ Tây', N'Sự kiện dành cho mọi lứa tuổi.', N'Hà Nội', 3, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 50, 10),
+(N'Thử thách câu cá đêm', N'Hồ Trị An', N'Cuộc thi diễn ra trong đêm.', N'Đồng Nai', 3, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 30, 5),
+(N'Ngày hội câu cá thiếu nhi', N'Hồ Bán Nguyệt', N'Dành cho trẻ em và phụ huynh.', N'TP.HCM', 3, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 40, 15),
+(N'Giải đấu các CLB câu cá', N'Hồ Dầu Tiếng', N'Dành cho các CLB chuyên nghiệp.', N'Tây Ninh', 3, DATEADD(DAY, 15, GETDATE()), DATEADD(DAY, 16, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 100, 20),
+(N'Câu cá gây quỹ từ thiện', N'Hồ Xuân Hương', N'Sự kiện thiện nguyện giúp đỡ trẻ em.', N'Đà Lạt', 3, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'approved', GETDATE(), 'download.jpg', 60, 18);
 
 -- 5 sự kiện đã kết thúc
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
-(N'Cuộc thi câu cá đầu xuân', N'Hồ Gươm', N'Chào mừng năm mới.', N'Hà Nội', 4, DATEADD(DAY, -10, GETDATE()), DATEADD(DAY, -9, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 70, 50),
-(N'Thử thách 24h câu cá', N'Hồ Phú Ninh', N'Câu cá không nghỉ suốt 1 ngày.', N'Quảng Nam', 4, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 35, 28),
-(N'Giải đấu cuối năm', N'Hồ Tuyền Lâm', N'Tổng kết mùa giải.', N'Đà Lạt', 4, DATEADD(DAY, -20, GETDATE()), DATEADD(DAY, -19, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 80, 45),
-(N'Sự kiện giao lưu miền Trung', N'Hồ Khe Sanh', N'Câu cá và trao đổi kinh nghiệm.', N'Quảng Trị', 4, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 55, 37),
-(N'Hội thi câu cá sinh viên', N'Hồ Thủ Đức', N'Dành cho các bạn sinh viên.', N'TP.HCM', 4, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 60);
+(N'Cuộc thi câu cá đầu xuân', N'Hồ Gươm', N'Chào mừng năm mới.', N'Hà Nội', 3, DATEADD(DAY, -10, GETDATE()), DATEADD(DAY, -9, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 70, 50),
+(N'Thử thách 24h câu cá', N'Hồ Phú Ninh', N'Câu cá không nghỉ suốt 1 ngày.', N'Quảng Nam', 3, DATEADD(DAY, -7, GETDATE()), DATEADD(DAY, -6, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 35, 28),
+(N'Giải đấu cuối năm', N'Hồ Tuyền Lâm', N'Tổng kết mùa giải.', N'Đà Lạt', 3, DATEADD(DAY, -20, GETDATE()), DATEADD(DAY, -19, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 80, 45),
+(N'Sự kiện giao lưu miền Trung', N'Hồ Khe Sanh', N'Câu cá và trao đổi kinh nghiệm.', N'Quảng Trị', 3, DATEADD(DAY, -14, GETDATE()), DATEADD(DAY, -13, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 55, 37),
+(N'Hội thi câu cá sinh viên', N'Hồ Thủ Đức', N'Dành cho các bạn sinh viên.', N'TP.HCM', 3, DATEADD(DAY, -5, GETDATE()), DATEADD(DAY, -4, GETDATE()), 'approved', GETDATE(), 'images.jpg', 90, 60);
+
+CREATE TABLE EventNotification (
+    NotificationId INT IDENTITY PRIMARY KEY,
+    EventId INT NOT NULL,
+    SenderId INT NOT NULL, 
+	Title NVARCHAR(255),
+    Message NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (EventId) REFERENCES Event(EventId),
+    FOREIGN KEY (SenderId) REFERENCES Users(UserId)
+);
 
 -- 5 sự kiện đang diễn ra
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES
-(N'Câu cá Marathon', N'Hồ Tràm', N'Sự kiện kéo dài nhiều giờ liên tục.', N'Vũng Tàu', 4, DATEADD(HOUR, -3, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 45, 33),
-(N'Sự kiện giao lưu Bắc - Nam', N'Hồ Hàm Thuận', N'Kết nối anh em cần thủ.', N'Bình Thuận', 4, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 5, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 70, 25),
-(N'Thử thách tốc độ câu cá', N'Hồ An Dương', N'Ai bắt được cá nhanh nhất?', N'Hải Phòng', 4, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 60, 40),
-(N'Chinh phục hồ sâu', N'Hồ Tân Hiệp', N'Địa điểm khó câu nhất năm.', N'Long An', 4, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 50, 22),
-(N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', N'Tuyển chọn đội tuyển quốc gia.', N'Vĩnh Long', 4, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 80);
+(N'Câu cá Marathon', N'Hồ Tràm', N'Sự kiện kéo dài nhiều giờ liên tục.', N'Vũng Tàu', 3, DATEADD(HOUR, -3, GETDATE()), DATEADD(HOUR, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 45, 33),
+(N'Sự kiện giao lưu Bắc - Nam', N'Hồ Hàm Thuận', N'Kết nối anh em cần thủ.', N'Bình Thuận', 3, DATEADD(HOUR, -2, GETDATE()), DATEADD(HOUR, 5, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 70, 25),
+(N'Thử thách tốc độ câu cá', N'Hồ An Dương', N'Ai bắt được cá nhanh nhất?', N'Hải Phòng', 3, DATEADD(HOUR, -1, GETDATE()), DATEADD(HOUR, 4, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 60, 40),
+(N'Chinh phục hồ sâu', N'Hồ Tân Hiệp', N'Địa điểm khó câu nhất năm.', N'Long An', 3, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 50, 22),
+(N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', N'Tuyển chọn đội tuyển quốc gia.', N'Vĩnh Long', 3, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 80);
 -- 5 sự kiện sắp diễn ra chỉ còn 1 chỗ trống
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
-(N'Thi đấu bán chuyên mùa hè', N'Hồ Suối Vàng', N'Sân chơi cho các cần thủ bán chuyên.', N'Lâm Đồng', 4, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), N'images (1).jpg', 30, 29),
-(N'Cúp câu cá miền Tây', N'Hồ Tràm Chim', N'Sự kiện khu vực đồng bằng sông Cửu Long.', N'Đồng Tháp', 4, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), N'images (2).jpg', 50, 50),
-(N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 4, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
-(N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 4, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
-(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 4, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
+(N'Thi đấu bán chuyên mùa hè', N'Hồ Suối Vàng', N'Sân chơi cho các cần thủ bán chuyên.', N'Lâm Đồng', 3, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), N'images (1).jpg', 30, 29),
+(N'Cúp câu cá miền Tây', N'Hồ Tràm Chim', N'Sự kiện khu vực đồng bằng sông Cửu Long.', N'Đồng Tháp', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), N'images (2).jpg', 50, 50),
+(N'Tham quan và thi câu cá', N'Hồ Suối Lạnh', N'Vừa du lịch vừa thi đấu.', N'Phan Thiết', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), N'images (3).jpg', 25, 25),
+(N'Câu cá giao lưu doanh nhân', N'Hồ Thiên Nga', N'Sự kiện kết nối giới doanh nhân.', N'Hà Nội', 3, DATEADD(DAY, 11, GETDATE()), DATEADD(DAY, 12, GETDATE()), 'approved', GETDATE(), N'images (4).jpg', 40, 39),
+(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59),
+(N'Thi câu cá thể thao mở rộng', N'Hồ Đại Lải', N'Mở rộng toàn quốc với giải thưởng hấp dẫn.', N'Vĩnh Phúc', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), N'images.jpg', 60, 59);
+
+SELECT * FROM PostNotification WHERE ReceiverId = 1 ORDER BY CreatedAt DESC;
