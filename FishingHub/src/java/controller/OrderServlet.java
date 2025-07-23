@@ -3,6 +3,7 @@ package controller;
 import dal.OrderDAO;
 import model.Order;
 import model.Status;
+import model.Users;
 import java.io.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -15,14 +16,23 @@ public class OrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Users currentUser = (Users) request.getSession().getAttribute("user");
+        if (currentUser == null || currentUser.getRoleId() != 2) {
+            response.sendRedirect("Login.jsp");
+            return;
+        }
+
+        int ownerId = currentUser.getUserId(); // chủ hồ
+
         String status = request.getParameter("status");
         String keyword = request.getParameter("keyword");
-        boolean isAjax = (status != null && (keyword != null));
+        boolean isAjax = (status != null && keyword != null);
+
         OrderDAO dao = new OrderDAO();
         List<Status> statuses = dao.getAllStatuses();
+
         if (isAjax) {
-            // AJAX filter: trả về toàn bộ đơn hàng phù hợp, không phân trang
-            List<Order> orders = dao.searchOrders(status, keyword);
+            List<Order> orders = dao.searchOrdersByOwner(ownerId, status, keyword);
             response.setContentType("text/html;charset=UTF-8");
             StringBuilder tbody = new StringBuilder();
             for (Order order : orders) {
@@ -55,11 +65,10 @@ public class OrderServlet extends HttpServlet {
                 }
                 tbody.append("</div></td></tr>");
             }
-            // Trả về HTML tbody và tổng số đơn hàng, phân tách bằng ký tự đặc biệt
             response.getWriter().write(tbody.toString() + "<!--SPLIT--->" + orders.size());
             return;
         }
-        // ...phân trang mặc định...
+
         int page = 1;
         int pageSize = 10;
         if (request.getParameter("page") != null) {
@@ -69,11 +78,13 @@ public class OrderServlet extends HttpServlet {
                 page = 1;
             }
         }
-        List<Order> orders = dao.getOrdersByPage(page, pageSize);
-        int totalOrders = dao.getTotalOrderCount();
+
+        List<Order> orders = dao.getOrdersByOwnerAndPage(ownerId, page, pageSize);
+        int totalOrders = dao.getTotalOrdersByOwner(ownerId);
         int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
         int start = (totalOrders == 0) ? 0 : (page - 1) * pageSize + 1;
         int end = Math.min(page * pageSize, totalOrders);
+
         request.setAttribute("orders", orders);
         request.setAttribute("statuses", statuses);
         request.setAttribute("currentPage", page);
@@ -90,19 +101,15 @@ public class OrderServlet extends HttpServlet {
         String action = request.getParameter("action");
         response.setContentType("application/json");
         try {
+            OrderDAO dao = new OrderDAO();
             if ("delete".equals(action)) {
-                String orderIdStr = request.getParameter("orderId");
-                int orderId = Integer.parseInt(orderIdStr);
-                OrderDAO dao = new OrderDAO();
+                int orderId = Integer.parseInt(request.getParameter("orderId"));
                 boolean ok = dao.deleteOrder(orderId);
                 response.getWriter().write("{\"success\": " + ok + "}");
                 return;
             }
-            String orderIdStr = request.getParameter("orderId");
-            String statusIdStr = request.getParameter("statusId");
-            int orderId = Integer.parseInt(orderIdStr);
-            int statusId = Integer.parseInt(statusIdStr);
-            OrderDAO dao = new OrderDAO();
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            int statusId = Integer.parseInt(request.getParameter("statusId"));
             boolean ok = dao.updateOrderStatus(orderId, statusId);
             response.getWriter().write("{\"success\": " + ok + "}");
         } catch (Exception e) {

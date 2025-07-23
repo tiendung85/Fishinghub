@@ -5,6 +5,8 @@
 
 <%
     Users currentUser = (Users) session.getAttribute("user");
+    int ownerId = currentUser != null ? currentUser.getUserId() : -1;
+    request.setAttribute("ownerId", ownerId);
 %>
 
 <!DOCTYPE html>

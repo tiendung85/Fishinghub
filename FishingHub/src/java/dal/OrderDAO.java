@@ -168,20 +168,144 @@ public class OrderDAO extends DBConnect {
         }
     }
 
-public int countNewOrdersByOwner(int ownerId) {
-    int count = 0;
-    String sql = "SELECT COUNT(*) FROM Orders WHERE UserId = ? AND OrderDate >= DATEADD(DAY, -7, GETDATE())";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setInt(1, ownerId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            count = rs.getInt(1);
+    public int countNewOrdersByOwner(int ownerId) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Orders WHERE UserId = ? AND OrderDate >= DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return count;
     }
-    return count;
-}
 
+    public List<Order> getOrdersByOwner(int ownerId, int page, int pageSize) {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT o.*, u.FullName, s.ShopName, os.StatusID, os.StatusName FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN Shop s ON o.ShopId = s.ShopId "
+                + "JOIN OrderStatus os ON o.StatusID = os.StatusID "
+                + "WHERE s.OwnerId = ? "
+                + "ORDER BY o.OrderDate DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            ps.setInt(2, (page - 1) * pageSize);
+            ps.setInt(3, pageSize);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order();
+                o.setId(rs.getInt("Id"));
+                o.setUserId(rs.getInt("UserId"));
+                o.setCustomerName(rs.getString("FullName"));
+                o.setShopId(rs.getInt("ShopId"));
+                o.setSubtotal(rs.getDouble("Subtotal"));
+                o.setTotal(rs.getDouble("Total"));
+                o.setOrderDate(rs.getTimestamp("OrderDate"));
+                o.setStatus(new Status(rs.getInt("StatusID"), rs.getString("StatusName")));
+                list.add(o);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int getTotalOrdersByOwner(int ownerId) {
+        String sql = "SELECT COUNT(*) FROM Orders o JOIN Shop sh ON o.ShopId = sh.ShopId WHERE sh.OwnerId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Order> getOrdersByOwnerAndPage(int ownerId, int page, int pageSize) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, s.StatusID, s.StatusName "
+                + "FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN OrderStatus s ON o.StatusID = s.StatusID "
+                + "JOIN Shop sh ON o.ShopId = sh.ShopId "
+                + "WHERE sh.OwnerId = ? "
+                + "ORDER BY o.OrderDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            ps.setInt(2, (page - 1) * pageSize);
+            ps.setInt(3, pageSize);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("Id"));
+                order.setCustomerName(rs.getString("FullName"));
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setSubtotal(rs.getDouble("Subtotal"));
+                order.setTotal(rs.getDouble("Total"));
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getString("StatusName"));
+                order.setStatus(status);
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public List<Order> searchOrdersByOwner(int ownerId, String status, String keyword) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.Id, u.FullName, o.OrderDate, o.Subtotal, o.Total, s.StatusID, s.StatusName "
+                + "FROM Orders o "
+                + "JOIN Users u ON o.UserId = u.UserId "
+                + "JOIN OrderStatus s ON o.StatusID = s.StatusID "
+                + "JOIN Shop sh ON o.ShopId = sh.ShopId "
+                + "WHERE sh.OwnerId = ? ";
+
+        if (status != null && !status.isEmpty() && !status.equals("all")) {
+            sql += " AND s.StatusID = ? ";
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            sql += " AND u.FullName LIKE ? ";
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            int i = 1;
+            ps.setInt(i++, ownerId);
+            if (status != null && !status.isEmpty() && !status.equals("all")) {
+                ps.setInt(i++, Integer.parseInt(status));
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                ps.setString(i++, "%" + keyword + "%");
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("Id"));
+                order.setCustomerName(rs.getString("FullName"));
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setSubtotal(rs.getDouble("Subtotal"));
+                order.setTotal(rs.getDouble("Total"));
+                Status st = new Status();
+                st.setStatusID(rs.getInt("StatusID"));
+                st.setStatusName(rs.getString("StatusName"));
+                order.setStatus(st);
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
 
 }

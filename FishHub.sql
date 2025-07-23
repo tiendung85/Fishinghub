@@ -2,19 +2,36 @@
 GO
 
 
-ALTER DATABASE FishingHub
+ALTER DATABASE FishingHub1
 SET SINGLE_USER
 WITH ROLLBACK IMMEDIATE;
 GO
 
 
-DROP DATABASE FishingHub;
+DROP DATABASE FishingHub1;
 GO
 
 CREATE DATABASE FishingHub1;
 GO
 USE FishingHub1;
 GO
+
+select * from Shop
+select * from Product
+select  * from Users
+
+-- Gán sản phẩm ID 1 cho ShopId 1
+UPDATE Product SET ShopId = 1 WHERE ProductId = 1;
+
+-- Gán sản phẩm ID 2 cho ShopId 2
+UPDATE Product SET ShopId = 2 WHERE ProductId = 2;
+
+-- Gán sản phẩm ID 3 cho ShopId 3
+UPDATE Product SET ShopId = 3 WHERE ProductId = 3;
+
+-- Gán sản phẩm ID 4 cho ShopId 4
+UPDATE Product SET ShopId = 4 WHERE ProductId = 4;
+
 
 -- Roles
 CREATE TABLE Role (
@@ -116,6 +133,8 @@ CREATE TABLE OrderStatus (
     StatusName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL
 );
 
+select * from OrderStatus
+
 -- Dữ liệu mẫu
 INSERT INTO OrderStatus (StatusID, StatusName) VALUES
 (1, N'Đang xử lý'),
@@ -128,68 +147,34 @@ select * from Post
 -- Orders
 CREATE TABLE Orders (
     Id INT PRIMARY KEY IDENTITY(1,1),
-      UserId INT NOT NULL,
+    UserId INT NOT NULL,
+    ShopId INT NOT NULL,
     Subtotal DECIMAL(18,2) NOT NULL,
     Total DECIMAL(18,2) NOT NULL,
     OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
     StatusID INT NOT NULL DEFAULT 1,
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (ShopId) REFERENCES Shop(ShopId) ON DELETE NO ACTION,
     FOREIGN KEY (StatusID) REFERENCES OrderStatus(StatusID)
 );
 
+INSERT INTO Orders (UserId, ShopId, Subtotal, Total, OrderDate, StatusID)
+VALUES 
+(2, 2, 450000, 470000, '2025-07-20 11:20:00', 1),
+(1, 2, 600000, 630000, '2025-07-21 16:00:00', 2),
+(4, 2, 250000, 260000, '2025-07-22 18:45:00', 3);
+
+INSERT INTO Orders (UserId, ShopId, Subtotal, Total, OrderDate, StatusID)
+VALUES 
+(3, 3, 350000, 370000, '2025-07-19 08:45:00', 1),
+(2, 3, 420000, 450000, '2025-07-20 13:10:00', 2),
+(1, 3, 200000, 220000, '2025-07-21 17:00:00', 3),
+(4, 3, 390000, 400000, '2025-07-22 10:30:00', 4);
+
+
+select * from Shop
+select * from Users
 select * from Orders
--- Đơn hàng 1: Trạng thái Đang xử lý (StatusID = 1)
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (1, 500000, 550000, '2025-05-30 10:30:00', 1);
-
--- Đơn hàng 2: Dùng mặc định (StatusID = 1, OrderDate = GETDATE())
-INSERT INTO Orders (UserId, Subtotal, Total)
-VALUES (2, 1200000, 1250000);
-
--- Đơn hàng 3: Trạng thái Hoàn thành (StatusID = 3)
-INSERT INTO Orders (UserId, Subtotal, Total, StatusID)
-VALUES (3, 250000, 270000, 3);
-
--- Đơn hàng 4: Đang xử lý (StatusID = 1)
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (2, 300000, 330000, '2025-05-29 09:15:00', 1);
-
--- Đơn hàng 5: Mặc định (StatusID = 1, OrderDate = GETDATE())
-INSERT INTO Orders (UserId, Subtotal, Total)
-VALUES (3, 750000, 800000);
-
--- Đơn hàng 6: Đã hủy (StatusID = 4)
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (2, 400000, 420000, '2025-05-28 14:20:00', 4);
-
--- Đơn hàng 7: Hoàn thành (StatusID = 3)
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (1, 180000, 200000, '2025-05-27 11:00:00', 3);
-
--- Đơn hàng 8: Mặc định
-INSERT INTO Orders (UserId, Subtotal, Total)
-VALUES (1, 950000, 1000000);
-
--- Đơn hàng 9: Đang xử lý
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (3, 220000, 250000, '2025-05-30 08:45:00', 1);
-
--- Đơn hàng 10: Đã hủy
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (3, 500000, 550000, '2025-05-26 16:10:00', 4);
-
--- Đơn hàng 11: Hoàn thành
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (1, 620000, 670000, '2025-05-25 13:30:00', 3);
-
--- Đơn hàng 12: Mặc định
-INSERT INTO Orders (UserId, Subtotal, Total)
-VALUES (2, 320000, 350000);
-
--- Đơn hàng 13: Đang xử lý
-INSERT INTO Orders (UserId, Subtotal, Total, OrderDate, StatusID)
-VALUES (3, 150000, 180000, '2025-05-30 17:55:00', 1);
-
 -- OrderDetails
 CREATE TABLE OrderDetail (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -237,6 +222,9 @@ CREATE TABLE EventParticipant (
 );
 
 -- Posts
+DROP TABLE IF EXISTS Post;
+GO
+
 CREATE TABLE Post (
     PostId INT PRIMARY KEY IDENTITY,
     UserId INT,
@@ -244,9 +232,12 @@ CREATE TABLE Post (
     Title NVARCHAR(255),
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+    Status NVARCHAR(50) DEFAULT N'Pending', 
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
 );
 select * from Post
+ALTER TABLE Post
+ADD Status NVARCHAR(50) DEFAULT N'Pending';
 
 CREATE TABLE Image (
     ImageId INT PRIMARY KEY IDENTITY,
@@ -620,35 +611,6 @@ VALUES
 (12, N'assets/img/FishKnowledge-images/cabong_1.png', 0),
 (12, N'assets/img/FishKnowledge-images/cabong_2.png', 0);
 
-DELETE FROM FishSpecies;
-DELETE FROM FishSpeciesImages;
-DBCC CHECKIDENT ('FishSpecies', RESEED, 0);
-
-DBCC CHECKIDENT ('FishSpeciesImages', RESEED, 0);
-
-
-
--- Fish
-CREATE TABLE DifficultyPoint (
-    DifficultyLevel INT PRIMARY KEY,  -- 1, 2, 3
-    Point INT NOT NULL                -- Ví dụ: 20, 50, 100
-);
-
-INSERT INTO DifficultyPoint (DifficultyLevel, Point)
-VALUES 
-(1, 20),
-(2, 40),
-(3, 70),
-(4,100);
-
-SELECT 
-    fs.Id AS FishSpeciesId,
-    fs.CommonName,
-    fs.Description,
-    fs.DifficultyLevel,
-    dp.Point
-FROM FishSpecies fs
-JOIN DifficultyPoint dp ON fs.DifficultyLevel = dp.DifficultyLevel
 
 
 CREATE TABLE FishingLake (
@@ -753,21 +715,36 @@ INSERT INTO Category (Name) VALUES
 
 -- Dữ liệu mẫu Product với ShopId = 1
 INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId, ShopId) VALUES
-(N'Rapala Snow', 2800000.00, 'https://vuadocau.com/wp-content/uploads/2020/02/Rapala-snow-3.png', 50, 12, 3, 1),
-(N'Dây dù ( Dây PE) Sufix 832 chính hãng Rapala', 360000.00, 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpsbnugehb6aa2', 78, 43, 3, 1),
-(N'Rapala Shadow Baitcasting', 1700000.00, 'https://lh4.googleusercontent.com/proxy/Vub1k7AeGzHBTDraGCkY1oPobLU0RLd3sE9EvZPlnvgt5U2X4F2NmxhwBXYnNIbXHJbyoNGOg9QBueIHQSq1E6Dolsg6jZQbuBTkFhbbsfFX-AlIaQ', 55, 10, 3, 1),
-(N'Rapala Sideral 201', 1650000.00, 'https://www.eastackle.com/images/product/large/rapala-sideral-201-bait-casting-reel-8577_7_.jpg', 10, 5, 3, 1),
-(N'Hộp Đựng Phụ Kiện Câu Cá Đa Năng Daiwa', 85000.00, 'https://vuadocau.com/wp-content/uploads/magictoolbox_cache/6b9a437c5150b07b7797f5bf9befc233/4/0/40710/original/1187082081/hop-daiwa.jpg', 150, 30, 2, 1),
+(N'Rapala Snow', 2800000.00, 'https://vuadocau.com/wp-content/uploads/2020/02/Rapala-snow-3.png', 50, 12, 3,2 ),
+(N'Dây dù ( Dây PE) Sufix 832 chính hãng Rapala', 360000.00, 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpsbnugehb6aa2', 78, 43, 3, 2),
+(N'Rapala Shadow Baitcasting', 1700000.00, 'https://lh4.googleusercontent.com/proxy/Vub1k7AeGzHBTDraGCkY1oPobLU0RLd3sE9EvZPlnvgt5U2X4F2NmxhwBXYnNIbXHJbyoNGOg9QBueIHQSq1E6Dolsg6jZQbuBTkFhbbsfFX-AlIaQ', 55, 10, 3, 2),
+(N'Rapala Sideral 201', 1650000.00, 'https://www.eastackle.com/images/product/large/rapala-sideral-201-bait-casting-reel-8577_7_.jpg', 10, 5, 3, 2),
+(N'Hộp Đựng Phụ Kiện Câu Cá Đa Năng Daiwa', 85000.00, 'https://vuadocau.com/wp-content/uploads/magictoolbox_cache/6b9a437c5150b07b7797f5bf9befc233/4/0/40710/original/1187082081/hop-daiwa.jpg', 150, 30, 2, 2),
 (N'Thùng đựng dụng cụ đi câu Daiwa Tackle Box', 105000.00, 'https://daiwa.sg/wp-content/uploads/2023/05/TackleBoxTB_3000HS.jpg', 100, 25, 2, 1),
-(N'Cần máy đứng Daiwa Liberty Club Seabass 90ML/96M', 1990000.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbTaMhTlIyS_KCqPfB5J8NdHz1eCExx1oT4g&s', 99, 16, 2, 1),
-(N'Cần du lịch lồng dùng Daiwa Ardito-TR - 70MHF-SC', 2000000.00, 'https://vuadocau.com/wp-content/uploads/2020/11/Ardito-TR.jpg', 120, 10, 2, 1),
-(N'Cần lure Daiwa Tatula - bản JP', 2450000.00, 'https://vuadocau.com/wp-content/uploads/2020/04/Daiwa-Tatula-1.jpg', 87, 45, 2, 1),
-(N'Cần Câu Lure 4 Khúc Rapala Classic Countdown', 830000.00, 'https://vuadocau.com/wp-content/uploads/2021/06/classic-countdown.jpg', 96, 69, 3, 1),
-(N'Shimano Nexave Shore Cast – 2023', 1200000.00, 'https://fergostackleworld.com.au/cdn/shop/files/shimano-nexave-1203-6-10kg-surf-rod_600x.jpg?v=1686720217', 120, 50, 1, 1),
-(N'Cần Jig Shimano Grappler Type J 2025', 3900000.00, 'https://tunafishtackle.com/wp-content/uploads/2020/06/Grappler-Type-J-Spinning.jpg', 90, 45, 1, 1),
-(N'Bao đựng đồ câu Shimano Butterfly', 1900000.00, 'https://shopcancau.vn/uploads/source/Phu%20kien/bao%20hop/shimano/Bao-dung-do-cau-shimano-butterfly-1.jpg', 69, 41, 1, 1),
-(N'Cần câu lure Shimano Expride', 3550000.00, 'https://down-vn.img.susercontent.com/file/9d4da39c76846eaff9e59bcde535d953', 80, 65, 1, 1);
+(N'Cần máy đứng Daiwa Liberty Club Seabass 90ML/96M', 1990000.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbTaMhTlIyS_KCqPfB5J8NdHz1eCExx1oT4g&s', 99, 16, 2, 2),
+(N'Cần du lịch lồng dùng Daiwa Ardito-TR - 70MHF-SC', 2000000.00, 'https://vuadocau.com/wp-content/uploads/2020/11/Ardito-TR.jpg', 120, 10, 2, 2),
+(N'Cần lure Daiwa Tatula - bản JP', 2450000.00, 'https://vuadocau.com/wp-content/uploads/2020/04/Daiwa-Tatula-1.jpg', 87, 45, 2, 2),
+(N'Cần Câu Lure 4 Khúc Rapala Classic Countdown', 830000.00, 'https://vuadocau.com/wp-content/uploads/2021/06/classic-countdown.jpg', 96, 69, 3, 2),
+(N'Shimano Nexave Shore Cast – 2023', 1200000.00, 'https://fergostackleworld.com.au/cdn/shop/files/shimano-nexave-1203-6-10kg-surf-rod_600x.jpg?v=1686720217', 120, 50, 1, 2),
+(N'Cần Jig Shimano Grappler Type J 2025', 3900000.00, 'https://tunafishtackle.com/wp-content/uploads/2020/06/Grappler-Type-J-Spinning.jpg', 90, 45, 1, 2),
+(N'Bao đựng đồ câu Shimano Butterfly', 1900000.00, 'https://shopcancau.vn/uploads/source/Phu%20kien/bao%20hop/shimano/Bao-dung-do-cau-shimano-butterfly-1.jpg', 69, 41, 1, 2),
+(N'Cần câu lure Shimano Expride', 3550000.00, 'https://down-vn.img.susercontent.com/file/9d4da39c76846eaff9e59bcde535d953', 80, 65, 1, 2);
 
+
+INSERT INTO Product (Name, Price, Image, StockQuantity, SoldQuantity, CategoryId, ShopId)
+VALUES 
+(N'Cần Câu Shimano Ultegra', 2800000, 'https://example.com/shimano.jpg', 50, 10, 1, 2),
+(N'Dây Câu Daiwa Siêu Bền', 350000, 'https://example.com/daycau.jpg', 100, 20, 2, 3),
+(N'Mồi Giả Cá Lóc Rapala', 170000, 'https://example.com/moigia.jpg', 70, 15, 3, 4),
+(N'Bộ Phụ Kiện Câu Cá Đầy Đủ', 650000, 'https://example.com/phukien.jpg', 40, 5, 2, 5);
+
+select * from Shop
+-- Giả sử các OwnerId 3, 5, 7 tồn tại trong bảng Users
+INSERT INTO Shop (OwnerId, ShopName)
+VALUES 
+(4, N'Shop Hồ Câu Anh Nam'),
+(4, N'Cửa Hàng Cần Câu Miền Tây'),
+(4, N'Dụng Cụ Câu Cá ABC');
 
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES 
@@ -825,6 +802,9 @@ select * from Users
 UPDATE Users
 SET RoleId = 2
 WHERE UserId = 1;
+
+INSERT INTO Shop (OwnerId, ShopName)
+VALUES (3, N'Cửa hàng câu cá miền Trung');
 
 
 SELECT TOP 3 P.PostId, P.UserId, P.Topic, P.Title, P.Content, P.CreatedAt, P.Status, U.FullName  

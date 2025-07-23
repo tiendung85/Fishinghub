@@ -26,8 +26,8 @@ public class ShopDetailServlet extends HttpServlet {
             ProductDAO dao = new ProductDAO();
             List<Product> products = dao.getProductsByShop(shopId);
 
-            request.setAttribute("products", products);
-            request.getRequestDispatcher("shop/ShopDetail.jsp").forward(request, response);
+            request.setAttribute("productList", products);
+            request.getRequestDispatcher("ShopDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendRedirect("shop-list");
