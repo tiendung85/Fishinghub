@@ -1,4 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <%@page import="java.util.List"%>
 <%@page import="model.Post"%>
 <%@page import="dal.PostDAO"%>
@@ -11,6 +14,15 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="dal.PostLikeDAO"%>
 <%@page import="dal.CommentLikeDAO"%>
+<%@page import="dal.PostNotificationDAO"%>
+<%@page import="dal.EventDAO"%>
+<%@page import="model.PostNotification"%>
+<%@page import="model.EventNotification"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
+
 
 
 
@@ -34,6 +46,7 @@
             return sdf.format(date);
         }
     }
+     
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -75,6 +88,8 @@
  
 </head>
 <body>
+   
+
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -83,8 +98,8 @@
 
                  <nav class="hidden md:flex ml-10">
             <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-            <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
-            <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+            <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+            <a href="NewFeed" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
             <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
             <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
             <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
@@ -99,15 +114,41 @@
                     </button>
                     <span
                         class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-                        >3</span
-                    >
+                        >3</span>
+                   
                 </div>
                 <div class="relative">
-                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
-                        <i class="ri-notification-3-line text-gray-600"></i>
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer" id="notificationBell">
+                            <i class="ri-notification-3-line text-gray-600"></i>
+                        </div>
+                        <c:if test="${not empty notifications || not empty postNotifications}">
+                            <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white"> ${notifications.size() + postNotifications.size()}</span>
+                        </c:if>
+                        <!-- Dropdown thông báo -->
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg overflow-hidden z-50 hidden">
+                            <div class="p-4 border-b font-semibold text-gray-700">Thông báo</div>
+                            <ul class="max-h-64 overflow-y-auto divide-y divide-gray-200">
+                                
+                                <c:forEach var="n" items="${notifications}">
+                                    <li class="px-4 py-3 hover:bg-gray-100 text-sm">
+                                        <a href="EventDetails?action=details&eventId=${n.eventId}" class="block text-gray-800 font-medium">${n.title}</a>
+                                        <p class="text-gray-500 text-xs">${n.message}</p>
+                                        <p class="text-gray-400 text-xs mt-1">${n.formattedCreatedAt}</p>
+                                    </li>
+                                </c:forEach>
+
+                                  <c:forEach var="n" items="${postNotifications}">
+                                    <li class="px-4 py-3 hover:bg-gray-100 text-sm">
+                                        <a href="NewFeed#post-${n.postId}" class="block text-gray-800 font-medium">${n.message}</a>
+                                        <p class="text-gray-400 text-xs mt-1"> <fmt:formatDate value="${n.createdAt}" pattern="dd/MM/yyyy HH:mm" /></p>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="${empty notifications && empty postNotifications}">
+                                    <li class="px-4 py-3 text-gray-500 text-sm text-center">Không có thông báo nào</li>
+                                </c:if>
+                            </ul>
+                        </div>
                     </div>
-                    <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">3</span>
-                </div>
 
                 <% 
                 Users currentUser = (Users) session.getAttribute("user");
@@ -123,6 +164,7 @@
                 <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
             </form>
         </div>
+                
     <% } %>
         </div>
     </header>
@@ -175,7 +217,10 @@
     <div class="flex border-b border-gray-200">
         <button id="allPostsBtn" class="tab-button active px-6 py-4 text-primary font-medium">Tất Cả Bài Viết</button>
 <button id="savedPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Đã Lưu</button>
-<button id="myPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>    </div>
+<button id="myPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Của Tôi</button>   
+        <button id="rejectedPostsBtn" class="tab-button active px-6 py-4 text-gray-600 font-medium hover:text-primary">Bài Viết Bị Từ Chối</button>
+
+</div>
 
 </div>
 
@@ -195,7 +240,10 @@
         posts = savedDao.getSavedPostsByUser(currentUser.getUserId());
     } else if ("my".equals(tab) && currentUser != null) {
         posts = postDAO.getPostsByUser(currentUser.getUserId());
-    } else if (searchTopic != null && !searchTopic.trim().isEmpty()) {
+    } else if ("rejected".equals(tab) && currentUser != null) {
+            posts = postDAO.getPostsByStatusAndUser("từ chối", currentUser.getUserId());
+        } 
+    else if (searchTopic != null && !searchTopic.trim().isEmpty()) {
         posts = postDAO.searchPostsByTopic(searchTopic);
     } else {
         posts = postDAO.getAllPosts();
@@ -204,6 +252,8 @@
     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
 
     for(Post post : posts) {
+        
+
 %>
     <div class="bg-white rounded-lg shadow-sm" id="post-<%= post.getPostId() %>"> 
      
@@ -537,95 +587,67 @@ onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
         
         <!-- Dialog Content -->
         <div class="overflow-y-auto flex-1 px-6">
-            <form action="PostServlet" method="POST" enctype="multipart/form-data" class="py-4" accept-charset="UTF-8">
-                <!-- User Info -->
-                <% 
-                    
-                    if(currentUser != null) {
-                %>
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-primary flex items-center justify-center text-white text-xl font-bold">
-                        <%= currentUser.getFullName().substring(0, 1).toUpperCase() %>
-                    </div>
-                    <div class="flex-1">
-                        <p class="font-medium text-gray-900 mb-2"><%= currentUser.getFullName() %></p>
-                        <input type="text" 
-                               name="topic"
-                               placeholder="Thêm chủ đề..." 
-                               class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500"
-                               maxlength="50">
-                    </div>
-                </div>
-                <% 
-                    } 
-                %>
-                
-                <!-- Post Content -->
-                <div class="space-y-4 mb-6">
-                    <textarea name="title" 
-                          placeholder="Tiêu đề bài viết là gì?" 
-                          class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500"
-                          rows="1"
-                          maxlength="200"></textarea>
-                    <textarea name="content" 
-                          placeholder="Bạn muốn chia sẻ điều gì?" 
-                          class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500 whitespace-pre-wrap"
-                          style="min-height: 150px; resize: vertical;"
-                          rows="4"></textarea>
-                </div>
-
-               
-
-                <div class="space-y-4 mb-6">
-                    <input type="file" id="imageInput" name="images" accept="image/*" multiple class="hidden">
-                    <input type="file" id="videoInput" name="videos" accept="video/*" multiple class="hidden">
-                    
-
-                    
-                    <div id="imagePreviewContainer" class="hidden">
-                        <h4 class="font-medium text-gray-700 mb-2">Hình ảnh đã chọn</h4>
-                        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                         
-                        </div>
-                    </div>
-
-               
-                    <div id="videoPreviewContainer" class="hidden">
-                        <h4 class="font-medium text-gray-700 mb-2">Video đã chọn</h4>
-                        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                    
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dialog Footer -->
-                <div class="border-t border-gray-100 bg-white sticky bottom-0 -mx-6 px-6">
-                    <!-- Upload Actions -->
-                    <div class="flex items-center gap-4 py-4">
-                        <button type="button" 
-                                onclick="document.getElementById('imageInput').click()" 
-                                class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors">
-                            <i class="ri-image-line text-xl text-primary"></i>
-                            <span class="text-sm font-medium text-gray-700">Thêm ảnh</span>
-                        </button>
-                        <button type="button" 
-                                onclick="document.getElementById('videoInput').click()" 
-                                class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors">
-                            <i class="ri-video-line text-xl text-primary"></i>
-                            <span class="text-sm font-medium text-gray-700">Thêm video</span>
-                        </button>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="py-4">
-                        <button type="submit" 
-                                class="w-full bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25">
-                            Đăng Bài
-                        </button>
-                    </div>
-                </div>
-            </form>
+<form id="postForm" action="PostServlet" method="POST" enctype="multipart/form-data" class="py-4" accept-charset="UTF-8">
+    <input type="hidden" name="action" id="formAction" value="create">
+    <input type="hidden" name="postId" id="postId">
+    <input type="hidden" name="existingImages" id="existingImages">
+    <input type="hidden" name="existingVideos" id="existingVideos">
+    <input type="hidden" name="removedImages" id="removedImages">
+    <input type="hidden" name="removedVideos" id="removedVideos">
+    <% if (currentUser != null) { %>
+    <div class="flex items-center gap-4 mb-6">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-primary flex items-center justify-center text-white text-xl font-bold">
+            <%= currentUser.getFullName().substring(0, 1).toUpperCase() %>
+        </div>
+        <div class="flex-1">
+            <p class="font-medium text-gray-900 mb-2"><%= currentUser.getFullName() %></p>
+            <input type="text" name="topic" placeholder="Thêm chủ đề..."
+                   class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500"
+                   maxlength="50" required>
+        </div>
+    </div>
+    <% } %>
+    <div class="space-y-4 mb-6">
+        <textarea name="title" placeholder="Tiêu đề bài viết là gì?"
+                  class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500"
+                  rows="1" maxlength="200" required></textarea>
+        <textarea name="content" placeholder="Bạn muốn chia sẻ điều gì?"
+                  class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm bg-gray-50 placeholder-gray-500 whitespace-pre-wrap"
+                  style="min-height: 150px; resize: vertical;" rows="4" required></textarea>
+    </div>
+    <div class="space-y-4 mb-6">
+        <input type="file" id="imageInput" name="images" accept="image/*" multiple class="hidden">
+        <input type="file" id="videoInput" name="videos" accept="video/*" multiple class="hidden">
+        <div id="imagePreviewContainer" class="hidden">
+            <h4 class="font-medium text-gray-700 mb-2">Hình ảnh đã chọn</h4>
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"></div>
+        </div>
+        <div id="videoPreviewContainer" class="hidden">
+            <h4 class="font-medium text-gray-700 mb-2">Video đã chọn</h4>
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"></div>
+        </div>
+    </div>
+    <div class="border-t border-gray-100 bg-white sticky bottom-0 -mx-6 px-6">
+        <div class="flex items-center gap-4 py-4">
+            <button type="button" onclick="document.getElementById('imageInput').click()"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="ri-image-line text-xl text-primary"></i>
+                <span class="text-sm font-medium text-gray-700">Thêm ảnh</span>
+            </button>
+            <button type="button" onclick="document.getElementById('videoInput').click()"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="ri-video-line text-xl text-primary"></i>
+                <span class="text-sm font-medium text-gray-700">Thêm video</span>
+            </button>
+        </div>
+        <div class="py-4">
+            <button type="submit" id="submitButton"
+                    class="w-full bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25">
+                Đăng Bài
+            </button>
+        </div>
+    </div>
+</form>
         </div>
     </div>
 </div>
@@ -665,7 +687,7 @@ onclick="toggleReplyLike(<%= reply.getReplyId() %>, this)"
                         <ul class="space-y-2">
                             <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Home</a></li>
                             <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Events</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">News Feed</a></li>
+                            <li><a href="NewFeed" class="text-gray-400 hover:text-white">News Feed</a></li>
                             <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Shop</a></li> 
                             <li><a href="FishKnowledge.jsp" class="text-gray-400 hover:text-white">Knowledge</a></li>
                             <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Rankings</a></li>
@@ -719,18 +741,28 @@ createPostBtn.addEventListener('click', () => {
     document.body.style.overflow = 'hidden';
 });
 
-function closeCreatePostDialog() {
-    createPostDialog.classList.remove('flex');
-    createPostDialog.classList.add('hidden');
+ function closeCreatePostDialog() {
+    const dialog = document.getElementById('createPostDialog');
+    dialog.classList.remove('flex');
+    dialog.classList.add('hidden');
     document.body.style.overflow = 'auto';
-
-
+    
+    // Reset form và các mảng file
+    const form = document.getElementById('postForm');
+    form.reset();
     removeAllImages();
     removeAllVideos();
- 
-
-    const form = createPostDialog.querySelector('form');
-    form.reset();
+    selectedImageFiles = [];
+    selectedVideoFiles = [];
+    
+    // Đặt lại các input ẩn
+    document.getElementById('existingImages').value = '';
+    document.getElementById('existingVideos').value = '';
+    document.getElementById('removedImages').value = '';
+    document.getElementById('removedVideos').value = '';
+    document.getElementById('formAction').value = 'create';
+    document.getElementById('postId').value = '';
+    document.getElementById('submitButton').textContent = 'Đăng Bài';
 }
 
 createPostDialog.addEventListener('click', (e) => {
@@ -744,71 +776,45 @@ let selectedImageFiles = [];
 let selectedVideoFiles = [];
 
 // Image preview function
-function previewImages(event) {
-    const container = document.getElementById('imagePreviewContainer');
-    const gridContainer = container.querySelector('div');
-    const files = event.target.files;
-    
-
-    gridContainer.innerHTML = '';
-    selectedImageFiles = [];
-    
-    if (files.length > 0) {
-        container.classList.remove('hidden');
-
-        selectedImageFiles = Array.from(files);
-        
-        // Create preview for each file
-        selectedImageFiles.forEach((file, index) => {
-            const previewDiv = document.createElement('div');
-            previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square';
-            
-
-     
-            const img = document.createElement('img');
-            img.className = 'w-full h-full object-cover rounded-lg';
-            
-          
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            
-
-
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
-            removeButton.innerHTML = '<i class="ri-close-line"></i>';
-            
-
-            removeButton.onclick = function() {
-                selectedImageFiles = selectedImageFiles.filter((_, i) => i !== index);
-                previewDiv.remove();
-                
-                if (gridContainer.children.length === 0) {
-                    container.classList.add('hidden');
-                }
-                
-                updateFileInput();
-            };
-            
-
-            previewDiv.appendChild(img);
-            previewDiv.appendChild(removeButton);
-            gridContainer.appendChild(previewDiv);
-        });
-    } else {
-        container.classList.add('hidden');
-    }
-    
-
-
-    updateFileInput();
-}
-
+    function previewImages(event) {
+            const container = document.getElementById('imagePreviewContainer');
+            const gridContainer = container.querySelector('div');
+            const files = event.target.files;
+            gridContainer.innerHTML = '';
+            selectedImageFiles = Array.from(files);
+            if (files.length > 0) {
+                container.classList.remove('hidden');
+                selectedImageFiles.forEach((file, index) => {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square';
+                    const img = document.createElement('img');
+                    img.className = 'w-full h-full object-cover rounded-lg';
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
+                    removeButton.innerHTML = '<i class="ri-close-line"></i>';
+                    removeButton.onclick = function() {
+                        selectedImageFiles = selectedImageFiles.filter((_, i) => i !== index);
+                        previewDiv.remove();
+                        if (gridContainer.children.length === 0) {
+                            container.classList.add('hidden');
+                        }
+                        updateFileInput();
+                    };
+                    previewDiv.appendChild(img);
+                    previewDiv.appendChild(removeButton);
+                    gridContainer.appendChild(previewDiv);
+                });
+            } else {
+                container.classList.add('hidden');
+            }
+            updateFileInput();
+        }
 
 
 function updateFileInput() {
@@ -819,64 +825,47 @@ function updateFileInput() {
 }
 
 // Video preview function
-function previewVideos(event) {
-    const container = document.getElementById('videoPreviewContainer');
-    const gridContainer = container.querySelector('div');
-    const files = event.target.files;
-    
-
-   
-    selectedVideoFiles = Array.from(files);
-    
-  
-
-    gridContainer.innerHTML = '';
-    
-    if (files.length > 0) {
-        container.classList.remove('hidden');
-        
-        selectedVideoFiles.forEach((file, index) => {
-            const videoURL = URL.createObjectURL(file);
-            
-            const previewDiv = document.createElement('div');
-            previewDiv.className = 'relative flex-shrink-0 w-[400px]';
-            
-            const videoWrapper = document.createElement('div');
-            videoWrapper.className = 'aspect-video rounded-lg bg-black overflow-hidden';
-            
-            const video = document.createElement('video');
-            video.className = 'w-full h-full object-contain';
-            video.controls = true;
-            video.src = videoURL;
-            
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
-            removeButton.innerHTML = '<i class="ri-close-line"></i>';
-            removeButton.onclick = function() {
-
-                selectedVideoFiles.splice(index, 1);
-                URL.revokeObjectURL(videoURL);
-                previewDiv.remove();
-                
-
-                if (gridContainer.children.length === 0) {
-                    container.classList.add('hidden');
-                }
-                
-
-                updateVideoInput();
-            };
-            
-            videoWrapper.appendChild(video);
-            previewDiv.appendChild(videoWrapper);
-            previewDiv.appendChild(removeButton);
-            gridContainer.appendChild(previewDiv);
-        });
-    } else {
-        container.classList.add('hidden');
-    }
-}
+ function previewVideos(event) {
+            const container = document.getElementById('videoPreviewContainer');
+            const gridContainer = container.querySelector('div');
+            const files = event.target.files;
+            gridContainer.innerHTML = '';
+            selectedVideoFiles = Array.from(files);
+            if (files.length > 0) {
+                container.classList.remove('hidden');
+                selectedVideoFiles.forEach((file, index) => {
+                    const videoURL = URL.createObjectURL(file);
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative flex-shrink-0 w-[400px]';
+                    const videoWrapper = document.createElement('div');
+                    videoWrapper.className = 'aspect-video rounded-lg bg-black overflow-hidden';
+                    const video = document.createElement('video');
+                    video.className = 'w-full h-full object-contain';
+                    video.controls = true;
+                    video.src = videoURL;
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
+                    removeButton.innerHTML = '<i class="ri-close-line"></i>';
+                    removeButton.onclick = function() {
+                        selectedVideoFiles.splice(index, 1);
+                        URL.revokeObjectURL(videoURL);
+                        previewDiv.remove();
+                        if (gridContainer.children.length === 0) {
+                            container.classList.add('hidden');
+                        }
+                        updateVideoInput();
+                    };
+                    videoWrapper.appendChild(video);
+                    previewDiv.appendChild(videoWrapper);
+                    previewDiv.appendChild(removeButton);
+                    gridContainer.appendChild(previewDiv);
+                });
+            } else {
+                container.classList.add('hidden');
+            }
+            updateVideoInput();
+        }
 
 
 function updateVideoInput() {
@@ -970,7 +959,7 @@ function validatePostForm(form) {
 }
 
 
-document.querySelector('#createPostDialog form').addEventListener('submit', function(event) {
+document.querySelector('#postForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
     if (validatePostForm(this)) {
@@ -1016,9 +1005,9 @@ searchInput.addEventListener('keyup', function(e) {
     if (e.key === 'Enter') {
         const searchTerm = this.value.trim();
         if (searchTerm) {
-            window.location.assign('NewFeed.jsp?topic=' + encodeURIComponent(searchTerm));
+            window.location.assign('NewFeed?topic=' + encodeURIComponent(searchTerm));
         } else {
-            window.location.assign('NewFeed.jsp');
+            window.location.assign('NewFeed');
         }
     }
 });
@@ -1026,7 +1015,7 @@ searchInput.addEventListener('keyup', function(e) {
 // Tab functionality
 const allPostsBtn = document.getElementById('allPostsBtn');
 allPostsBtn.addEventListener('click', function() {
-    window.location.href = 'NewFeed.jsp';
+    window.location.href = 'NewFeed';
 });
 
 // Initialize "Read More" buttons
@@ -1187,7 +1176,7 @@ function submitComment(event, postId, form) {
 
                 // Reload page with post ID as hash
 
-                window.location.href = `NewFeed.jsp#post-${postId}`;
+                window.location.href = `NewFeed#post-${postId}`;
                 window.location.reload();
             } else if (response === 'login_required') {
                 window.location.href = 'Login.jsp';
@@ -1319,7 +1308,7 @@ function deleteComment(commentId, postOwnerId, commentOwnerId, btn) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             if (xhr.responseText.trim() === 'success') {
             commentItem.remove();
-            window.location.href = `NewFeed.jsp#post-${postId}`;
+            window.location.href = `NewFeed#post-${postId}`;
                 window.location.reload();
 
          
@@ -1377,7 +1366,6 @@ function deletePost(postId, btn) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             if (xhr.responseText.trim() === 'success') {
-                // Xóa khỏi giao diện
                 const postDiv = document.getElementById('post-' + postId);
                 if (postDiv) postDiv.remove();
                    
@@ -1390,62 +1378,140 @@ function deletePost(postId, btn) {
     xhr.send('postId=' + postId);
 }
 
-function editPost(postId, btn) {
-    // Lấy phần tử bài viết
+function editPost(postId, btn, isRejected = false) {
     const postDiv = document.getElementById('post-' + postId);
-    const topicElem = postDiv.querySelector('.topic');
-    const titleElem = postDiv.querySelector('p.font-bold');
-    const contentElem = postDiv.querySelector('.content-text');
-    const oldTopic = topicElem.textContent;
-    const oldTitle = titleElem.textContent;
-    const oldContent = contentElem.textContent;
+    const topic = postDiv.querySelector('.topic').textContent.trim();
+    const title = postDiv.querySelector('p.font-bold').textContent.trim();
+    const content = postDiv.querySelector('.content-text').textContent.trim();
+    const images = Array.from(postDiv.querySelectorAll('img[alt="Post image"]')).map(img => img.src.split('/').pop());
+    const videos = Array.from(postDiv.querySelectorAll('video source')).map(source => source.src.split('/').pop());
 
-    // Tạo input để chỉnh sửa
-    const topicInput = document.createElement('input');
-    topicInput.type = 'text';
-    topicInput.value = oldTopic;
-    topicInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
+    // Reset form and clear previous data
+    const form = document.getElementById('postForm');
+    form.reset(); // Reset toàn bộ form để xóa dữ liệu cũ
+    form.querySelector('input[name="action"]').value = isRejected ? 'repost' : 'edit';
+    form.querySelector('input[name="postId"]').value = postId;
+    form.querySelector('input[name="topic"]').value = topic;
+    form.querySelector('textarea[name="title"]').value = title;
+    form.querySelector('textarea[name="content"]').value = content;
 
-    const titleInput = document.createElement('input');
-    titleInput.type = 'text';
-    titleInput.value = oldTitle;
-    titleInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
+    // Update button text
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.textContent = isRejected ? 'Đăng Lại' : 'Cập Nhật';
 
-    const contentInput = document.createElement('textarea');
-    contentInput.value = oldContent;
-    contentInput.className = 'border px-2 py-1 rounded text-sm w-full mb-2';
-    contentInput.rows = 4;
+    // Clear existing previews and reset file arrays
+    removeAllImages();
+    removeAllVideos();
+    selectedImageFiles = []; // Reset mảng chứa file ảnh
+    selectedVideoFiles = []; // Reset mảng chứa file video
 
-    topicElem.replaceWith(topicInput);
-    titleElem.replaceWith(titleInput);
-    contentElem.replaceWith(contentInput);
+    // Populate image previews
+    const imageContainer = document.getElementById('imagePreviewContainer');
+    const imageGrid = imageContainer.querySelector('div');
+    imageGrid.innerHTML = ''; // Clear previous previews
 
-    btn.textContent = 'Lưu';
-    btn.onclick = function() {
-        const newTopic = topicInput.value.trim();
-        const newTitle = titleInput.value.trim();
-        const newContent = contentInput.value.trim();
-        if (!newTopic || !newTitle || !newContent) {
-            alert('Chủ đề, tiêu đề và nội dung không được để trống!');
-            return;
-        }
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'edit-post', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                if (xhr.responseText.trim() === 'success') {
-              
-                
-                window.location.reload();
-                    
-                } else {
-                    alert('Không thể cập nhật bài viết!');
+    if (images.length > 0) {
+        imageContainer.classList.remove('hidden');
+        images.forEach((image, index) => {
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'relative flex-shrink-0 w-[200px] aspect-square';
+            const img = document.createElement('img');
+            img.className = 'w-full h-full object-cover rounded-lg';
+            img.src = 'assets/img/post/' + image;
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
+            removeButton.innerHTML = '<i class="ri-close-line"></i>';
+            removeButton.onclick = function() {
+                previewDiv.remove();
+                if (imageGrid.children.length === 0) {
+                    imageContainer.classList.add('hidden');
                 }
-            }
-        };
-        xhr.send('postId=' + postId + '&topic=' + encodeURIComponent(newTopic) + '&title=' + encodeURIComponent(newTitle) + '&content=' + encodeURIComponent(newContent));
-    };
+                updateRemovedImagesInput(image);
+                // Cập nhật lại existingImages sau khi xóa
+                const remainingImages = images.filter((_, i) => i !== index);
+                document.getElementById('existingImages').value = remainingImages.join(',');
+            };
+
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(removeButton);
+            imageGrid.appendChild(previewDiv);
+        });
+    }
+
+    // Populate video previews
+    const videoContainer = document.getElementById('videoPreviewContainer');
+    const videoGrid = videoContainer.querySelector('div');
+    videoGrid.innerHTML = ''; // Clear previous previews
+
+    if (videos.length > 0) {
+        videoContainer.classList.remove('hidden');
+        videos.forEach((video, index) => {
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'relative flex-shrink-0 w-[400px]';
+            const videoWrapper = document.createElement('div');
+            videoWrapper.className = 'aspect-video rounded-lg bg-black overflow-hidden';
+            const vid = document.createElement('video');
+            vid.className = 'w-full h-full object-contain';
+            vid.controls = true;
+            const source = document.createElement('source');
+            source.src = 'assets/video/post/' + video;
+            source.type = 'video/mp4';
+            vid.appendChild(source);
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70';
+            removeButton.innerHTML = '<i class="ri-close-line"></i>';
+            removeButton.onclick = function() {
+                previewDiv.remove();
+                if (videoGrid.children.length === 0) {
+                    videoContainer.classList.add('hidden');
+                }
+                updateRemovedVideosInput(video);
+                // Cập nhật lại existingVideos sau khi xóa
+                const remainingVideos = videos.filter((_, i) => i !== index);
+                document.getElementById('existingVideos').value = remainingVideos.join(',');
+            };
+
+            videoWrapper.appendChild(vid);
+            previewDiv.appendChild(videoWrapper);
+            previewDiv.appendChild(removeButton);
+            videoGrid.appendChild(previewDiv);
+        });
+    }
+
+    // Initialize hidden inputs with current post data
+    document.getElementById('existingImages').value = images.join(',');
+    document.getElementById('existingVideos').value = videos.join(',');
+    document.getElementById('removedImages').value = '';
+    document.getElementById('removedVideos').value = '';
+
+    // Show dialog
+    const dialog = document.getElementById('createPostDialog');
+    dialog.classList.remove('hidden');
+    dialog.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+
+// Helper function to update removed images input
+function updateRemovedImagesInput(image) {
+    const form = document.getElementById('postForm');
+    const removedImagesInput = form.querySelector('input[name="removedImages"]');
+    const removedImages = removedImagesInput.value ? removedImagesInput.value.split(',') : [];
+    removedImages.push(image);
+    removedImagesInput.value = removedImages.join(',');
+}
+
+// Helper function to update removed videos input
+function updateRemovedVideosInput(video) {
+    const form = document.getElementById('postForm');
+    const removedVideosInput = form.querySelector('input[name="removedVideos"]');
+    const removedVideos = removedVideosInput.value ? removedVideosInput.value.split(',') : [];
+    removedVideos.push(video);
+    removedVideosInput.value = removedVideos.join(',');
 }
 
 function toggleSavePost(postId, btn) {
@@ -1484,12 +1550,38 @@ function toggleSavePost(postId, btn) {
 }
 
 document.getElementById('savedPostsBtn').addEventListener('click', function() {
-    window.location.href = 'NewFeed.jsp?tab=saved';
+    window.location.href = 'NewFeed?tab=saved';
 });
 
 document.getElementById('myPostsBtn').addEventListener('click', function() {
-    window.location.href = 'NewFeed.jsp?tab=my';
+    window.location.href = 'NewFeed?tab=my';
 });
+document.getElementById('rejectedPostsBtn').addEventListener('click', function() {
+            window.location.href = 'NewFeed?tab=rejected';
+        });
+
+
+  const bell = document.getElementById("notificationBell");
+const dropdown = document.getElementById("notificationDropdown");
+
+bell.addEventListener("click", function(event) {
+    event.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+    dropdown.classList.toggle("hidden");
+});
+
+document.addEventListener("click", function (event) {
+    const isClickInside = bell.contains(event.target) || dropdown.contains(event.target);
+    if (!isClickInside) {
+        dropdown.classList.add("hidden");
+    }
+});
+
+
+
+
+
+
+
 </script>
   
 </body>
