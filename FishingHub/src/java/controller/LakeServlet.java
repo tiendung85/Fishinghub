@@ -18,13 +18,14 @@ import jakarta.servlet.http.HttpSession;
 import model.Users;
 import model.FishingLake;
 import model.FishSpecies;
+import model.LakeCustomFish;
 import model.LakeFishInfo;
 
 /**
  *
  * @author Viehai
  */
-@WebServlet(name = "LakeServlet", urlPatterns = { "/LakeServlet" })
+@WebServlet(name = "LakeServlet", urlPatterns = {"/LakeServlet"})
 public class LakeServlet extends HttpServlet {
 
     private final FishingLakeDAO fishingLakeDAO = new FishingLakeDAO();
@@ -49,11 +50,9 @@ public class LakeServlet extends HttpServlet {
             lakes = fishingLakeDAO.getLakesByOwnerId(currentUser.getUserId());
             if (lakes != null) {
                 for (FishingLake lake : lakes) {
-                    List<String> fishNames = fishingLakeDAO.getFishSpeciesNamesByLakeId(lake.getLakeId());
-                    lake.setFishSpeciesNames(fishNames);
-                    // Lấy danh sách loài cá chưa có trong hồ này và set vào object hồ
-                    List<FishSpecies> notInLake = fishingLakeDAO.getFishSpeciesNotInLake(lake.getLakeId());
-                    lake.setFishSpeciesNotInLake(notInLake);
+
+                    List<LakeCustomFish> customFishList = fishingLakeDAO.getCustomFishByLake(lake.getLakeId());
+                    lake.setCustomFishList(customFishList);
                     // Lấy danh sách cá và giá tiền trong hồ này
                     List<LakeFishInfo> fishInfoList = fishingLakeDAO.getLakeFishInfoList(lake.getLakeId());
                     lake.setLakeFishInfoList(fishInfoList);

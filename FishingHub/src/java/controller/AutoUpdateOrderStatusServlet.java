@@ -37,6 +37,7 @@ public class AutoUpdateOrderStatusServlet extends HttpServlet {
                 orderDAO.updateOrderStatus(order.getId(), 3); // 3 = Đã nhận
             }
         }
+        // Sau khi update xong thì forward sang Delivered.jsp
         request.getRequestDispatcher("Delivered.jsp").forward(request, response);
     }
 }

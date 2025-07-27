@@ -25,22 +25,17 @@
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
                     <a href="Home" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <nav class="hidden md:flex ml-10">
+                  <nav class="hidden md:flex ml-10">
                         <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
                         <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                        <a href="NewFeed" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                        <a href="shop-list" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
                         <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+                   
                     </nav>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <button class="text-gray-700 hover:text-primary">
-                            <i class="ri-shopping-cart-2-line text-xl"></i>
-                        </button>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
-                    </div>
+                    
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer" id="notificationBell">
                             <i class="ri-notification-3-line text-gray-600"></i>
@@ -61,7 +56,7 @@
                                 </c:forEach>
                                 <c:if test="${empty notifications}">
                                     <li class="px-4 py-3 text-gray-500 text-sm text-center">Không có thông báo nào</li>
-                                    </c:if>
+                                </c:if>
                             </ul>
                         </div>
                     </div>
@@ -104,7 +99,7 @@
                         <h1 class="text-3xl font-bold text-gray-900">Tất cả sự kiện</h1>
                         <p class="text-gray-600 mt-2">Tất cả các sự kiện câu cá đang diễn ra và sắp diễn ra</p>
                     </div>
-                    <div class="flex items-center justify-between gap-4  ">
+                    <div class="flex items-center justify-between gap-4">
                         <form action="SearchEvent" method="GET" class="flex items-center w-full max-w-lg">
                             <input type="text" name="query" placeholder="Tìm kiếm sự kiện..."
                                    value="${search}"
@@ -132,7 +127,6 @@
                         </c:if>
                     </div>
                 </div>
-
 
                 <!-- Events List -->
                 <div id="all-events" class="event-list">
@@ -204,23 +198,23 @@
                                                 </div>
                                             </div>
                                             <div class="flex gap-4 mt-4">
-                                                <c:if test="${user.getUserId() != o.hostId}">
+                                                <c:if test="${user.getRoleId() != 2}">
                                                     <c:choose>
                                                         <c:when test="${isRegisteredList[index] && o.eventStatus == 'Sắp diễn ra'}">
 
                                                             <button class="w-full bg-red-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-red-700 cancel-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showCancelModal('RegisterEvent?action=cancel&eventId=${o.eventId}', '${o.title}')">
-                                                                Cancel Registration
+                                                                Hủy đăng ký
                                                             </button>
                                                         </c:when>
                                                         <c:when test="${isRegisteredList[index] || o.currentParticipants >= o.maxParticipants || o.eventStatus == 'Đã kết thúc' || o.eventStatus == 'Đang diễn ra'}">
 
                                                             <span class="w-full bg-gray-400 text-white py-2 rounded-button whitespace-nowrap text-center cursor-not-allowed">
                                                                 <c:choose>
-                                                                    <c:when test="${o.eventStatus == 'Đã kết thúc'}">Event Ended</c:when>
-                                                                    <c:when test="${o.eventStatus == 'Đang diễn ra'}">Event Ongoing</c:when>
-                                                                    <c:when test="${o.currentParticipants >= o.maxParticipants}">Event Full</c:when>
+                                                                    <c:when test="${o.eventStatus == 'Đã kết thúc'}">Sự kiện kết thúc</c:when>
+                                                                    <c:when test="${o.eventStatus == 'Đang diễn ra'}">Sự kiện đang diễn ra</c:when>
+                                                                    <c:when test="${o.currentParticipants >= o.maxParticipants}">Tất cả sự kiện</c:when>
                                                                     <c:otherwise>Already Registered</c:otherwise>
                                                                 </c:choose>
                                                             </span>
@@ -230,14 +224,14 @@
                                                             <button class="w-full bg-blue-600 text-white py-2 rounded-button whitespace-nowrap text-center hover:bg-blue-700 register-btn"
                                                                     data-event-id="${o.eventId}"
                                                                     onclick="showRegisterModal('RegisterEvent?action=register&eventId=${o.eventId}', '${o.title}')">
-                                                                Register to Join
+                                                                Đăng ký sự kiện
                                                             </button>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </c:if>
                                                 <a href="EventDetails?action=details&eventId=${o.eventId}" 
                                                    class="w-full bg-gray-200 text-gray-700 py-2 rounded-button whitespace-nowrap text-center hover:bg-gray-300">
-                                                    View
+                                                    Xem chi tiết
                                                 </a>
                                             </div>
                                         </div>
@@ -252,36 +246,36 @@
                 <!-- Registration Modal with Form -->
                 <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
                     <div class="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 class="text-xl font-bold mb-4">Register for <span id="eventTitle" class="font-semibold"></span></h2>
+                        <h2 class="text-xl font-bold mb-4">Đăng ký tham gia sự kiện <span id="eventTitle" class="font-semibold"></span></h2>
                         <form id="registerForm" action="" method="POST">
                             <input type="hidden" name="action" value="register">
                             <div class="mb-4">
-                                <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <label for="fullName" class="block text-sm font-medium text-gray-700">Tên đầy đủ</label>
                                 <input type="fullname" id="fullname" name="fullname" required
                                        class="mt-1 w-full pl-3 pr-10 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                                       placeholder="Enter full name" value="${user.getFullName()}">
+                                       placeholder="Nhập tên đầy đủ" value="${user.getFullName()}">
                             </div>
                             <div class="mb-4">
                                 <label for="cccd" class="block text-sm font-medium text-gray-700">CCCD</label>
                                 <input type="cccd" id="cccd" name="cccd" required
                                        class="mt-1 w-full pl-3 pr-10 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                                       placeholder="Enter CCCD" >
+                                       placeholder="Nhập CCCD" >
                             </div>
                             <div class="mb-4">
-                                <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Số điện thoại</label>
                                 <input type="tel" id="phoneNumber" name="phoneNumber" required
                                        class="mt-1 w-full pl-3 pr-10 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                                       placeholder="Enter your phone number">
+                                       placeholder="Nhập số điện thoại">
                             </div>
                             <div class="mb-6">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                 <input type="email" id="email" name="email" required
                                        class="mt-1 w-full pl-3 pr-10 py-2 border-none bg-white shadow-sm focus:ring-2 focus:ring-primary focus:outline-none text-sm"
-                                       placeholder="Enter your email">
+                                       placeholder="Nhập email của bạn">
                             </div>
                             <div class="flex justify-end gap-4">
-                                <button type="button" id="cancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
-                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-button hover:bg-blue-700">Confirm</button>
+                                <button type="button" id="cancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Quay lại</button>
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-button hover:bg-blue-700">Xác nhận</button>
                             </div>
                         </form>
                     </div>
@@ -290,11 +284,11 @@
                 <!-- Cancel Registration Modal -->
                 <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
                     <div class="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 class="text-xl font-bold mb-4">Confirm Cancellation</h2>
-                        <p class="text-gray-600 mb-6">Are you sure you want to cancel your registration for <span id="cancelEventTitle" class="font-semibold"></span>?</p>
+                        <h2 class="text-xl font-bold mb-4">Xác nhận hủy đăng ký</h2>
+                        <p class="text-gray-600 mb-6">Bạn có chắc chắn muốn hủy đăng ký tham gia sự kiện <span id="cancelEventTitle" class="font-semibold"></span>?</p>
                         <div class="flex justify-end gap-4">
-                            <button id="cancelCancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Cancel</button>
-                            <button id="confirmCancelButton" class="bg-red-600 text-white px-4 py-2 rounded-button hover:bg-red-700">Confirm</button>
+                            <button id="cancelCancelButton" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-button hover:bg-gray-300">Quay lại</button>
+                            <button id="confirmCancelButton" class="bg-red-600 text-white px-4 py-2 rounded-button hover:bg-red-700">Xác nhận</button>
                         </div>
                     </div>
                 </div>
@@ -361,12 +355,13 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white pt-12 pb-6">
+         <footer class="bg-gray-800 text-white pt-12 pb-6">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                    <!-- About section -->
                     <div>
                         <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
-                        <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
+                        <p class="text-gray-400 mb-4">Cộng đồng câu cá hàng đầu Việt Nam, kết nối đam mê và chia sẻ kinh nghiệm.</p>
                         <div class="flex space-x-4">
                             <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-facebook-fill"></i>
@@ -382,17 +377,19 @@
                             </a>
                         </div>
                     </div>
+                    <!-- Quick Links -->
                     <div>
                         <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
+                            <li><a href="Home" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="EventList" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="NewFeed" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
+                            <li><a href="shop-list" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
                             <li><a href="KnowledgeFish" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
+                           
                         </ul>
                     </div>
+                    <!-- Support -->
                     <div>
                         <h3 class="text-lg font-bold mb-4">Hỗ Trợ</h3>
                         <ul class="space-y-2">
@@ -403,6 +400,7 @@
                             <li><a href="#" class="text-gray-400 hover:text-white">Câu Hỏi Thường Gặp</a></li>
                         </ul>
                     </div>
+                    <!-- Payment Methods -->
                     <div>
                         <div class="mt-4">
                             <h4 class="text-sm font-medium mb-2">Phương Thức Thanh Toán</h4>
@@ -457,7 +455,7 @@
                 document.getElementById('cancelModal').classList.add('hidden');
             });
 
-            const bell = document.getElementById("notificationBell");
+           const bell = document.getElementById("notificationBell");
             const dropdown = document.getElementById("notificationDropdown");
 
             bell.addEventListener("click", () => {

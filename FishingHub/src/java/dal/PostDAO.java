@@ -1,5 +1,6 @@
 package dal;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Post;
+import model.PostNotification;
+import dal.*;
+
 import java.sql.Timestamp;
 import java.sql.Statement;
 
@@ -136,14 +140,12 @@ public class PostDAO extends DBConnect {
                 post.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 post.setStatus(rs.getString("Status"));
 
-                // Get images for this post
                 imageSt.setInt(1, postId);
                 ResultSet imageRs = imageSt.executeQuery();
                 while (imageRs.next()) {
                     post.addImage(imageRs.getString("ImagePath"));
                 }
 
-                // Get videos for this post
                 videoSt.setInt(1, postId);
                 ResultSet videoRs = videoSt.executeQuery();
                 while (videoRs.next()) {
@@ -159,19 +161,76 @@ public class PostDAO extends DBConnect {
         return posts;
     }
 
-    public boolean updatePost(int postId, String topic, String title, String content) {
-        String sql = "UPDATE Post SET Topic = ?, Title = ?, Content = ? WHERE PostId = ?";
+    public boolean updatePost(int postId, String topic, String title, String content, List<String> images,
+            List<String> videos) {
+        String postSql = "UPDATE Post SET Topic = ?, Title = ?, Content = ?, Status = ? WHERE PostId = ?";
+        String deleteImagesSql = "DELETE FROM Image WHERE PostId = ?";
+        String deleteVideosSql = "DELETE FROM Video WHERE PostId = ?";
+        String insertImageSql = "INSERT INTO Image (PostId, ImagePath) VALUES (?, ?)";
+        String insertVideoSql = "INSERT INTO Video (PostId, VideoPath) VALUES (?, ?)";
+
         try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, topic);
-            st.setString(2, title);
-            st.setString(3, content);
-            st.setInt(4, postId);
-            return st.executeUpdate() > 0;
+
+            // Update post details
+            try (PreparedStatement postSt = connection.prepareStatement(postSql)) {
+                postSt.setString(1, topic);
+                postSt.setString(2, title);
+                postSt.setString(3, content);
+                postSt.setString(4, "chờ duyệt"); // Set status to pending approval
+                postSt.setInt(5, postId);
+                postSt.executeUpdate();
+            }
+
+            // Delete existing images
+            try (PreparedStatement deleteImagesSt = connection.prepareStatement(deleteImagesSql)) {
+                deleteImagesSt.setInt(1, postId);
+                deleteImagesSt.executeUpdate();
+            }
+
+            // Delete existing videos
+            try (PreparedStatement deleteVideosSt = connection.prepareStatement(deleteVideosSql)) {
+                deleteVideosSt.setInt(1, postId);
+                deleteVideosSt.executeUpdate();
+            }
+
+            // Insert new images
+            if (images != null && !images.isEmpty()) {
+                try (PreparedStatement imageSt = connection.prepareStatement(insertImageSql)) {
+                    for (String imagePath : images) {
+                        imageSt.setInt(1, postId);
+                        imageSt.setString(2, imagePath);
+                        imageSt.executeUpdate();
+                    }
+                }
+            }
+
+            // Insert new videos
+            if (videos != null && !videos.isEmpty()) {
+                try (PreparedStatement videoSt = connection.prepareStatement(insertVideoSql)) {
+                    for (String videoPath : videos) {
+                        videoSt.setInt(1, postId);
+                        videoSt.setString(2, videoPath);
+                        videoSt.executeUpdate();
+                    }
+                }
+            }
+
+            connection.commit();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             return false;
         }
+    }
+
+    public void repostRejectedPost(int postId, String topic, String title, String content, List<String> images,
+            List<String> videos, String newStatus) {
+        updatePost(postId, topic, title, content, images, videos);
     }
 
     public boolean deletePost(int postId) {
@@ -366,4 +425,208 @@ public class PostDAO extends DBConnect {
         }
         return null;
     }
+
+    public void insertRejectionReason(int postId, String reason) {
+        String sql = "INSERT INTO PostRejections (PostId, Reason) VALUES (?, ?)";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, postId);
+            st.setString(2, reason);
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertNotification(int userId, int postId, String message) {
+        String sql = "INSERT INTO PostNotification (UserId, PostId, Message) VALUES (?, ?, ?)";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            st.setInt(2, postId);
+            st.setString(3, message);
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<PostNotification> getNotificationsByUser(int userId) {
+        List<PostNotification> notifications = new ArrayList<>();
+        String sql = "SELECT * FROM PostNotification WHERE ReceiverId = ? ORDER BY CreatedAt DESC";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                PostNotification notification = new PostNotification();
+                notification.setNotificationId(rs.getInt("NotificationId"));
+                notification.setPostId(rs.getInt("PostId"));
+                notification.setReceiverId(rs.getInt("ReceiverId"));
+                notification.setMessage(rs.getString("Message"));
+                notification.setIsRead(rs.getBoolean("IsRead"));
+                notification.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                notifications.add(notification);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notifications;
+    }
+
+    public List<Post> getPostsByStatusAndUser(String status, int userId) {
+        List<Post> posts = new ArrayList<>();
+        String postSql = "SELECT * FROM Post WHERE UserId = ? AND Status = ? ORDER BY CreatedAt DESC";
+        String imageSql = "SELECT ImagePath FROM Image WHERE PostId = ?";
+        String videoSql = "SELECT VideoPath FROM Video WHERE PostId = ?";
+        try {
+            PreparedStatement postSt = connection.prepareStatement(postSql);
+            postSt.setInt(1, userId);
+            postSt.setString(2, status);
+            PreparedStatement imageSt = connection.prepareStatement(imageSql);
+            PreparedStatement videoSt = connection.prepareStatement(videoSql);
+            ResultSet rs = postSt.executeQuery();
+
+            while (rs.next()) {
+                Post post = new Post();
+                int postId = rs.getInt("PostId");
+                post.setPostId(postId);
+                post.setUserId(rs.getInt("UserId"));
+                post.setTopic(rs.getString("Topic"));
+                post.setTitle(rs.getString("Title"));
+                post.setContent(rs.getString("Content"));
+                post.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                post.setStatus(rs.getString("Status"));
+
+                imageSt.setInt(1, postId);
+                ResultSet imageRs = imageSt.executeQuery();
+                while (imageRs.next()) {
+                    post.addImage(imageRs.getString("ImagePath"));
+                }
+
+                videoSt.setInt(1, postId);
+                ResultSet videoRs = videoSt.executeQuery();
+                while (videoRs.next()) {
+                    post.addVideo(videoRs.getString("VideoPath"));
+                }
+
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    public List<Post> getRecentPosts(int limit) {
+        List<Post> posts = new ArrayList<>();
+        String postSql = "SELECT * FROM Post WHERE Status = N'đã duyệt' ORDER BY CreatedAt DESC OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
+        String imageSql = "SELECT ImagePath FROM Image WHERE PostId = ?";
+        String videoSql = "SELECT VideoPath FROM Video WHERE PostId = ?";
+
+        PostCommentDAO commentDAO = new PostCommentDAO();
+        PostLikeDAO likeDAO = new PostLikeDAO();
+
+        try {
+            PreparedStatement postSt = connection.prepareStatement(postSql);
+            postSt.setInt(1, limit);
+            ResultSet rs = postSt.executeQuery();
+            while (rs.next()) {
+                Post post = new Post();
+                int postId = rs.getInt("PostId");
+                post.setPostId(postId);
+                post.setUserId(rs.getInt("UserId"));
+                post.setTopic(rs.getString("Topic"));
+                post.setTitle(rs.getString("Title"));
+                post.setContent(rs.getString("Content"));
+                post.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                post.setStatus(rs.getString("Status"));
+
+                // Lấy hình ảnh
+                PreparedStatement imageSt = connection.prepareStatement(imageSql);
+                imageSt.setInt(1, postId);
+                ResultSet imageRs = imageSt.executeQuery();
+                while (imageRs.next()) {
+                    post.addImage(imageRs.getString("ImagePath"));
+                }
+                imageRs.close();
+                imageSt.close();
+
+                // Lấy video
+                PreparedStatement videoSt = connection.prepareStatement(videoSql);
+                videoSt.setInt(1, postId);
+                ResultSet videoRs = videoSt.executeQuery();
+                while (videoRs.next()) {
+                    post.addVideo(videoRs.getString("VideoPath"));
+                }
+                videoRs.close();
+                videoSt.close();
+
+                // Lấy số lượng bình luận
+                post.setCommentCount(commentDAO.countCommentsByPostId(postId));
+
+                // Lấy số lượng lượt like
+                post.setLikeCount(likeDAO.countLikesByPostId(postId));
+
+                posts.add(post);
+            }
+            rs.close();
+            postSt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    public int countPendingPostsThisWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Post WHERE Status = N'chờ duyệt' AND CreatedAt >= DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countPendingPostsPreviousWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Post WHERE Status = N'chờ duyệt' AND CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public List<Post> getTopPendingPosts(int limit) {
+        List<Post> list = new ArrayList<>();
+        String sql = "SELECT TOP (?) P.PostId, P.UserId, P.Topic, P.Title, P.Content, P.CreatedAt, P.Status, U.FullName "
+                +
+                "FROM Post P JOIN Users U ON P.UserId = U.UserId " +
+                "WHERE P.Status = N'chờ duyệt' " +
+                "ORDER BY P.CreatedAt DESC";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Post p = new Post();
+                p.setPostId(rs.getInt("PostId"));
+                p.setUserId(rs.getInt("UserId"));
+                p.setTopic(rs.getString("Topic"));
+                p.setTitle(rs.getString("Title"));
+                p.setContent(rs.getString("Content"));
+                p.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                p.setStatus(rs.getString("Status"));
+                p.setAuthorName(rs.getString("FullName"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

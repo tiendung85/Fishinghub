@@ -27,9 +27,9 @@ public class EventManagerController extends HttpServlet {
         String search = request.getParameter("search");
         String statusFilter = request.getParameter("status");
 
-        
+        // Xử lý phân trang
         int page = 1;
-        int pageSize = 5; 
+        int pageSize = 5; // Số sự kiện mỗi trang
         String pageStr = request.getParameter("page");
         String pageSizeStr = request.getParameter("pageSize");
 
@@ -62,18 +62,25 @@ public class EventManagerController extends HttpServlet {
                 list = dao.getEvents(user.getUserId(), page, pageSize);
                 totalItems = dao.getTotalEvents(user.getUserId());
             } else if (action.equals("search")) {
-                list = search != null && !search.trim().isEmpty() ? dao.searchEvents(user.getUserId(), search, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
-                totalItems = search != null && !search.trim().isEmpty() ? dao.getTotalSearchEvents(user.getUserId(), search) : dao.getTotalEvents(user.getUserId());
+                list = search != null && !search.trim().isEmpty()
+                        ? dao.searchEvents(user.getUserId(), search, page, pageSize)
+                        : dao.getEvents(user.getUserId(), page, pageSize);
+                totalItems = search != null && !search.trim().isEmpty()
+                        ? dao.getTotalSearchEvents(user.getUserId(), search)
+                        : dao.getTotalEvents(user.getUserId());
                 request.setAttribute("search", search);
             } else if (action.equals("filter")) {
-                list = statusFilter != null ? dao.filterEvents(user.getUserId(), statusFilter, page, pageSize) : dao.getEvents(user.getUserId(), page, pageSize);
-                totalItems = statusFilter != null ? dao.getTotalFilterEvents(user.getUserId(), statusFilter) : dao.getTotalEvents(user.getUserId());
+                list = statusFilter != null ? dao.filterEvents(user.getUserId(), statusFilter, page, pageSize)
+                        : dao.getEvents(user.getUserId(), page, pageSize);
+                totalItems = statusFilter != null ? dao.getTotalFilterEvents(user.getUserId(), statusFilter)
+                        : dao.getTotalEvents(user.getUserId());
                 request.setAttribute("filter", statusFilter);
             } else if (action.equals("delete")) {
                 try {
                     int id = Integer.parseInt(request.getParameter("eventId"));
                     boolean deleted = dao.deleteEvent(id);
-                    request.setAttribute("message", deleted ? "Xóa sự kiện thành công!" : "Không thể xóa sự kiện đã được duyệt hoặc không tồn tại.");
+                    request.setAttribute("message", deleted ? "Xóa sự kiện thành công!"
+                            : "Không thể xóa sự kiện đã được duyệt hoặc không tồn tại.");
                     list = dao.getEvents(user.getUserId(), page, pageSize);
                     totalItems = dao.getTotalEvents(user.getUserId());
                 } catch (Exception e) {
@@ -85,13 +92,14 @@ public class EventManagerController extends HttpServlet {
                     EventRejections rejection = dao.getRejectionByEventId(eventId);
                     if (rejection != null) {
                         request.setAttribute("rejectionReason", rejection.getRejectReason());
-                        request.setAttribute("rejectionTime", rejection.getRejectedAt() != null ? rejection.getRejectedAt().toString() : "");
+                        request.setAttribute("rejectionTime",
+                                rejection.getRejectedAt() != null ? rejection.getRejectedAt().toString() : "");
                     } else {
                         request.setAttribute("rejectionReason", "Không tìm thấy lý do từ chối cho sự kiện này.");
                         request.setAttribute("rejectionTime", "");
                     }
                     request.setAttribute("showModal", true);
-                    
+                    // Reload event list to maintain context
                     list = dao.getEvents(user.getUserId(), page, pageSize);
                     totalItems = dao.getTotalEvents(user.getUserId());
                 } catch (NumberFormatException e) {
@@ -134,7 +142,7 @@ public class EventManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response); 
+        doGet(request, response); // Xử lý POST giống GET
     }
 
     @Override

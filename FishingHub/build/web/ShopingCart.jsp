@@ -139,11 +139,17 @@
                 session.removeAttribute("errorMessage");
             }
         %>
-
-                                        <div class="tabs">
-                                            <button class="animate__animated animate__bounceIn" onclick="window.location.href='InProgress.jsp'">Đang giao</button>
-                                            <button class="animate__animated animate__bounceIn" onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
-                                        </div>
+        <%
+    String successMessage = (String) session.getAttribute("successMessage");
+    if (successMessage != null) {
+%>
+    <div class="alert alert-success animate__animated animate__fadeIn">
+        <%= successMessage %>
+    </div>
+<%
+        session.removeAttribute("successMessage");
+    }
+%>
                                         <h3 class="animate__animated animate__fadeInDown">Giỏ Hàng</h3>
                                         <% 
             if (cart.isEmpty()) {
@@ -198,6 +204,11 @@
                                                         </tbody>
                                                     </table>
                                                     <p id="total"><strong>Tổng cộng:</strong> 0 đ</p>
+                                                     <div class="mb-3">
+        <label><strong>Chọn phương thức thanh toán:</strong></label><br>
+        <input type="radio" name="paymentMethod" value="COD" checked> Thanh toán khi nhận hàng (COD)<br>
+        <input type="radio" name="paymentMethod" value="MOMO"> Thanh toán qua Momo (chưa hỗ trợ)<br>
+    </div>
                                                     <button type="submit" name="action" value="paySelected" class="btn btn-success btn-action animate__animated animate__bounceIn">Thanh Toán</button>
                                                 </form>
                                                 <% } %>

@@ -118,8 +118,7 @@ public class ProductDAO extends DBConnect {
     public int getTotalProductCount() {
         String sql = "SELECT COUNT(*) FROM Product";
         try (
-                PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet rs = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -326,4 +325,44 @@ public class ProductDAO extends DBConnect {
         }
         return productList;
     }
+
+    // ProductDAO.java bổ sung
+    public List<Product> getProductsByShop(int shopId) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM Product WHERE ShopId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, shopId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product();
+                p.setProductId(rs.getInt("ProductId"));
+                p.setName(rs.getString("Name"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setImage(rs.getString("Image"));
+                p.setStockQuantity(rs.getInt("StockQuantity"));
+                p.setSoldQuantity(rs.getInt("SoldQuantity"));
+                p.setShopId(rs.getInt("ShopId"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+       public boolean hasProductsInCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM Product WHERE CategoryId = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, categoryId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
 }

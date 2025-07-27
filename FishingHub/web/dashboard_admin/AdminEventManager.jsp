@@ -44,92 +44,126 @@
     <body>
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar -->
-            <div class="hidden md:flex md:flex-shrink-0">
-                <div class="flex flex-col w-64 bg-white border-r border-gray-200">
-                    <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-                        <h1 class="text-2xl font-['Pacifico'] text-primary">FishingHub</h1>
-                    </div>
-                    <div class="flex flex-col flex-grow px-2 py-4 overflow-y-auto custom-scrollbar">
-                        <div class="space-y-1">
-                            <div class="px-2 py-2 text-xs font-semibold text-gray-500 uppercase">Tổng quan</div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-dashboard-line"></i>
-                                </div>
-                                Dashboard
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý người dùng
-                            </div>
-                            <a href="${pageContext.request.contextPath}/UserManager"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-user-line"></i>
-                                </div>
-                                Danh sách người dùng
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý sự kiện
-                            </div>
-                            <a href="AdminEventManager"
-                               class="sidebar-item active flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-calendar-event-line"></i>
-                                </div>
-                                Sự kiện
-                            </a>
-
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý bài viết
-                            </div>
-                            <a href="PostManagement.jsp"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-file-list-line"></i>
-                                </div>
-                                Danh sách bài viết
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Quản lý kiến thức
-                            </div>
-                            <a href="${pageContext.request.contextPath}/FishManage"
-                               class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-book-open-line"></i>
-                                </div>
-                                Thông tin loài cá
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Thành tựu & Xếp
-                                hạng
-                            </div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-medal-line"></i>
-                                </div>
-                                Thành tựu
-                            </a>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-bar-chart-line"></i>
-                                </div>
-                                Bảng xếp hạng
-                            </a>
-                            <div class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Thống kê</div>
-                            <a href="#" class="sidebar-item flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <div class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500">
-                                    <i class="ri-line-chart-line"></i>
-                                </div>
-                                Báo cáo
-                            </a>
-                        </div>
-                    </div>
-                    <div class="flex items-center p-4 border-t border-gray-200">
+           <div class="hidden md:flex md:flex-shrink-0">
+        <div class="flex flex-col w-64 bg-white border-r border-gray-200">
+          <div
+            class="flex items-center justify-center h-16 px-4 border-b border-gray-200"
+          >
+            <h1 class="text-2xl font-['Pacifico'] text-primary">FishingHub</h1>
+          </div>
+          <div
+            class="flex flex-col flex-grow px-2 py-4 overflow-y-auto custom-scrollbar"
+          >
+            <div class="space-y-1">
+              <div
+                class="px-2 py-2 text-xs font-semibold text-gray-500 uppercase"
+              >
+                Tổng quan
+              </div>
+              <a
+                href="dashboard-stats"
+                class="sidebar-item active flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
+              >
+                <div
+                  class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
+                >
+                  <i class="ri-dashboard-line"></i>
+                </div>
+                Dashboard
+              </a>
+              <div
+                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
+              >
+                Quản lý người dùng
+              </div>
+              <a
+                href="${pageContext.request.contextPath}/UserManager"
+                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
+              >
+                <div
+                  class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
+                >
+                  <i class="ri-user-line"></i>
+                </div>
+                Danh sách người dùng
+              </a>
+           
+              <div
+                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
+              >
+                Quản lý sự kiện
+              </div>
+              <a
+                href="AdminEventManager"
+                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
+              >
+                <div
+                  class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
+                >
+                  <i class="ri-calendar-event-line"></i>
+                </div>
+                Sự kiện
+              </a>
+            
+              <div
+                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
+              >
+                Quản lý bài viết
+              </div>
+              <a
+                href="${pageContext.request.contextPath}/PostManagement"
+                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
+              >
+                <div
+                  class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
+                >
+                  <i class="ri-file-list-line"></i>
+                </div>
+                Danh sách bài viết
+              </a>
+           
+            
+              
+             
+              <div
+                class="px-2 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase"
+              >
+                Quản lý kiến thức
+              </div>
+              <a
+                href="${pageContext.request.contextPath}/FishManage"
+                class="sidebar-item flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-primary"
+              >
+                <div
+                  class="w-6 h-6 mr-3 flex items-center justify-center text-gray-500"
+                >
+                  <i class="ri-book-open-line"></i>
+                </div>
+                Thông tin loài cá
+              </a>
+            
+             
+             
+             
+            
+            </div>
+          </div>
+          <div class="flex items-center p-4 border-t border-gray-200">
                         <div class="flex-shrink-0">
                             <img class="w-10 h-10 rounded-full"
                                  src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Vietnamese%20male%20administrator%20with%20short%20black%20hair%2C%20wearing%20a%20business%20casual%20outfit%2C%20looking%20confident%20and%20friendly%2C%20high%20quality%2C%20realistic%2C%20studio%20lighting&width=100&height=100&seq=admin123&orientation=squarish"
                                  alt="Admin" />
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-700">Nguyễn Văn Quản</p>
+
                             <p class="text-xs font-medium text-gray-500">Quản trị viên</p>
                         </div>
                     </div>
+                    <div class="p-4 border-t border-gray-200">
+                        <form action="logout" method="post" style="display:inline;">
+                            <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
+                        </form>
+                    </div>      
                 </div>
             </div>
             <!-- Main content -->

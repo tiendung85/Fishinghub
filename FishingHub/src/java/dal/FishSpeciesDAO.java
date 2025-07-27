@@ -388,6 +388,36 @@ public class FishSpeciesDAO extends DBConnect {
         }
         return 0;
     }
+    
+       public FishSpecies getFishByDifficultyLevel(int difficultyLevel) throws SQLException {
+        String sql = "SELECT TOP 1 * FROM FishSpecies WHERE DifficultyLevel = ? ORDER BY NEWID()";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, difficultyLevel);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                FishSpecies fish = new FishSpecies();
+                fish.setId(rs.getInt("Id"));
+                fish.setCommonName(rs.getString("CommonName"));
+                fish.setScientificName(rs.getString("ScientificName"));
+                fish.setDescription(rs.getString("Description"));
+                fish.setImageUrl(getMainImageByFishSpeciesId(fish.getId()));
+                fish.setBait(rs.getString("Bait"));
+                fish.setBestSeason(rs.getString("BestSeason"));
+                fish.setBestTimeOfDay(rs.getString("BestTimeOfDay"));
+                fish.setFishingSpots(rs.getString("FishingSpots"));
+                fish.setFishingTechniques(rs.getString("FishingTechniques"));
+                fish.setDifficultyLevel(rs.getInt("DifficultyLevel"));
+                fish.setAverageWeightKg(rs.getDouble("AverageWeightKg"));
+                fish.setLength(rs.getDouble("AverageLengthCm"));
+                fish.setHabitat(rs.getString("Habitat"));
+                fish.setBehavior(rs.getString("Behavior"));
+                fish.setTips(rs.getString("Tips"));
+                fish.setImages(getImagesByFishSpeciesId(fish.getId()));
+                return fish;
+            }
+        }
+        return null;
+    }
 
 }
 // Không cần thay đổi, chỉ cần dữ liệu DB đúng đường dẫn /assets/img/...

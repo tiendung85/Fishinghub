@@ -2,7 +2,6 @@ package controller;
 
 import dal.PostLikeDAO;
 import model.Users;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +9,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import dal.PostDAO;
+import model.Post;
+import dal.UserDao;
+import dal.PostNotificationDAO;
+import model.PostNotification;
+import java.sql.Timestamp;
 
 @WebServlet("/like")
 public class PostLikeServlet extends HttpServlet {
@@ -40,6 +45,26 @@ public class PostLikeServlet extends HttpServlet {
             } else {
                 likeDAO.addLike(postId, userId);
                 response.getWriter().write("liked");
+
+                // Tạo thông báo cho chủ bài viết
+                PostDAO postDAO = new PostDAO();
+                Post post = postDAO.getPostById(postId);
+                if (post != null && post.getUserId() != userId) { // Không thông báo nếu là chủ bài viết
+                    UserDao userDao = new UserDao();
+                    Users liker = userDao.getUserById(userId);
+                    if (liker != null) {
+                        String message = liker.getFullName() + " đã thích bài viết của bạn.";
+                        PostNotification notification = new PostNotification();
+                        notification.setPostId(postId);
+                        notification.setReceiverId(post.getUserId());
+                        notification.setMessage(message);
+                        notification.setIsRead(false);
+                        notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+                        PostNotificationDAO notificationDAO = new PostNotificationDAO();
+                        notificationDAO.saveNotification(notification);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

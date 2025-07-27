@@ -41,7 +41,5 @@ public class EventRejections {
     public void setRejectedAt(Timestamp rejectedAt) {
         this.rejectedAt = rejectedAt;
     }
-    
-    
-    
+
 }

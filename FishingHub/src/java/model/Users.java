@@ -18,6 +18,7 @@ public class Users {
 
     private Timestamp lastLoginTime;
     private String status;
+     private Timestamp lastProfileUpdate;
 
     public Users() {
     }
@@ -51,6 +52,23 @@ public class Users {
 
         this.googleId = null;
         this.createdAt = null;
+    }
+      public Users(int userId, String fullName, String email, String phone, String password, String googleId,
+                 int roleId, String gender, Date dateOfBirth, String location, Timestamp createdAt,
+                 Timestamp lastLoginTime, Timestamp lastProfileUpdate) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.googleId = googleId;
+        this.roleId = roleId;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.location = location;
+        this.createdAt = createdAt;
+        this.lastLoginTime = lastLoginTime;
+        this.lastProfileUpdate = lastProfileUpdate;
     }
 
    
@@ -159,6 +177,8 @@ public class Users {
     public String getStatus() {
         return status;
     }
+     public Timestamp getLastProfileUpdate() { return lastProfileUpdate; }
+    public void setLastProfileUpdate(Timestamp lastProfileUpdate) { this.lastProfileUpdate = lastProfileUpdate; }
 
     // Phương thức mới để lấy vai trò người dùng theo roleId
     public String getRole() {
@@ -175,7 +195,7 @@ public class Users {
     }
 
     @Override
-    public String toString() {
+   public String toString() {
         return "Users{" +
                 "userId=" + userId +
                 ", fullName='" + fullName + '\'' +
@@ -188,6 +208,8 @@ public class Users {
                 ", dateOfBirth=" + dateOfBirth +
                 ", location='" + location + '\'' +
                 ", createdAt=" + createdAt +
+                ", lastLoginTime=" + lastLoginTime +
+                ", lastProfileUpdate=" + lastProfileUpdate +
                 '}';
     }
 

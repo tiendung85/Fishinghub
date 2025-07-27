@@ -12,7 +12,7 @@ GO
 DROP DATABASE FishingHub1;
 GO
 
-CREATE DATABASE FishingHub1;
+CREATE DATABASE FishingHub;
 GO
 USE FishingHub;
 GO
@@ -878,25 +878,25 @@ N'Long An', 3, DATEADD(HOUR, -5, GETDATE()), DATEADD(HOUR, 1, GETDATE()), 'appro
 
 (N'Kỳ thi tuyển chọn đội tuyển', N'Hồ Vĩnh Long', 
 N'Sự kiện chọn ra các cần thủ xuất sắc nhất đại diện cho quốc gia tham gia giải đấu quốc tế. Thí sinh phải vượt qua nhiều vòng kiểm tra kỹ năng, độ chính xác và tốc độ.', 
-N'Vĩnh Long', 3, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 0);
+N'Vĩnh Long', 3, DATEADD(HOUR, -6, GETDATE()), DATEADD(HOUR, 2, GETDATE()), 'approved', GETDATE(), 'download.jpg', 100, 10);
 
 INSERT INTO Event (Title, LakeName, Description, Location, HostId, StartTime, EndTime, Status, ApprovedAt, PosterUrl, MaxParticipants, CurrentParticipants)
 VALUES
 (N'Lễ hội câu cá mùa thu', N'Hồ Tây', 
 N'Lễ hội được tổ chức nhằm tạo sân chơi lành mạnh cho người yêu thích bộ môn câu cá, đồng thời quảng bá vẻ đẹp Hồ Tây và nâng cao ý thức bảo vệ môi trường sinh thái xung quanh khu vực hồ.', 
-N'Hà Nội', 3, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 0),
+N'Hà Nội', 3, DATEADD(DAY, 2, GETDATE()), DATEADD(DAY, 3, GETDATE()), 'approved', GETDATE(), 'a8b79dea354d260c1153164e32900a82.jpg', 60, 10),
 
 (N'Giải đấu câu cá toàn miền Bắc', N'Hồ Đại Lải', 
 N'Sự kiện quy tụ các tay câu đến từ khắp các tỉnh phía Bắc với cơ hội giao lưu, học hỏi kỹ năng cũng như tranh tài qua nhiều vòng thi đấu cam go và hấp dẫn.', 
-N'Vĩnh Phúc', 3, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 5, GETDATE()), 'approved', GETDATE(), 'images.jpg', 80, 0),
+N'Vĩnh Phúc', 3, DATEADD(DAY, 4, GETDATE()), DATEADD(DAY, 5, GETDATE()), 'approved', GETDATE(), 'images.jpg', 80, 10),
 
 (N'Thử thách câu cá cuối tuần', N'Hồ Đồng Đò', 
 N'Chương trình dành cho người mới bắt đầu và các gia đình muốn trải nghiệm câu cá trong không khí cuối tuần thư giãn. Có hỗ trợ thiết bị và hướng dẫn cơ bản từ ban tổ chức.', 
-N'Hà Nội', 3, DATEADD(DAY, 1, GETDATE()), DATEADD(DAY, 2, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 40, 0),
+N'Hà Nội', 3, DATEADD(DAY, 1, GETDATE()), DATEADD(DAY, 2, GETDATE()), 'approved', GETDATE(), 'images (1).jpg', 40, 10),
 
 (N'Cúp vô địch miền Trung', N'Hồ Phú Ninh', 
 N'Sự kiện được tổ chức chuyên nghiệp với hệ thống chấm điểm tự động, quy tụ các vận động viên câu cá bán chuyên từ khu vực miền Trung với giải thưởng giá trị và vinh danh toàn quốc.', 
-N'Quảng Nam', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 70, 0),
+N'Quảng Nam', 3, DATEADD(DAY, 6, GETDATE()), DATEADD(DAY, 7, GETDATE()), 'approved', GETDATE(), 'images (2).jpg', 70, 10),
 
 (N'Ngày hội câu cá xanh', N'Hồ Xuân Hương', 
 N'Sự kiện mang thông điệp sống xanh, khuyến khích người tham gia thực hiện nguyên tắc câu cá bắt - thả để bảo tồn hệ sinh thái và nâng cao nhận thức cộng đồng về bảo vệ nguồn nước.', 
@@ -904,23 +904,23 @@ N'Đà Lạt', 3, DATEADD(DAY, 3, GETDATE()), DATEADD(DAY, 4, GETDATE()), 'appro
 
 (N'Thi tài cần thủ trẻ', N'Hồ Bán Nguyệt', 
 N'Cuộc thi dành riêng cho những bạn trẻ yêu thích môn thể thao câu cá, tạo môi trường thi đấu vui vẻ, công bằng và truyền cảm hứng sống lành mạnh cho thế hệ mới.', 
-N'TP.HCM', 3, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 45, 10),
+N'TP.HCM', 3, DATEADD(DAY, 5, GETDATE()), DATEADD(DAY, 6, GETDATE()), 'approved', GETDATE(), 'download (1).jpg', 45, 0),
 
 (N'Chinh phục cá khủng', N'Hồ Trị An', 
 N'Một sự kiện dành cho các cần thủ yêu thích thử thách, với các khu vực được phân loại theo độ khó và cơ hội bắt được những loài cá lớn có trọng lượng lên đến hàng chục kg.', 
-N'Đồng Nai', 3, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 55, 10),
+N'Đồng Nai', 3, DATEADD(DAY, 7, GETDATE()), DATEADD(DAY, 8, GETDATE()), 'approved', GETDATE(), 'di cau.jpg', 55, 0),
 
 (N'Giao lưu cần thủ ba miền', N'Hồ Tân Hiệp', 
 N'Sự kiện mang tính kết nối cộng đồng, nơi các cần thủ đến từ Bắc – Trung – Nam có dịp gặp gỡ, giao lưu, thi đấu và chia sẻ kinh nghiệm với nhau trong không khí thân thiện.', 
-N'Long An', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 60, 10),
+N'Long An', 3, DATEADD(DAY, 8, GETDATE()), DATEADD(DAY, 9, GETDATE()), 'approved', GETDATE(), 'download (2).jpg', 60, 0),
 
 (N'Hội thi câu cá doanh nghiệp', N'Hồ Hàm Thuận', 
 N'Sự kiện dành riêng cho các tổ chức và doanh nghiệp muốn tổ chức hoạt động team building, nâng cao tinh thần đoàn kết trong môi trường gần gũi thiên nhiên.', 
-N'Bình Thuận', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 100, 10),
+N'Bình Thuận', 3, DATEADD(DAY, 9, GETDATE()), DATEADD(DAY, 10, GETDATE()), 'approved', GETDATE(), 'images (3).jpg', 100, 0),
 
 (N'Lễ hội cần thủ toàn quốc', N'Hồ Suối Lạnh', 
 N'Sự kiện lớn nhất trong năm với sự tham gia của các tuyển thủ hàng đầu và đại diện từ các CLB trên cả nước, bao gồm nhiều hoạt động hấp dẫn: thi đấu, hội chợ thiết bị, giao lưu chuyên gia.', 
-N'Phan Thiết', 3, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'images (4).jpg', 120, 10);
+N'Phan Thiết', 3, DATEADD(DAY, 10, GETDATE()), DATEADD(DAY, 11, GETDATE()), 'approved', GETDATE(), 'images (4).jpg', 120, 0);
 
 INSERT INTO EventParticipant (EventId, UserId, NumberPhone, Email, CCCD)
 VALUES 

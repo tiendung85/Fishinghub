@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class FishManageServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(FishManageServlet.class.getName());
-    private static final String UPLOAD_DIR = "C:\\Users\\pc\\Desktop\\Dung\\Dung\\Dung\\Dung\\Fishinghub\\web\\assets\\img\\FishKnowledge-images";
+    private static final String UPLOAD_DIR = "C:\\Users\\pc\\Desktop\\Dung\\Dung\\Dung\\Dung\\Dung\\Fishinghub\\web\\assets\\img\\FishKnowledge-images";
 
     // Phương thức hỗ trợ để chuẩn bị dữ liệu phân trang, tìm kiếm, lọc độ khó
     private void preparePagination(HttpServletRequest request, FishSpeciesDAO dao, int pageSize) throws Exception {

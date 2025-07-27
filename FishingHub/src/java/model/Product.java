@@ -12,11 +12,12 @@ public class Product {
     private int StockQuantity;
     private int SoldQuantity;
     private int CategoryId;
+    private int ShopId;
 
     public Product() {
     }
 
-    public Product(int ProductId, String Name, double Price, String Image, int StockQuantity, int SoldQuantity, int CategoryId) {
+    public Product(int ProductId, String Name, double Price, String Image, int StockQuantity, int SoldQuantity, int CategoryId, int ShopId) {
         this.ProductId = ProductId;
         this.Name = Name;
         this.Price = Price;
@@ -24,6 +25,7 @@ public class Product {
         this.StockQuantity = StockQuantity;
         this.SoldQuantity = SoldQuantity;
         this.CategoryId = CategoryId;
+        this.ShopId = ShopId;
     }
 
     public int getProductId() {
@@ -80,5 +82,13 @@ public class Product {
 
     public void setCategoryId(int CategoryId) {
         this.CategoryId = CategoryId;
+    }
+    
+    public void setShopId(int ShopId){
+        this.ShopId = ShopId;
+    }
+    
+    public int getShopId(){
+        return ShopId;
     }
 }

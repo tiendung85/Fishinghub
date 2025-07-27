@@ -11,6 +11,7 @@ public class FishingLake {
     private List<FishSpecies> fishSpeciesNotInLake; // Thuộc tính mới
     private List<LakeFishInfo> lakeFishInfoList; // Thuộc tính mới
 
+    private List<LakeCustomFish> customFishList;
     // Constructor mặc định
     public FishingLake() {
     }
@@ -79,4 +80,12 @@ public class FishingLake {
     public void setLakeFishInfoList(List<LakeFishInfo> lakeFishInfoList) {
         this.lakeFishInfoList = lakeFishInfoList;
     }
+    
+    public List<LakeCustomFish> getCustomFishList() {
+    return customFishList;
+}
+
+public void setCustomFishList(List<LakeCustomFish> customFishList) {
+    this.customFishList = customFishList;
+}
 }

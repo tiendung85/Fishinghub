@@ -8,6 +8,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
+import dal.PostDAO;
+import model.Post;
+import dal.UserDao;
+import dal.PostNotificationDAO;
+import model.PostNotification;
 
 @WebServlet("/comment")
 public class PostCommentServlet extends HttpServlet {
@@ -42,6 +47,26 @@ public class PostCommentServlet extends HttpServlet {
 
             if (success) {
                 response.getWriter().write("success");
+
+                // Tạo thông báo cho chủ bài viết
+                PostDAO postDAO = new PostDAO();
+                Post post = postDAO.getPostById(postId);
+                if (post != null && post.getUserId() != userId) { // Không thông báo nếu là chủ bài viết
+                    UserDao userDao = new UserDao();
+                    Users commenter = userDao.getUserById(userId);
+                    if (commenter != null) {
+                        String message = commenter.getFullName() + " đã bình luận bài viết của bạn.";
+                        PostNotification notification = new PostNotification();
+                        notification.setPostId(postId);
+                        notification.setReceiverId(post.getUserId());
+                        notification.setMessage(message);
+                        notification.setIsRead(false);
+                        notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+                        PostNotificationDAO notificationDAO = new PostNotificationDAO();
+                        notificationDAO.saveNotification(notification);
+                    }
+                }
             } else {
                 response.getWriter().write("error");
             }

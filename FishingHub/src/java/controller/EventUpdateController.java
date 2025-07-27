@@ -100,7 +100,6 @@ public class EventUpdateController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
@@ -127,50 +126,77 @@ public class EventUpdateController extends HttpServlet {
             String endTimeStr = request.getParameter("endTime");
             String maxParticipantsStr = request.getParameter("maxParticipants");
 
+            Events event = new Events();
+            event.setEventId(eventId);
+            event.setTitle(title);
+            event.setLakeName(lakeName);
+            event.setDescription(description);
+            event.setLocation(location);
+            event.setMaxParticipants(maxParticipantsStr != null ? Integer.parseInt(maxParticipantsStr) : 0);
+            event.setHostId(user.getUserId());
+            event.setStatus("pending");
+            event.setCurrentParticipants(0);
+
+            // Kiểm tra các trường bắt buộc
             if (title == null || title.trim().isEmpty()
                     || description == null || description.trim().isEmpty()
                     || location == null || location.trim().isEmpty()
                     || startTimeStr == null || endTimeStr == null || maxParticipantsStr == null) {
-
                 request.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
+                request.setAttribute("event", event);
                 request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);
                 return;
             }
 
             Timestamp startTime, endTime;
-            int maxParticipants;
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             Date parsedStart = dateFormat.parse(startTimeStr);
             Date parsedEnd = dateFormat.parse(endTimeStr);
             startTime = new Timestamp(parsedStart.getTime());
             endTime = new Timestamp(parsedEnd.getTime());
+            event.setStartTime(startTime);
+            event.setEndTime(endTime);
 
-            if (endTime.before(startTime)) {
-                request.setAttribute("error", "Thời gian kết thúc phải sau thời gian bắt đầu.");
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            if (startTime.before(currentTime)) {
+                request.setAttribute("error", "Thời gian bắt đầu không được trong quá khứ.");
+                request.setAttribute("event", event);
+                request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);
+                return;
+            }
+            if (endTime.before(startTime) || endTime.equals(startTime)) {
+                request.setAttribute("error", "Thời gian kết thúc phải sau thời gian bắt đầu và không được trùng.");
+                request.setAttribute("event", event);
                 request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);
                 return;
             }
 
-            maxParticipants = Integer.parseInt(maxParticipantsStr);
+            int maxParticipants = Integer.parseInt(maxParticipantsStr);
             if (maxParticipants < 1) {
                 request.setAttribute("error", "Số người tham gia tối đa phải lớn hơn 0.");
+                request.setAttribute("event", event);
                 request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);
                 return;
             }
 
+            // Xử lý file ảnh
             String posterUrl = null;
             Part filePart = request.getPart("posterFile");
+            EventDAO dao = new EventDAO();
+            Events oldEvent = dao.getUpdateEvents(eventId);
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 String contentType = filePart.getContentType();
                 if (!contentType.startsWith("image/")) {
                     request.setAttribute("error", "Chỉ cho phép tải lên file ảnh.");
+                    request.setAttribute("event", event);
+                    event.setPosterUrl(oldEvent.getPosterUrl());
+                    request.setAttribute("event", event);
                     request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);
                     return;
                 }
 
-                String uploadPath = "G:\\SWP\\FishingHub\\Fishinghub\\Fishinghub\\web" + File.separator + "assets/img/eventPoster";
+                String uploadPath = "C:\\Users\\pc\\Desktop\\SWP\\Dung\\Fishinghub\\web\\assets\\img\\eventPoster";
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
@@ -180,33 +206,18 @@ public class EventUpdateController extends HttpServlet {
                 filePart.write(filePath);
                 posterUrl = fileName;
             } else {
-
-                EventDAO dao = new EventDAO();
-                Events oldEvent = dao.getUpdateEvents(eventId);
                 posterUrl = oldEvent.getPosterUrl();
             }
-
-            Events event = new Events();
-            event.setEventId(eventId);
-            event.setTitle(title);
-            event.setLakeName(lakeName);
-            event.setDescription(description);
-            event.setLocation(location);
-            event.setStartTime(startTime);
-            event.setEndTime(endTime);
             event.setPosterUrl(posterUrl);
-            event.setMaxParticipants(maxParticipants);
-            event.setHostId(user.getUserId());
-            event.setStatus("pending");
-            event.setCurrentParticipants(0);
 
-            EventDAO dao = new EventDAO();
+            // Cập nhật sự kiện
             Events updated = dao.updateEvent(event);
             if (updated != null) {
                 request.setAttribute("success", "Cập nhật sự kiện thành công.");
                 request.setAttribute("event", updated);
             } else {
                 request.setAttribute("error", "Cập nhật thất bại. Vui lòng thử lại.");
+                request.setAttribute("event", event);
             }
 
             request.getRequestDispatcher("dashboard_owner/EventUpdate.jsp").forward(request, response);

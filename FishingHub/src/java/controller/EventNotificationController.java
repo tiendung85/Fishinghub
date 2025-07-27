@@ -87,7 +87,6 @@ public class EventNotificationController extends HttpServlet {
                     notification.setEventId(id);
                     notification.setTitle(title);
                     notification.setMessage(mes);
-                    
 
                     EventNotification inserted = dao.insertNotification(notification);
 

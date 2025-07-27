@@ -139,7 +139,7 @@ public class OrderServlet extends HttpServlet {
                 if (currentUser == null) {
                     request.getRequestDispatcher("Login.jsp").forward(request, response);
                 }
-
+                
                 dao.createOrder(currentUser.getUserId());
 
                 int orderId = dao.getLastInsertId();
@@ -177,12 +177,22 @@ public class OrderServlet extends HttpServlet {
                 rd.forward(request, response);
             }
             String orderIdStr = request.getParameter("orderId");
-            String statusIdStr = request.getParameter("statusId");
-            int orderId = Integer.parseInt(orderIdStr);
-            int statusId = Integer.parseInt(statusIdStr);
-            OrderDAO dao = new OrderDAO();
-            boolean ok = dao.updateOrderStatus(orderId, statusId);
-            response.getWriter().write("{\"success\": " + ok + "}");
+String statusIdStr = request.getParameter("statusId");
+int orderId = Integer.parseInt(orderIdStr);
+int statusId = Integer.parseInt(statusIdStr);
+OrderDAO dao = new OrderDAO();
+boolean ok = dao.updateOrderStatus(orderId, statusId);
+
+// Kiểm tra request là AJAX hay form thường
+String requestedWith = request.getHeader("X-Requested-With");
+if ("XMLHttpRequest".equals(requestedWith)) {
+    // AJAX request
+    response.setContentType("application/json");
+    response.getWriter().write("{\"success\": " + ok + "}");
+} else {
+    // Form submit bình thường: redirect về trang quản lý đơn hàng
+    response.sendRedirect("Order");
+}
         } catch (Exception e) {
             response.getWriter().write("{\"success\": false}");
         }

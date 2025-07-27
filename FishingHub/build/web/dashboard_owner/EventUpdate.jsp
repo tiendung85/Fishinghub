@@ -68,11 +68,15 @@
                                 Sự kiện
                             </a>
                             <div class="ml-10 mt-1 mb-2 flex flex-col gap-2">
-                                <a href="EventManager"
-                                   class=" py-1 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition text-sm">
+                                <button
+                                    onclick="location.href = 'EventManager'"
+                                    class="py-1 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition text-sm"
+                                    >
                                     <i class="ri-list-unordered mr-2"></i>Danh sách sự kiện
-                                </a>
-
+                                </button>   
+                                <button onclick="location.href = 'NotificationHistory'" class="py-1 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition text-sm">
+                                    <i class="ri-notification-line mr-2"></i>Lịch sử thông báo
+                                </button>
                             </div>
 
 
@@ -147,46 +151,7 @@
                             <i class="ri-menu-line"></i>
                         </div>
                     </button>
-                    <div class="flex-1 px-4 flex justify-between">
-                        <div class="flex-1 flex items-center">
-                            <div class="w-full max-w-2xl">
-                                <div class="relative w-full">
-                                    <div
-                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                                        >
-                                        <div
-                                            class="w-5 h-5 flex items-center justify-center text-gray-400"
-                                            >
-                                            <i class="ri-search-line"></i>
-                                        </div>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                                        placeholder="Tìm kiếm..."
-                                        />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ml-4 flex items-center md:ml-6">
-                            <button
-                                class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none"
-                                >
-                                <div class="w-6 h-6 flex items-center justify-center">
-                                    <i class="ri-notification-3-line"></i>
-                                </div>
-                            </button>
-                            <div class="relative ml-3">
-                                <div class="flex items-center">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                                        >
-                                        Online
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <!-- Main content area -->
                 <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 overflow-x-auto">
@@ -314,8 +279,6 @@
                                             </button>
                                         </c:if>
                                     </div>
-
-
                                 </div>
                             </div>
                         </form>
@@ -325,7 +288,7 @@
             </div>
         </div>
         <script>
-// Xử lý ảnh xem trước
+
             const posterFileInput = document.getElementById('posterFile');
             const posterPreview = document.getElementById('posterPreview');
             const posterError = document.getElementById('posterError');
@@ -333,19 +296,19 @@
             if (posterFileInput) {
                 posterFileInput.addEventListener('change', function (event) {
                     const file = event.target.files[0];
-                    posterError.classList.add('hidden'); // Ẩn thông báo lỗi trước khi kiểm tra
+                    posterError.classList.add('hidden'); 
 
                     if (file) {
-// Kiểm tra định dạng ảnh
+
                         if (!file.type.startsWith('image/')) {
                             posterError.textContent = 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF).';
                             posterError.classList.remove('hidden');
-                            posterFileInput.value = ''; // Xóa giá trị input
+                            posterFileInput.value = ''; 
                             posterPreview.classList.add('hidden');
                             return;
                         }
 
-// Kiểm tra kích thước file (giới hạn 5MB)
+
                         if (file.size > 5 * 1024 * 1024) {
                             posterError.textContent = 'File ảnh quá lớn. Kích thước tối đa là 5MB.';
                             posterError.classList.remove('hidden');
@@ -354,7 +317,7 @@
                             return;
                         }
 
-// Đọc và hiển thị ảnh xem trước
+
                         const reader = new FileReader();
                         reader.onload = function (e) {
                             posterPreview.src = e.target.result;
@@ -366,29 +329,6 @@
                     }
                 });
             }
-
-// Xử lý validate form trước khi submit
-            const updateEventForm = document.getElementById('updateEventForm');
-            updateEventForm.addEventListener('submit', function (event) {
-                const startTime = new Date(document.getElementById('startTime').value);
-                const endTime = new Date(document.getElementById('endTime').value);
-                const maxParticipants = document.getElementById('maxParticipants').value;
-
-// Kiểm tra thời gian
-                if (startTime >= endTime) {
-                    event.preventDefault();
-                    alert('Thời gian kết thúc phải sau thời gian bắt đầu.');
-                    return;
-                }
-
-// Kiểm tra số người tham gia tối đa
-                if (maxParticipants < 1) {
-                    event.preventDefault();
-                    alert('Số người tham gia tối đa phải lớn hơn 0.');
-                    return;
-                }
-            });
         </script>
     </body>
 </html>
-

@@ -27,13 +27,13 @@
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center">
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
-                    <nav class="hidden md:flex ml-10">
+                   <nav class="hidden md:flex ml-10">
                         <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
                         <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
-                        <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
-                        <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
+                        <a href="NewFeed" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
+                        <a href="shop-list" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
                         <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
-                        <a href="Achievement.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Xếp Hạng</a>
+                   
                     </nav>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -183,7 +183,7 @@
                     <!-- About section -->
                     <div>
                         <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">FishingHub</a>
-                        <p class="text-gray-400 mb-4">Vietnam's leading fishing community, connecting passion and sharing experiences.</p>
+                        <p class="text-gray-400 mb-4">Cộng đồng câu cá hàng đầu Việt Nam, kết nối đam mê và chia sẻ kinh nghiệm.</p>
                         <div class="flex space-x-4">
                             <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors">
                                 <i class="ri-facebook-fill"></i>
@@ -203,12 +203,12 @@
                     <div>
                         <h3 class="text-lg font-bold mb-4">Liên Kết Nhanh</h3>
                         <ul class="space-y-2">
-                            <li><a href="Home.jsp" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
-                            <li><a href="Event.jsp" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
-                            <li><a href="NewFeed.jsp" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
-                            <li><a href="Product.jsp" class="text-gray-400 hover:text-white">Cửa Hàng</a></li> 
+                            <li><a href="Home" class="text-gray-400 hover:text-white">Trang Chủ</a></li>
+                            <li><a href="EventList" class="text-gray-400 hover:text-white">Sự Kiện</a></li>
+                            <li><a href="NewFeed" class="text-gray-400 hover:text-white">Bảng Tin</a></li>
+                            <li><a href="shop-list" class="text-gray-400 hover:text-white">Cửa Hàng</a></li>
                             <li><a href="KnowledgeFish" class="text-gray-400 hover:text-white">Kiến Thức</a></li>
-                            <li><a href="Achievement.jsp" class="text-gray-400 hover:text-white">Xếp Hạng</a></li>
+                           
                         </ul>
                     </div>
                     <!-- Support -->

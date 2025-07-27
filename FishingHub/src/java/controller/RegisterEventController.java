@@ -1,6 +1,8 @@
 package controller;
 
 import dal.EventDAO;
+import dal.FishSpeciesDAO;
+import dal.PostDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,9 +11,12 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import model.EventParticipant;
 import model.Events;
+import model.FishSpecies;
+import model.Post;
 import model.Users;
 
 /**
@@ -79,11 +84,10 @@ public class RegisterEventController extends HttpServlet {
                     String email = request.getParameter("email");
                     String cccd = request.getParameter("cccd");
 
-                    
                     Pattern phonePattern = Pattern.compile("^0[0-9]{9}$");
-                    
+
                     Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-                    
+
                     Pattern cccdPattern = Pattern.compile("^[0-9]{12}$");
 
                     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
@@ -103,7 +107,7 @@ public class RegisterEventController extends HttpServlet {
                         ep.setUserId(user.getUserId());
                         ep.setNumberPhone(phoneNumber);
                         ep.setEmail(email);
-                        ep.setCccd(cccd != null ? cccd.trim() : null); 
+                        ep.setCccd(cccd != null ? cccd.trim() : null);
 
                         if (dao.register(ep) != null) {
                             request.setAttribute("success", "Đăng ký sự kiện thành công!");
@@ -164,6 +168,28 @@ public class RegisterEventController extends HttpServlet {
 
         request.setAttribute("listE", list);
         request.setAttribute("isRegisteredList", isRegisteredList);
+
+        PostDAO postDAO = new PostDAO();
+        List<Post> recentPosts = postDAO.getRecentPosts(2);
+        request.setAttribute("recentPosts", recentPosts);
+
+        // Lấy 3 loài cá đại diện cho 3 mức độ khó
+        FishSpeciesDAO fishDAO = new FishSpeciesDAO();
+        List<FishSpecies> representativeFish = new ArrayList<>();
+        try {
+            FishSpecies easyFish = fishDAO.getFishByDifficultyLevel(1);
+            if (easyFish != null)
+                representativeFish.add(easyFish);
+            FishSpecies mediumFish = fishDAO.getFishByDifficultyLevel(2);
+            if (mediumFish != null)
+                representativeFish.add(mediumFish);
+            FishSpecies hardFish = fishDAO.getFishByDifficultyLevel(3);
+            if (hardFish != null)
+                representativeFish.add(hardFish);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        request.setAttribute("representativeFish", representativeFish);
     }
 
     @Override

@@ -3,10 +3,14 @@ package dal;
 import model.Users;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Achievement;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class UserDao extends DBConnect {
 
@@ -189,61 +193,61 @@ public class UserDao extends DBConnect {
         }
     }
 
-    public List<Users> listFiltered(String searchQuery, String roleFilter) {
-        List<Users> userList = new ArrayList<>();
-        String sql = "SELECT * FROM Users WHERE 1=1";
-        boolean hasSearch = (searchQuery != null && !searchQuery.trim().isEmpty());
-        boolean hasRole = (roleFilter != null && !roleFilter.trim().isEmpty());
+public List<Users> listFiltered(String search, String roleFilter) {
+    List<Users> userList = new ArrayList<>();
+    String sql = "SELECT * FROM Users WHERE 1=1";
+    boolean hasSearch = (search != null && !search.trim().isEmpty());
+    boolean hasRole = (roleFilter != null && !roleFilter.trim().isEmpty());
 
+    if (hasSearch) {
+        sql += " AND (FullName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ? OR Email COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?)";
+    }
+    if (hasRole) {
+        sql += " AND RoleId = ?";
+    }
+
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        int paramIndex = 1;
         if (hasSearch) {
-            sql += " AND FullName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?";
+            String pattern = "%" + search.trim() + "%";
+            ps.setString(paramIndex++, pattern); // FullName
+            ps.setString(paramIndex++, pattern); // Email
         }
         if (hasRole) {
-            sql += " AND RoleId = ?";
+            ps.setString(paramIndex++, roleFilter.trim());
         }
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            int paramIndex = 1;
-
-            if (hasSearch) {
-                ps.setString(paramIndex++, "%" + searchQuery.trim() + "%");
-            }
-            if (hasRole) {
-                ps.setString(paramIndex++, roleFilter.trim());
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Users user = new Users();
-                user.setUserId(rs.getInt("UserId"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setPhone(rs.getString("Phone"));
-                user.setGender(rs.getString("Gender"));
-                user.setDateOfBirth(rs.getDate("DateOfBirth"));
-                user.setLocation(rs.getString("Location"));
-                user.setRoleId(rs.getInt("RoleId"));
-                user.setLastLoginTime(rs.getTimestamp("LastLoginTime"));
-
-                // Xác định trạng thái Active/Inactive
-                Timestamp lastLogin = user.getLastLoginTime();
-                if (lastLogin != null) {
-                    long diff = System.currentTimeMillis() - lastLogin.getTime();
-                    if (diff <= 48 * 60 * 60 * 1000L) { // 48 giờ
-                        user.setStatus("Active");
-                    } else {
-                        user.setStatus("Inactive");
-                    }
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Users user = new Users();
+            user.setUserId(rs.getInt("UserId"));
+            user.setFullName(rs.getString("FullName"));
+            user.setEmail(rs.getString("Email"));
+            user.setPhone(rs.getString("Phone"));
+            user.setGender(rs.getString("Gender"));
+            user.setDateOfBirth(rs.getDate("DateOfBirth"));
+            user.setLocation(rs.getString("Location"));
+            user.setRoleId(rs.getInt("RoleId"));
+            user.setLastLoginTime(rs.getTimestamp("LastLoginTime"));
+            // Set status ...
+            Timestamp lastLogin = user.getLastLoginTime();
+            if (lastLogin != null) {
+                long diff = System.currentTimeMillis() - lastLogin.getTime();
+                if (diff <= 48 * 60 * 60 * 1000L) { // 48 giờ
+                    user.setStatus("Active");
                 } else {
                     user.setStatus("Inactive");
                 }
-                userList.add(user);
+            } else {
+                user.setStatus("Inactive");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            userList.add(user);
         }
-        return userList;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return userList;
+}
 
     public boolean checkPassword(String email, String currentPassword) {
 
@@ -379,27 +383,28 @@ public class UserDao extends DBConnect {
         return false;
     }
 
-    public void update(Users user) {
-        try {
-            String sql = "UPDATE Users SET FullName=?, Email=?, Phone=?, Password=?, RoleId=?, Gender=?, DateOfBirth=?, Location=?, LastLoginTime=?, Status=? WHERE UserId=?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, user.getFullName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPhone());
-            ps.setString(4, user.getPassword());
-            ps.setInt(5, user.getRoleId());
-            ps.setString(6, user.getGender());
-            ps.setDate(7, user.getDateOfBirth());
-            ps.setString(8, user.getLocation());
-            ps.setTimestamp(9, user.getLastLoginTime());
-            ps.setString(10, user.getStatus());
-            ps.setInt(11, user.getUserId());
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+   public void update(Users user) {
+    try {
+        String sql = "UPDATE Users SET FullName=?, Email=?, Phone=?, Password=?, RoleId=?, Gender=?, DateOfBirth=?, Location=?, LastLoginTime=?, Status=?, lastProfileUpdate=? WHERE UserId=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, user.getFullName());
+        ps.setString(2, user.getEmail());
+        ps.setString(3, user.getPhone());
+        ps.setString(4, user.getPassword());
+        ps.setInt(5, user.getRoleId());
+        ps.setString(6, user.getGender());
+        ps.setDate(7, user.getDateOfBirth());
+        ps.setString(8, user.getLocation());
+        ps.setTimestamp(9, user.getLastLoginTime());
+        ps.setString(10, user.getStatus());
+        ps.setTimestamp(11, user.getLastProfileUpdate());  
+        ps.setInt(12, user.getUserId());
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
     public void updatePasswordByEmail(String email, String newPassword) {
         String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
@@ -410,6 +415,61 @@ public class UserDao extends DBConnect {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+  public int countNewUsersInLastWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countNewUsersInPreviousWeek() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE CreatedAt >= DATEADD(DAY, -14, GETDATE()) AND CreatedAt < DATEADD(DAY, -7, GETDATE())";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countUserByRole(String roleName) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users U JOIN Role R ON U.RoleId = R.RoleId WHERE R.RoleName = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, roleName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countAllUsers() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
 }

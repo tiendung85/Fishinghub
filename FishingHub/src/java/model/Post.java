@@ -13,8 +13,11 @@ public class Post {
 
     private Date createdAt;
     private String status;
+    private String AuthorName;
     private List<String> images;
     private List<String> videos;
+    private int commentCount;
+    private int likeCount;
 
     public Post() {
         this.images = new ArrayList<>();
@@ -126,6 +129,29 @@ public class Post {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+     public String getAuthorName() {
+        return AuthorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.AuthorName = authorName;
     }
 
     @Override

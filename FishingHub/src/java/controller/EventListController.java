@@ -22,7 +22,7 @@ public class EventListController extends HttpServlet {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         String action = request.getParameter("action") != null ? request.getParameter("action") : "";
-        
+
         int page = 1;
         int pageSize = 9;
         String pageStr = request.getParameter("page");
@@ -70,7 +70,8 @@ public class EventListController extends HttpServlet {
         }
 
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-        System.out.println("Total Items: " + totalItems + ", Total Pages: " + totalPages + ", List Size: " + list.size());
+        System.out
+                .println("Total Items: " + totalItems + ", Total Pages: " + totalPages + ", List Size: " + list.size());
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ArrayList<Boolean> isRegisteredList = new ArrayList<>();

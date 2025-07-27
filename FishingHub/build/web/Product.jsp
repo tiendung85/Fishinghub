@@ -202,8 +202,8 @@
                     <a href="Home.jsp" class="text-3xl font-['Pacifico'] text-primary">FishingHub</a>
                     <!-- Header navigation links -->
                     <nav class="hidden md:flex ml-10">
-                        <a href="Home" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
-                        <a href="EventList" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
+                        <a href="Home.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Trang Chủ</a>
+                        <a href="Event.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Sự Kiện</a>
                         <a href="NewFeed.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Bảng Tin</a>
                         <a href="Product.jsp" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Cửa Hàng</a>
                         <a href="KnowledgeFish" class="px-4 py-2 text-gray-800 font-medium hover:text-primary">Kiến Thức</a>
@@ -241,8 +241,13 @@
                         >
 
                     </div>
-
-
+                        <% if (currentUser != null && currentUser.getRoleId() == 2) { %>
+    <a href="WaitingConfirmListServlet"
+       class="ml-3 px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-button font-medium flex items-center"
+       title="Xác nhận đơn hàng">
+        <i class="ri-list-check-2 mr-2"></i> Đơn chờ xác nhận
+    </a>
+<% } %>
                     <div class="relative">
                         <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer">
                             <i class="ri-notification-3-line text-gray-600"></i>
@@ -257,7 +262,7 @@
                     <div class="flex items-center space-x-3">
                         <span class="font-semibold text-primary"><i class="ri-user-line mr-1"></i> <%= currentUser.getFullName() %></span>
                         <% if(currentUser.getRoleId() == 2) { %>
-                        <a href="EventDashboard" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
+                        <a href="dashboard_owner/Dashboard.jsp" class="bg-secondary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-secondary/90">Dashboard</a>
                         <% } %>
                         <form action="logout" method="post" style="display:inline;">
                             <button type="submit" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-button hover:bg-gray-300">Đăng Xuất</button>
@@ -469,16 +474,23 @@
 
                     <!-- Products Header -->
                     <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                        <div
-                            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                            >
-                            <div>
-                                <h1 class="text-xl font-bold text-gray-800">
-                                    Sản Phẩm Câu Cá
-                                </h1>
-                            </div>
-                        </div>
-                    </div>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex items-center gap-4">
+    <h1 class="text-xl font-bold text-gray-800">
+        Sản Phẩm Câu Cá
+    </h1>
+    <% if (currentUser != null && currentUser.getRoleId() == 1) { %>
+        <a href="MyWaitingOrders"
+           class="ml-3 px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-button font-medium flex items-center"
+           style="font-size: 15px;">
+            <i class="ri-file-list-2-line mr-2"></i>
+            Đơn hàng của bạn
+        </a>
+    <% } %>
+</div>
+    </div>
+</div>
+
                     <!-- Products Grid -->
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"

@@ -19,8 +19,8 @@ public class EventNotification {
     private String title;
     private String message;
     private Timestamp createdAt;
-    
-       private String formattedCreatedAt;
+    private String eventTitle;
+    private String formattedCreatedAt;
 
     public EventNotification(int notificationId, int eventId, int senderId, String message, Timestamp createdAt) {
         this.notificationId = notificationId;
@@ -70,7 +70,7 @@ public class EventNotification {
     }
 
     public void setCreatedAt(Timestamp createdAt) {
-         this.createdAt = createdAt;
+        this.createdAt = createdAt;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         this.formattedCreatedAt = sdf.format(createdAt);
     }
@@ -83,15 +83,20 @@ public class EventNotification {
         this.title = title;
     }
 
-   
-
-   
-
     public String getFormattedCreatedAt() {
         return formattedCreatedAt;
     }
-    
-     public void setFormattedCreatedAt(String formattedCreatedAt) {
+
+    public void setFormattedCreatedAt(String formattedCreatedAt) {
         this.formattedCreatedAt = formattedCreatedAt;
     }
+
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
+    }
+
 }

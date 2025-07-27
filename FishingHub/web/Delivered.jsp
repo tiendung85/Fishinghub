@@ -1,99 +1,91 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8"%>
-    <%@ page import="java.util.Map,java.util.HashMap" %>
-        <%@ page import="model.Product" %>
-            <%@ page import="dal.ProductDAO" %>
-                <%
-   Map<String, Integer> orderedItems = (Map<String, Integer>) session.getAttribute("OrderedItems");
-    Map<String, Long> deliveryTimes = (Map<String, Long>) session.getAttribute("DeliveryTimes");
-    Map<String, Integer> deliveredItems = (Map<String, Integer>) session.getAttribute("DeliveredItems");
-    Map<String, Integer> ratedItems = (Map<String, Integer>) session.getAttribute("RatedItems");
-
-    if (orderedItems == null) orderedItems = new HashMap<>();
-    if (deliveryTimes == null) deliveryTimes = new HashMap<>();
-    if (deliveredItems == null) deliveredItems = new HashMap<>();
-    if (ratedItems == null) ratedItems = new HashMap<>();
-
-    long now = System.currentTimeMillis();
-    Map<String, Integer> tempOrdered = new HashMap<>(orderedItems);
-    for (String id : tempOrdered.keySet()) {
-        long deliveryTime = deliveryTimes.get(id);
-        if (now >= deliveryTime) {
-            deliveredItems.put(id, orderedItems.get(id));
-            orderedItems.remove(id);
-            deliveryTimes.remove(id);
-        }
-    }
-
-    session.setAttribute("OrderedItems", orderedItems);
-    session.setAttribute("DeliveryTimes", deliveryTimes);
-    session.setAttribute("DeliveredItems", deliveredItems);
-    session.setAttribute("RatedItems", ratedItems);
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="model.Order, java.util.*, model.OrderDetail, model.Product" %>
+<%
+    List<Map<String, Object>> productsToReview = (List<Map<String, Object>>) request.getAttribute("productsToReview");
 %>
+<!DOCTYPE html>
+<html>
+    <style>
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
 
-                    <!DOCTYPE html>
-                    <html>
+.tabs .btn-tab {
+    background-color: #87CEFA;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Đã nhận & Đã đánh giá</title>
-                        <!-- Google Fonts preconnect and import -->
-                        <link rel="preconnect" href="https://fonts.googleapis.com">
-                        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-                        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-                        <!-- Bootstrap CSS -->
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <!-- Tailwind CSS CDN -->
-                        <script src="https://cdn.tailwindcss.com"></script>
-                        <style>
-                            body {
-                                font-family: 'Roboto', sans-serif;
-                            }
-                            
-                            .tabs .active {
-                                background: #0d6efd;
-                                color: #fff;
-                            }
-                        </style>
-                    </head>
+.tabs .btn-tab.active {
+    background-color: #007BFF; /* Đậm hơn để nhận biết nút hiện tại */
+}
 
-                    <body class="bg-gray-50 min-h-screen py-4">
-                        <div class="container bg-white rounded shadow p-4">
-                            <div class="tabs mb-4 flex gap-2">
-                                <button class="btn btn-outline-primary" onclick="window.location.href='InProgress.jsp'">Đang giao</button>
-                                <button class="btn btn-outline-success active" onclick="window.location.href='Delivered.jsp'">Đã nhận</button>
-                            </div>
-
-                            <h3 class="mb-3 text-xl font-bold">Đã nhận</h3>
-                            <% if (!deliveredItems.isEmpty()) {
-            ProductDAO productDAO = new ProductDAO();
-            for (String id : deliveredItems.keySet()) {
-                if (!ratedItems.containsKey(id)) {
-                    Product product = productDAO.getProductById(Integer.parseInt(id));
+.tabs .btn-tab:hover {
+    background-color: #5aaef9;
+}
+</style>
+<div class="tabs">
+    <button class="btn-tab" onclick="window.location.href='MyWaitingOrders'">Chờ xác nhận</button>
+    <button class="btn-tab" onclick="window.location.href='InProgress'">Đang giao</button>
+    <button class="btn-tab active" onclick="window.location.href='Delivered'">Đã giao</button>
+</div>
+<head>
+    <title>Đơn hàng đã nhận (chờ đánh giá)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container { max-width: 900px; margin: 32px auto; background: white; border-radius: 10px; box-shadow: 0 0 8px #ddd; padding: 32px; }
+        .btn-review { background: #007bff; color: white; border:none; padding: 7px 16px; border-radius: 5px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Đơn hàng đã nhận (chờ đánh giá)</h1>
+    <table class="table table-bordered">
+        <tr>
+            <th>Mã đơn</th>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đánh giá</th>
+        </tr>
+        <%
+        if (productsToReview == null || productsToReview.isEmpty()) {
         %>
-                                <div class="alert alert-success flex justify-between items-center mb-2">
-                                    <span><%= product.getName() %> - Đã giao thành công</span>
-                                    <a href="RatingProduct.jsp?productId=<%= id %>" class="btn btn-sm btn-warning ms-2">Đánh giá</a>
-                                </div>
-                                <% }}} else { %>
-                                    <div class="alert alert-info">Không có sản phẩm nào đã nhận.</div>
-                                    <% } %>
-
-                                        <h3 class="mt-4 text-xl font-bold">Đã đánh giá</h3>
-                                        <% if (!ratedItems.isEmpty()) {
-            ProductDAO productDAO = new ProductDAO();
-            for (String id : ratedItems.keySet()) {
-                Product product = productDAO.getProductById(Integer.parseInt(id));
+        <tr>
+            <td colspan="4">Không còn sản phẩm nào chờ đánh giá.</td>
+        </tr>
+        <%
+        } else {
+            for (Map<String, Object> map : productsToReview) {
+                Order order = (Order) map.get("order");
+                Product product = (Product) map.get("product");
+                OrderDetail detail = (OrderDetail) map.get("detail");
         %>
-                                            <div class="alert alert-secondary flex justify-between items-center mb-2">
-                                                <span><%= product.getName() %></span>
-                                                <a href="ViewReview.jsp?productId=<%= id %>" class="btn btn-sm btn-outline-primary ms-2">Xem đánh giá</a>
-                                            </div>
-                                            <% }} else { %>
-                                                <div class="alert alert-info">Chưa có sản phẩm nào được đánh giá.</div>
-                                                <% } %>
-                                                    <div class="mt-4">
-                                                        <a href="ShopingCart.jsp" class="text-primary">&larr; Quay lại trang sản phẩm</a>
-                                                    </div>
-                        </div>
-                        <!-- Bootstrap JS -->
-                        <script src
+        <tr>
+            <td><%= order.getId() %></td>
+            <td><%= product.getName() %></td>
+            <td><%= detail.getCartQuantity() %></td>
+            <td>
+                <form method="get" action="Review.jsp" style="margin:0;">
+                    <input type="hidden" name="productId" value="<%= product.getProductId() %>"/>
+                    <input type="hidden" name="orderId" value="<%= order.getId() %>"/>
+                    <button type="submit" class="btn-review">Đánh giá</button>
+                </form>
+            </td>
+        </tr>
+        <%
+            }
+        }
+        %>
+    </table>
+    <a href="ReviewedProducts" class="btn btn-success">Sản phẩm đã đánh giá</a>
+</div>
+</body>
+</html>

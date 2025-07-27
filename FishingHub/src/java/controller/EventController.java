@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import model.Users;
 
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
-        maxFileSize = 1024 * 1024 * 10,
-        maxRequestSize = 1024 * 1024 * 50) 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
 public class EventController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "assets/img/eventPoster";
@@ -60,7 +58,7 @@ public class EventController extends HttpServlet {
             response.sendRedirect("login");
         } else {
             if (!"add".equals(action)) {
-                request.setAttribute("error", "Invalid action specified.");
+                request.setAttribute("error", "Hành động được chỉ định không hợp lệ.");
                 request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                 return;
             }
@@ -95,25 +93,25 @@ public class EventController extends HttpServlet {
 
                 Timestamp now = new Timestamp(System.currentTimeMillis());
                 if (startTime.before(now)) {
-                    request.setAttribute("error", "Start time must not be in the past.");
+                    request.setAttribute("error", "Thời gian bắt đầu không được ở trong quá khứ.");
                     request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                     return;
                 }
 
-                if (endTime.before(startTime)) {
-                    request.setAttribute("error", "End time must be after start time.");
+                if (endTime.before(startTime) || endTime.equals(startTime)) {
+                    request.setAttribute("error", "Thời gian kết thúc phải sau thời gian bắt đầu và không được trùng.");
                     request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                     return;
                 }
 
                 maxParticipants = Integer.parseInt(maxParticipantsStr);
                 if (maxParticipants < 1) {
-                    request.setAttribute("error", "Max participants must be at least 1.");
+                    request.setAttribute("error", "Số người tham gia tối đa phải ít nhất là 1.");
                     request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                     return;
                 }
             } catch (Exception e) {
-                request.setAttribute("error", "Invalid date format or number format.");
+                request.setAttribute("error", "Định dạng ngày hoặc định dạng số không hợp lệ.");
                 request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                 return;
             }
@@ -126,13 +124,13 @@ public class EventController extends HttpServlet {
 
                     String contentType = filePart.getContentType();
                     if (!contentType.startsWith("image/")) {
-                        request.setAttribute("error", "Only image files are allowed.");
+                        request.setAttribute("error", "Chỉ cho phép tệp hình ảnh.");
                         request.getRequestDispatcher("EventForm.jsp").forward(request, response);
                         return;
                     }
 
-                    String uploadPath = "G:\\SWP\\FishingHub\\Fishinghub\\Fishinghub\\web" + File.separator + UPLOAD_DIR;
-
+                    String uploadPath = "C:\\Users\\pc\\Desktop\\SWP\\Dung\\Fishinghub\\web" + File.separator
+                            + UPLOAD_DIR;
                     File uploadDir = new File(uploadPath);
                     if (!uploadDir.exists()) {
                         uploadDir.mkdirs();
@@ -160,9 +158,9 @@ public class EventController extends HttpServlet {
             EventDAO dao = new EventDAO();
             Events result = dao.addEvent(event);
             if (result != null) {
-                request.setAttribute("success", "Event created successfully!");
+                request.setAttribute("success", "Tạo sự kiện thành công!");
             } else {
-                request.setAttribute("error", "Failed to create event.");
+                request.setAttribute("error", "Tạo sự kiện thất bại.");
             }
 
             request.getRequestDispatcher("EventForm.jsp").forward(request, response);

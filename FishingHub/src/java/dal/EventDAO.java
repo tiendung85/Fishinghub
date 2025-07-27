@@ -56,17 +56,17 @@ public class EventDAO extends DBConnect {
         ArrayList<Events> events = new ArrayList<>();
         try {
             String sql = """
-                         SELECT 
-                             e.*,
-                             u.FullName,
-                             u.Email,
-                             u.Phone  
-                         FROM 
-                             Event e
-                         JOIN 
-                             Users u ON e.HostId = u.UserId
-                         ORDER BY 
-                             e.EventId DESC;""";
+                    SELECT
+                        e.*,
+                        u.FullName,
+                        u.Email,
+                        u.Phone
+                    FROM
+                        Event e
+                    JOIN
+                        Users u ON e.HostId = u.UserId
+                    ORDER BY
+                        e.EventId DESC;""";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
 
@@ -253,16 +253,16 @@ public class EventDAO extends DBConnect {
         Events event = null;
         try {
             String sql = """
-                         SELECT 
-                             e.*,
-                             u.FullName,
-                             u.Email,
-                             u.Phone  
-                         FROM 
-                             Event e
-                         JOIN 
-                             Users u ON e.HostId = u.UserId
-                         Where e.EventId=?""";
+                    SELECT
+                        e.*,
+                        u.FullName,
+                        u.Email,
+                        u.Phone
+                    FROM
+                        Event e
+                    JOIN
+                        Users u ON e.HostId = u.UserId
+                    Where e.EventId=?""";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -1193,13 +1193,14 @@ public class EventDAO extends DBConnect {
     }
 
     // Search participants with pagination
-    public ArrayList<EventParticipant> searchParticipantsByEventId(int eventId, String keyword, int page, int pageSize) {
+    public ArrayList<EventParticipant> searchParticipantsByEventId(int eventId, String keyword, int page,
+            int pageSize) {
         ArrayList<EventParticipant> participants = new ArrayList<>();
         String sql = """
                 SELECT u.FullName, ep.EventId, ep.UserId, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin, ep.CheckinTime
                 FROM EventParticipant ep
                 JOIN Users u ON ep.UserId = u.UserId
-                WHERE ep.EventId = ? AND 
+                WHERE ep.EventId = ? AND
                       (u.FullName LIKE ? OR ep.Email LIKE ? OR ep.CCCD LIKE ? OR ep.NumberPhone LIKE ?)
                 ORDER BY ep.UserId
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
@@ -1240,7 +1241,7 @@ public class EventDAO extends DBConnect {
                 SELECT COUNT(*)
                 FROM EventParticipant ep
                 JOIN Users u ON ep.UserId = u.UserId
-                WHERE ep.EventId = ? AND 
+                WHERE ep.EventId = ? AND
                       (u.FullName LIKE ? OR ep.Email LIKE ? OR ep.CCCD LIKE ? OR ep.NumberPhone LIKE ?)""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -1262,7 +1263,8 @@ public class EventDAO extends DBConnect {
     }
 
     // Filter participants by check-in status with pagination
-    public ArrayList<EventParticipant> filterParticipantsByCheckin(int eventId, boolean checkinStatus, int page, int pageSize) {
+    public ArrayList<EventParticipant> filterParticipantsByCheckin(int eventId, boolean checkinStatus, int page,
+            int pageSize) {
         ArrayList<EventParticipant> participants = new ArrayList<>();
         String sql = """
                 SELECT u.FullName, ep.EventId, ep.UserId, ep.NumberPhone, ep.Email, ep.CCCD, ep.Checkin, ep.CheckinTime
@@ -1316,15 +1318,15 @@ public class EventDAO extends DBConnect {
         return 0;
     }
 
-//    -----
+    // -----
     public ArrayList<Events> getEventsList(int page, int pageSize) {
         ArrayList<Events> events = new ArrayList<>();
         String sql = """
-                     SELECT e.*, u.FullName, u.Email, u.Phone
-                     FROM Event e
-                     JOIN Users u ON e.HostId = u.UserId
-                     ORDER BY e.EventId DESC
-                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+                SELECT e.*, u.FullName, u.Email, u.Phone
+                FROM Event e
+                JOIN Users u ON e.HostId = u.UserId
+                ORDER BY e.EventId DESC
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, (page - 1) * pageSize);
@@ -1363,12 +1365,12 @@ public class EventDAO extends DBConnect {
     public ArrayList<Events> searchEvents(String keyword, int page, int pageSize) {
         ArrayList<Events> events = new ArrayList<>();
         String sql = """
-                     SELECT e.*, u.FullName, u.Email, u.Phone
-                     FROM Event e
-                     JOIN Users u ON e.HostId = u.UserId
-                     WHERE e.Title LIKE ? OR u.FullName LIKE ?
-                     ORDER BY e.EventId DESC
-                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+                SELECT e.*, u.FullName, u.Email, u.Phone
+                FROM Event e
+                JOIN Users u ON e.HostId = u.UserId
+                WHERE e.Title LIKE ? OR u.FullName LIKE ?
+                ORDER BY e.EventId DESC
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             String kw = "%" + keyword + "%";
@@ -1409,10 +1411,10 @@ public class EventDAO extends DBConnect {
 
     public int getTotalSearchEvents(String keyword) {
         String sql = """
-                     SELECT COUNT(*)
-                     FROM Event e
-                     JOIN Users u ON e.HostId = u.UserId
-                     WHERE e.Title LIKE ? OR u.FullName LIKE ?""";
+                SELECT COUNT(*)
+                FROM Event e
+                JOIN Users u ON e.HostId = u.UserId
+                WHERE e.Title LIKE ? OR u.FullName LIKE ?""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             String kw = "%" + keyword + "%";
@@ -1434,12 +1436,12 @@ public class EventDAO extends DBConnect {
     public ArrayList<Events> filterEvents(String statusFilter, int page, int pageSize) {
         ArrayList<Events> events = new ArrayList<>();
         String sql = """
-                     SELECT e.*, u.FullName, u.Email, u.Phone
-                     FROM Event e
-                     JOIN Users u ON e.HostId = u.UserId
-                     WHERE e.Status = ?
-                     ORDER BY e.EventId DESC
-                     OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
+                SELECT e.*, u.FullName, u.Email, u.Phone
+                FROM Event e
+                JOIN Users u ON e.HostId = u.UserId
+                WHERE e.Status = ?
+                ORDER BY e.EventId DESC
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, statusFilter);
@@ -1497,16 +1499,16 @@ public class EventDAO extends DBConnect {
     public ArrayList<Events> getEventsOnTop() {
         ArrayList<Events> events = new ArrayList<>();
         String sql = """
-        SELECT TOP 3 *
-        FROM Event
-        WHERE 
-          Status = 'Approved'
-          AND StartTime > GETDATE()
-          AND CurrentParticipants < MaxParticipants
-        ORDER BY 
-          CurrentParticipants DESC, 
-          StartTime ASC;
-    """;
+                    SELECT TOP 3 *
+                    FROM Event
+                    WHERE
+                      Status = 'Approved'
+                      AND StartTime > GETDATE()
+                      AND CurrentParticipants < MaxParticipants
+                    ORDER BY
+                      CurrentParticipants DESC,
+                      StartTime ASC;
+                """;
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -1542,10 +1544,10 @@ public class EventDAO extends DBConnect {
 
     public int getApprovedToday() {
         String sql = """
-                     SELECT COUNT(*) AS ApprovedToday
-                     FROM Event
-                     WHERE Status = 'approved'
-                       AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+                SELECT COUNT(*) AS ApprovedToday
+                FROM Event
+                WHERE Status = 'approved'
+                  AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -1563,10 +1565,10 @@ public class EventDAO extends DBConnect {
 
     public int getRejectedToday() {
         String sql = """
-                     SELECT COUNT(*) AS RejectedToday
-                     FROM Event
-                     WHERE Status = 'rejected'
-                       AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+                SELECT COUNT(*) AS RejectedToday
+                FROM Event
+                WHERE Status = 'rejected'
+                  AND CAST(ApprovedAt AS DATE) = CAST(GETDATE() AS DATE)""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -1584,9 +1586,9 @@ public class EventDAO extends DBConnect {
 
     public int getNewEventsToday() {
         String sql = """
-                     SELECT COUNT(*) AS NewEvents
-                     FROM Event
-                     WHERE CAST(CreatedAt AS DATE) = CAST(GETDATE() AS DATE)""";
+                SELECT COUNT(*) AS NewEvents
+                FROM Event
+                WHERE CAST(CreatedAt AS DATE) = CAST(GETDATE() AS DATE)""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -1604,9 +1606,9 @@ public class EventDAO extends DBConnect {
 
     public int getPendingEvents() {
         String sql = """
-                     SELECT COUNT(*) AS PendingEvents
-                     FROM Event
-                     WHERE Status = 'pending'""";
+                SELECT COUNT(*) AS PendingEvents
+                FROM Event
+                WHERE Status = 'pending'""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -1625,12 +1627,12 @@ public class EventDAO extends DBConnect {
     public ArrayList<EventNotification> getNotificationsByUserId(int userId) {
         ArrayList<EventNotification> list = new ArrayList<>();
         String sql = """
-                 SELECT en.*
-                 FROM EventNotification en
-                 JOIN EventParticipant ep ON en.EventId = ep.EventId
-                 WHERE ep.UserId = ?
-                 ORDER BY en.CreatedAt DESC
-                 """;
+                SELECT en.*
+                FROM EventNotification en
+                JOIN EventParticipant ep ON en.EventId = ep.EventId
+                WHERE ep.UserId = ?
+                ORDER BY en.CreatedAt DESC
+                """;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
@@ -1643,7 +1645,7 @@ public class EventDAO extends DBConnect {
                 en.setTitle(rs.getString("Title"));
                 en.setMessage(rs.getString("Message"));
                 en.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                
+
                 list.add(en);
             }
         } catch (Exception e) {
@@ -1652,7 +1654,7 @@ public class EventDAO extends DBConnect {
         }
         return list;
     }
-    
+
     public EventRejections getRejectionByEventId(int eventId) {
         String sql = "SELECT EventId, RejectReason, RejectedAt FROM EventRejections WHERE EventId = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -1668,10 +1670,46 @@ public class EventDAO extends DBConnect {
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // hoặc dùng log framework
+            e.printStackTrace();
         }
 
-        return null; // Không có bản ghi nào
+        return null;
+    }
+
+    public ArrayList<EventNotification> getNotificationsSentByUser(int userId, String search) {
+        ArrayList<EventNotification> list = new ArrayList<>();
+        String sql = """
+                    SELECT en.NotificationId, en.Title AS NotificationTitle, en.Message, en.CreatedAt,
+                           e.Title AS EventTitle
+                    FROM EventNotification en
+                    JOIN Event e ON en.EventId = e.EventId
+                    JOIN Users u ON en.SenderId = u.UserId
+                    WHERE en.SenderId = ?
+                    AND (en.Title LIKE ? OR e.Title LIKE ?)
+                    ORDER BY en.CreatedAt DESC
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, "%" + search + "%");
+            ps.setString(3, "%" + search + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    EventNotification en = new EventNotification();
+                    en.setNotificationId(rs.getInt("NotificationId"));
+                    en.setTitle(rs.getString("NotificationTitle"));
+                    en.setMessage(rs.getString("Message"));
+                    en.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    en.setEventTitle(rs.getString("EventTitle"));
+                    list.add(en);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getNotificationsSentByUser: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
 }

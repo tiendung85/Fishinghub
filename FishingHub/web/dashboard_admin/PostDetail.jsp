@@ -106,7 +106,7 @@
                         </div>
                     <% } %>
                     <div class="mt-4">
-                        <a href="PostManagement.jsp" class="btn btn-outline-primary"><i class="ri-arrow-left-line me-1"></i>Quay lại danh sách</a>
+                        <a href="PostManagement" class="btn btn-outline-primary"><i class="ri-arrow-left-line me-1"></i>Quay lại danh sách</a>
                     </div>
                 <% } %>
             </div>
